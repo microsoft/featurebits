@@ -11,7 +11,7 @@ namespace Dotnet.Fbit.Tests
         //public void ItReturnsDoingAddTemporarily()
         //{
         //    // arrange 
-        //    var builder = new StringBuilder();
+        //    var builder = new FileContent();
         //    SystemContext.ConsoleWriteLine = s => builder.Append(s);
         //    SystemContext.ConsoleErrorWriteLine = s => builder.Append(s);
         //    var args = "add -c foo";
@@ -40,31 +40,5 @@ namespace Dotnet.Fbit.Tests
             Assert.Equal(1, result);
         }
 
-        // [Fact]
-        // public void ItReturnsZeroOnSuccessfulGenerateIntegrationTest()
-        // {
-        //     // arrange 
-        //     var builder = new StringBuilder();
-        //     SystemContext.ConsoleWriteLine = s => builder.Append(s);
-        //     SystemContext.ConsoleErrorWriteLine = s => builder.Append(s);
-        //     string[] args =
-        //     {
-        //         "generate",
-        //         "-c",
-        //         "TBD Conn str",
-        //         "-n",
-        //         "Foo",
-        //         "-f"
-        //     };
-
-        //     // Act
-        //     var commandResult = Program.Main(args);
-        //     var consoleOutput = builder.ToString();
-
-        //     // assert
-        //     Assert.Contains("Querying database for feature bit definitions.", consoleOutput);
-        //     Assert.Contains("Features.cs.", consoleOutput);
-        //     Assert.Equal(0, commandResult);
-        // }
     }
 }

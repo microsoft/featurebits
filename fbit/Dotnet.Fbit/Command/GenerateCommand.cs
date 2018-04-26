@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,7 @@ namespace Dotnet.FBit.Command
         private readonly IFeatureBitsRepo _repo;
         private readonly IFileSystem _fileSystem;
         private readonly GenerateOptions _options;
+        public StringBuilder FileContent = new StringBuilder(600);
 
         /// <summary>
         /// File system interface to read/write files 
@@ -48,6 +50,36 @@ namespace Dotnet.FBit.Command
 
         public bool WriteDataToFile(IEnumerable<(string Name, int Id)> featureBitData, string fileNamespace)
         {
+            bool returnValue = false;
+
+            try
+            {
+                var outputFile = GetOutputFileInfo();
+                if (CannotWriteFile(outputFile))
+                {
+                    SystemContext.ConsoleErrorWriteLine("Output file already exists.");
+                }
+                else
+                {
+                    // If namespace is not specified, try to find a namespace from the local csproj file
+                    fileNamespace = GetNamespace(fileNamespace, outputFile);
+
+                    // Write the features.cs file
+                    WriteFileContent(featureBitData, fileNamespace, outputFile);
+                    returnValue = true;
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                SystemContext.ConsoleErrorWriteLine("Could not find default namespace for .CSPROJ");
+            }
+
+            return returnValue;
+        }
+
+        private void WriteFileContent(IEnumerable<(string Name, int Id)> featureBitData, string fileNamespace, 
+            FileInfoBase outputFile)
+        {
             const string headerInfoFormat = @"
 namespace {0}
 {{
@@ -59,43 +91,35 @@ namespace {0}
             const string tailInfo = @"    }
 }";
 
-            // Check if the file exists
-            var outputFile = GetOutputFileInfo();
-            if (outputFile.Exists && !_options.Force)
-            {
-                SystemContext.ConsoleErrorWriteLine("Output file already exists.");
-                return false;
-            }
-
-            // If namespace is not specified, try to find a namespace from the local csproj file
-            if (string.IsNullOrWhiteSpace(fileNamespace))
-            {
-                (string namespaceToUse, bool success) = GetDefaultNamespace(outputFile.Directory);
-                if (!success)
-                {
-                    SystemContext.ConsoleErrorWriteLine("Could not find default namespace for .CSPROJ");
-                    return false;
-                }
-
-                fileNamespace = namespaceToUse;
-            }
-
-            // Write the features.cs file
-            StringBuilder builder = new StringBuilder(600);
-            builder.AppendLine(string.Format(headerInfoFormat, fileNamespace));
+            FileContent.AppendLine(string.Format(headerInfoFormat, fileNamespace));
             foreach (var featureBit in featureBitData)
             {
-                builder.AppendLine($"        {featureBit.Name} = {featureBit.Id},");
+                FileContent.AppendLine($"        {featureBit.Name} = {featureBit.Id},");
             }
 
-            builder.AppendLine(tailInfo);
+            FileContent.AppendLine(tailInfo);
             using (var writer = outputFile.CreateText())
             {
-                writer.Write(builder.ToString());
+                writer.Write(FileContent.ToString());
             }
 
             SystemContext.ConsoleWriteLine($"Feature bit enum successfully written to {outputFile.FullName}.");
-            return true;
+        }
+
+        private string GetNamespace(string fileNamespace, FileInfoBase outputFile)
+        {
+            if (string.IsNullOrWhiteSpace(fileNamespace))
+            {
+                string namespaceToUse = GetDefaultNamespace(outputFile.Directory);
+                fileNamespace = namespaceToUse;
+            }
+
+            return fileNamespace;
+        }
+
+        private bool CannotWriteFile(FileInfoBase outputFile)
+        {
+            return outputFile.Exists && !_options.Force;
         }
 
         public FileInfoBase GetOutputFileInfo()
@@ -104,28 +128,47 @@ namespace {0}
             return outputFile;
         }
 
-        private (string, bool) GetDefaultNamespace(DirectoryInfoBase directory)
+        public string GetDefaultNamespace(DirectoryInfoBase directory)
         {
-            // Find the CSPROJ file to search
-            FileInfoBase[] fileInfos = directory.GetFiles("*.csproj", System.IO.SearchOption.TopDirectoryOnly);
+            FileInfoBase[] fileInfos = FindAllCsprojFiles(directory);
+
+            FileInfoBase fileToSearch = ChooseCsproj(fileInfos);
+
+            string nameSpace = GetNamespaceFromCsproj(fileToSearch);
+
+            return nameSpace;
+        }
+
+        private static FileInfoBase[] FindAllCsprojFiles(DirectoryInfoBase directory)
+        {
+            FileInfoBase[] fileInfos = directory.GetFiles("*.csproj", SearchOption.TopDirectoryOnly);
             if (fileInfos.Length == 0)
             {
-                SystemContext.ConsoleErrorWriteLine("No csproj file found for default namespace. Please specify a namespace as a command argument.");
-                return (string.Empty, false);
+                SystemContext.ConsoleErrorWriteLine(
+                    "No csproj file found for default namespace. Please specify a namespace as a command argument.");
+                throw new FileNotFoundException();
             }
 
+            return fileInfos;
+        }
+
+        private static FileInfoBase ChooseCsproj(FileInfoBase[] fileInfos)
+        {
             if (fileInfos.Length > 1)
             {
                 SystemContext.ConsoleWriteLine("Multiple csproj files found for namespace, using the first one.");
             }
 
             var fileToSearch = fileInfos[0];
+            return fileToSearch;
+        }
 
-            // Search CSPROJ file for RootNamespace or take filename
+        private string GetNamespaceFromCsproj(FileInfoBase fileToSearch)
+        {
             string nameSpace;
             using (var fr = fileToSearch.OpenRead())
             {
-                var sr = new System.IO.StreamReader(fr);
+                var sr = new StreamReader(fr);
                 string fileContents = sr.ReadToEnd();
 
                 // Look for a <RootNamespace> tag
@@ -134,7 +177,8 @@ namespace {0}
                 int openingIndex = fileContents.IndexOf(openingTag, StringComparison.Ordinal);
                 if (openingIndex > -1)
                 {
-                    int closingIndex = fileContents.IndexOf(closingTag, openingIndex + openingTag.Length, StringComparison.Ordinal);
+                    int closingIndex =
+                        fileContents.IndexOf(closingTag, openingIndex + openingTag.Length, StringComparison.Ordinal);
                     int substringStartingIndex = openingIndex + openingTag.Length;
                     nameSpace = fileContents.Substring(substringStartingIndex, closingIndex - substringStartingIndex);
                 }
@@ -144,7 +188,7 @@ namespace {0}
                 }
             }
 
-            return (nameSpace, !string.IsNullOrWhiteSpace(nameSpace));
+            return nameSpace;
         }
     }
 }
