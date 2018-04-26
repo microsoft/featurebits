@@ -25,5 +25,17 @@ namespace Dotnet.FBit.CommandOptions
         /// </summary>
         [Option('o', "onoff", HelpText = "Specifies whether the feature bit should be blanket on or off.")]
         public bool OnOff { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of environments on which to turn off this feature.
+        /// </summary>
+        [Option('e', "excluded-environments", HelpText = "Comma-separated list of environments on which to turn off this feature.")]
+        public string ExcludedEnvironments { get; set; }
+
+        /// <summary>
+        /// Minimum permission level required for this feature to be turned on. (integer)
+        /// </summary>
+        [Option('p', "permission-level", HelpText = "Minimum permission level required for this feature to be turned on. (integer)")]
+        public int PermissionLevel { get; set; }
     }
 }

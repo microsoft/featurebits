@@ -43,7 +43,10 @@ namespace Dotnet.FBit.Command
                 CreatedDateTime = now,
                 LastModifiedDateTime = now,
                 CreatedByUser = username,
-                LastModifiedByUser = username
+                LastModifiedByUser = username,
+                OnOff = _opts.OnOff,
+                ExcludedEnvironments = _opts.ExcludedEnvironments,
+                MinimumAllowedPermissionLevel = _opts.PermissionLevel
             };
         }
     }

@@ -85,7 +85,7 @@ namespace Dotnet.Fbit.Tests
         }
 
         [Fact]
-        public void It_can_BuildBit_that_is_valid_with_only_required_options()
+        public void It_can_BuildBit_that_is_valid()
         {
             // Arrange
             DateTime expectedDateTime = new DateTime(1966, 11, 9);
@@ -94,7 +94,13 @@ namespace Dotnet.Fbit.Tests
             SystemContext.GetEnvironmentVariable = s => expectedUsername;
             var sb = new StringBuilder();
             SystemContext.ConsoleErrorWriteLine = s => sb.Append(s);
-            var opts = new AddOptions{Name = "foo"};
+            var opts = new AddOptions
+            {
+                Name = "foo",
+                OnOff = true,
+                ExcludedEnvironments = "QA,Production",
+                PermissionLevel = 20
+            };
             var repo = Substitute.For<IFeatureBitsRepo>();
             
             var it = new AddCommand(opts, repo);
