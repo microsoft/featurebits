@@ -15,6 +15,12 @@ namespace Dotnet.FBit.CommandOptions
         public string DatabaseConnectionString { get; set; }
 
         /// <summary>
+        /// Connection string to the database storing the feature bits
+        /// </summary>
+        [Option('n', "name", Required = true, HelpText = "Name of the feature bit")]
+        public string Name { get; set; }
+
+        /// <summary>
         /// Specifies whether the feature bit should be blanket on or off.
         /// </summary>
         [Option('o', "onoff", HelpText = "Specifies whether the feature bit should be blanket on or off.")]

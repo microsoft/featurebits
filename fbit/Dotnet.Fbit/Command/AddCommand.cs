@@ -1,4 +1,5 @@
-﻿using Dotnet.FBit.CommandOptions;
+﻿using System;
+using Dotnet.FBit.CommandOptions;
 using FeatureBitsData;
 
 namespace Dotnet.FBit.Command
@@ -10,8 +11,8 @@ namespace Dotnet.FBit.Command
 
         public AddCommand(AddOptions opts, IFeatureBitsRepo repo)
         {
-            _opts = opts;
-            _repo = repo;
+            _opts = opts ?? throw new ArgumentNullException(nameof(opts));
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
         public int Run()
