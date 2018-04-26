@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Dotnet.FBit;
 using Dotnet.FBit.Command;
@@ -6,7 +8,6 @@ using Dotnet.FBit.CommandOptions;
 using FeatureBitsData;
 using FluentAssertions;
 using NSubstitute;
-using NSubstitute.ExceptionExtensions;
 using Xunit;
 
 namespace Dotnet.Fbit.Tests
@@ -46,6 +47,8 @@ namespace Dotnet.Fbit.Tests
         public void It_should_run_and_create_a_FeatureBit()
         {
             // Arrange
+            var sb = new StringBuilder();
+            SystemContext.ConsoleWriteLine = s => sb.Append(s);
             var bit = new FeatureBitDefinition {Name = "foo"};
             var opts = new AddOptions{Name = "foo"};
             var repo = Substitute.For<IFeatureBitsRepo>();
@@ -58,6 +61,7 @@ namespace Dotnet.Fbit.Tests
 
             // Assert
             result.Should().Be(0);
+            sb.ToString().Should().Be("Feature bit added.");
         }
 
         [Fact]
@@ -80,6 +84,32 @@ namespace Dotnet.Fbit.Tests
             sb.ToString().Should().StartWith("System.Exception: Yow!");
         }
 
+        [Fact]
+        public void It_can_BuildBit_that_is_valid_with_only_required_options()
+        {
+            // Arrange
+            DateTime expectedDateTime = new DateTime(1966, 11, 9);
+            SystemContext.Now = () => expectedDateTime;
+            string expectedUsername = "bar";
+            SystemContext.GetEnvironmentVariable = s => expectedUsername;
+            var sb = new StringBuilder();
+            SystemContext.ConsoleErrorWriteLine = s => sb.Append(s);
+            var opts = new AddOptions{Name = "foo"};
+            var repo = Substitute.For<IFeatureBitsRepo>();
+            
+            var it = new AddCommand(opts, repo);
 
+            // Act
+            var result = it.BuildBit();
+
+            // Assert
+            result.CreatedDateTime.Should().Be(expectedDateTime);
+            result.LastModifiedDateTime.Should().Be(expectedDateTime);
+            result.CreatedByUser.Should().Be(expectedUsername);
+            result.LastModifiedByUser.Should().Be(expectedUsername);
+            var validationResults = new List<ValidationResult>();
+            Validator.TryValidateObject(result, new ValidationContext(result), validationResults, true);
+            validationResults.Count.Should().Be(0);
+        }
     }
 }

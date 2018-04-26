@@ -17,7 +17,34 @@ namespace Dotnet.FBit.Command
 
         public int Run()
         {
-            throw new System.NotImplementedException();
+            int returnValue = 0;
+            try
+            {
+                var newBit = BuildBit();
+                _repo.Add(newBit);
+            }
+            catch (Exception e)
+            {
+                SystemContext.ConsoleErrorWriteLine(e.ToString());
+                returnValue = 1;
+            }
+
+            SystemContext.ConsoleWriteLine("Feature bit added.");
+            return returnValue;
+        }
+
+        public FeatureBitDefinition BuildBit()
+        {
+            var now = SystemContext.Now();
+            var username = SystemContext.GetEnvironmentVariable("USERNAME");
+            return new FeatureBitDefinition
+            {
+                Name = _opts.Name,
+                CreatedDateTime = now,
+                LastModifiedDateTime = now,
+                CreatedByUser = username,
+                LastModifiedByUser = username
+            };
         }
     }
 }
