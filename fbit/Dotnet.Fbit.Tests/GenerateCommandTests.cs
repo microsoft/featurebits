@@ -52,7 +52,28 @@ namespace Dotnet.Fbit.Tests
             result[2].Id.Should().Be(3);
         }
 
-    //[Theory]
+        
+        [Fact]
+        public void It_can_GetOutpuFileInfo()
+        {
+            // Arrange
+            var opts = new GenerateOptions();
+            var repo = Substitute.For<IFeatureBitsRepo>();
+            var filesystem = Substitute.For<IFileSystem>();
+            var it = new GenerateCommand(opts, repo, filesystem);
+            var fileinfo = Substitute.For<FileInfoBase>();
+
+            filesystem.FileInfo.FromFileName(Arg.Any<string>()).Returns(fileinfo);
+
+            // Act
+            FileInfoBase result = it.GetOutputFileInfo();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Directory.Should().Be("foo"); 
+        }
+
+        //[Theory]
         //[InlineData("foo")]
         //public void RunTests(string foo)
         //{

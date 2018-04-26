@@ -46,7 +46,7 @@ namespace Dotnet.FBit.Command
             return fbitEnums;
         }
 
-        private bool WriteDataToFile(IEnumerable<(string Name, int Id)> featureBitData, string fileNamespace)
+        public bool WriteDataToFile(IEnumerable<(string Name, int Id)> featureBitData, string fileNamespace)
         {
             const string headerInfoFormat = @"
 namespace {0}
@@ -60,7 +60,7 @@ namespace {0}
 }";
 
             // Check if the file exists
-            FileInfoBase outputFile = _fileSystem.FileInfo.FromFileName(_options.OutputFileName);
+            var outputFile = GetOutputFileInfo();
             if (outputFile.Exists && !_options.Force)
             {
                 SystemContext.ConsoleErrorWriteLine("Output file already exists.");
@@ -96,6 +96,12 @@ namespace {0}
 
             SystemContext.ConsoleWriteLine($"Feature bit enum successfully written to {outputFile.FullName}.");
             return true;
+        }
+
+        public FileInfoBase GetOutputFileInfo()
+        {
+            FileInfoBase outputFile = _fileSystem.FileInfo.FromFileName(_options.OutputFileName);
+            return outputFile;
         }
 
         private (string, bool) GetDefaultNamespace(DirectoryInfoBase directory)
