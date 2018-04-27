@@ -17,13 +17,13 @@ namespace Dotnet.FBit.CommandOptions
         /// <summary>
         /// Connection string to the database storing the feature bits
         /// </summary>
-        [Option('n', "name", Required = true, HelpText = "Name of the feature bit")]
+        [Option('n', Required = true, HelpText = "Name of the feature bit")]
         public string Name { get; set; }
 
         /// <summary>
         /// Specifies whether the feature bit should be blanket on or off.
         /// </summary>
-        [Option('o', "onoff", HelpText = "Specifies whether the feature bit should be blanket on or off.")]
+        [Option('o', HelpText = "Specifies whether the feature bit should be blanket on or off.")]
         public bool OnOff { get; set; }
 
         /// <summary>
@@ -37,5 +37,11 @@ namespace Dotnet.FBit.CommandOptions
         /// </summary>
         [Option('p', "permission-level", HelpText = "Minimum permission level required for this feature to be turned on. (integer)")]
         public int PermissionLevel { get; set; }
+
+        /// <summary>
+        /// Specifies whether the feature bit should be blanket on or off.
+        /// </summary>
+        [Option('f', HelpText = "If the feature bit already exist, overwrite it.")]
+        public bool Force { get; set; }
     }
 }

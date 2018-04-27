@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace FeatureBitsData
 {
@@ -8,5 +6,6 @@ namespace FeatureBitsData
     {
         IEnumerable<FeatureBitDefinition> GetAll();
         FeatureBitDefinition Add(FeatureBitDefinition definition);
+        void Update(FeatureBitDefinition definition);
     }
 }

@@ -4,7 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace FeatureBitsData
@@ -27,10 +29,21 @@ namespace FeatureBitsData
         {
             ValidateDefinition(definition);
 
+            MakeSureAFeatureBitWithThatNameDoesNotExist(definition);
+
             var entity = DbContext.FeatureBitDefinitions.Add(definition);
             DbContext.SaveChanges();
 
             return entity.Entity;
+        }
+
+        private void MakeSureAFeatureBitWithThatNameDoesNotExist(FeatureBitDefinition definition)
+        {
+            var existenceCheck = DbContext.FeatureBitDefinitions.FirstOrDefault(fb => fb.Name == definition.Name);
+            if (existenceCheck != null)
+            {
+                throw new DataException($"Cannot add. Feature bit with name '{definition.Name}' already exists.");
+            }
         }
 
         private static void ValidateDefinition(FeatureBitDefinition definition)
@@ -44,6 +57,12 @@ namespace FeatureBitsData
                 validationResults.ForEach(e => errorStringBuilder.Append(e.ErrorMessage + Environment.NewLine));
                 throw new InvalidDataException(errorStringBuilder.ToString());
             }
+        }
+
+        public void  Update(FeatureBitDefinition definition)
+        {
+            DbContext.Update(definition);
+            DbContext.SaveChanges();
         }
     }
 }

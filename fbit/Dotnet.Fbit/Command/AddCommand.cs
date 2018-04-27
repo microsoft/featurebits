@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using Dotnet.FBit.CommandOptions;
 using FeatureBitsData;
 
@@ -22,14 +23,18 @@ namespace Dotnet.FBit.Command
             {
                 var newBit = BuildBit();
                 _repo.Add(newBit);
+                SystemContext.ConsoleWriteLine("Feature bit added.");
+            }
+            catch (DataException e)
+            {
+                returnValue = HandleFeatureBitAlreadyExists(e);
             }
             catch (Exception e)
             {
-                SystemContext.ConsoleErrorWriteLine(e.ToString());
                 returnValue = 1;
+                SystemContext.ConsoleErrorWriteLine(e.ToString());
             }
 
-            SystemContext.ConsoleWriteLine("Feature bit added.");
             return returnValue;
         }
 
@@ -48,6 +53,37 @@ namespace Dotnet.FBit.Command
                 ExcludedEnvironments = _opts.ExcludedEnvironments,
                 MinimumAllowedPermissionLevel = _opts.PermissionLevel
             };
+        }
+
+        private int HandleFeatureBitAlreadyExists(DataException e)
+        {
+            int returnValue;
+            if (e.Message == ($"Cannot add. Feature bit with name '{_opts.Name}' already exists."))
+            {
+                returnValue = !_opts.Force ? FailWithoutForce() : ForceUpdate();
+            }
+            else
+            {
+                returnValue = 1;
+                SystemContext.ConsoleErrorWriteLine(e.ToString());
+            }
+
+            return returnValue;
+        }
+
+        private int ForceUpdate()
+        {
+            var newBit = BuildBit();
+            _repo.Update(newBit);
+            SystemContext.ConsoleWriteLine("Feature bit updated.");
+            return 0;
+        }
+
+        private int FailWithoutForce()
+        {
+            SystemContext.ConsoleErrorWriteLine(
+                $"Feature bit '{_opts.Name}' already exists. Use --force to overwrite existing feature bits.");
+            return 1;
         }
     }
 }

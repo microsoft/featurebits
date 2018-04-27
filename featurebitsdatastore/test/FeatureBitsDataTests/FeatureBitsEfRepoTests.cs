@@ -2,11 +2,14 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using FeatureBitsData;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Xunit;
 
 namespace FeatureBitsDataTests
@@ -48,10 +51,7 @@ namespace FeatureBitsDataTests
         public void ItCanGetAllFeatureBitDefinitions()
         {
             // Arrange
-            _context.FeatureBitDefinitions.Add(new FeatureBitDefinition{Name = "item1"});
-            _context.FeatureBitDefinitions.Add(new FeatureBitDefinition{Name = "item2"});
-            _context.FeatureBitDefinitions.Add(new FeatureBitDefinition{Name = "item3"});
-            _context.SaveChanges();
+            AddThreeDefinitions();
 
             // Act
             FeatureBitDefinition[] result = _it.GetAll().ToArray();
@@ -89,6 +89,77 @@ namespace FeatureBitsDataTests
 
             // Assert
             action.Should().Throw<InvalidDataException>();
+        }
+
+        [Fact]
+        public void It_throws_if_you_try_to_add_an_entity_with_a_duplicate_name()
+        {
+            // Arrange
+            AddThreeDefinitions();
+            var item1 = new FeatureBitDefinition {Name = "item1", CreatedByUser = "foo", LastModifiedByUser = "foo"};
+
+            // Act
+            Action action = () => { _it.Add(item1); };
+
+            // Assert
+            action.Should().Throw<DataException>().WithMessage("Cannot add. Feature bit with name 'item1' already exists.");
+        }
+
+        [Fact]
+        public void ItCanUpdateFeatureBitDefinitions()
+        {
+            // Arrange
+            var entities = AddThreeDefinitions();
+            var defToUpdate = entities[1].Entity;
+            defToUpdate.AllowedUsers = "Updated Value";
+
+
+            // Act
+            _it.Update(defToUpdate);
+
+            // Assert
+            using (var context = new FeatureBitsEfDbContext(_options))
+            {
+                context.FeatureBitDefinitions.Count().Should().Be(3);
+                context.FeatureBitDefinitions.Should().Contain(f => f.AllowedUsers == "Updated Value");
+            }
+        }
+
+        [Fact]
+        public void ItCanUpsertFeatureBitDefinitions()
+        {
+            // Arrange
+            var entities = AddThreeDefinitions();
+            var defToUpsert = new FeatureBitDefinition
+            {
+                Name = "New feature bit",
+                CreatedByUser = "foo",
+                LastModifiedByUser = "foo"
+            };
+
+            // Act
+            _it.Update(defToUpsert);
+
+            // Assert
+            using (var context = new FeatureBitsEfDbContext(_options))
+            {
+                context.FeatureBitDefinitions.Count().Should().Be(4);
+                context.FeatureBitDefinitions.Should().Contain(f => f.Name == "New feature bit");
+            }
+        }
+
+
+        private IList<EntityEntry<FeatureBitDefinition>> AddThreeDefinitions()
+        {
+            var entities = new List<EntityEntry<FeatureBitDefinition>>
+            {
+                _context.FeatureBitDefinitions.Add(new FeatureBitDefinition {Name = "item1"}),
+                _context.FeatureBitDefinitions.Add(new FeatureBitDefinition {Name = "item2"}),
+                _context.FeatureBitDefinitions.Add(new FeatureBitDefinition {Name = "item3"})
+            };
+            _context.SaveChanges();
+
+            return entities;
         }
     }
 }
