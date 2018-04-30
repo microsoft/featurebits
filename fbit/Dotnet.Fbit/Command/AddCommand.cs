@@ -1,10 +1,16 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See License.txt in the project root for license information.
+
+using System;
 using System.Data;
 using Dotnet.FBit.CommandOptions;
 using FeatureBitsData;
 
 namespace Dotnet.FBit.Command
 {
+    /// <summary>
+    /// Class that represents the command to add (or update) a feature bit
+    /// </summary>
     public class AddCommand
     {
         private readonly AddOptions _opts;
