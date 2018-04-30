@@ -256,7 +256,7 @@ namespace Dotnet.Fbit.Tests
                 // Assert
                 result.Should().BeTrue();
                 sb.ToString().Should().Be("Feature bit enum successfully written to Features.cs.");
-                it.FileContent.ToString().Should().Be("\r\nnamespace bar\r\n{\r\n    /// <summary>\r\n    /// This is a generated list of Enums that list the names/ID numbers for the feature bits used in your application.\r\n    /// </summary>\r\n    public enum Features\r\n    {\r\n        foo = 1,\r\n        bar = 2,\r\n        bat = 3,\r\n    }\r\n}\r\n");
+                it.FileContent.ToString().Should().Contain("namespace bar");
             }
         }
 
@@ -300,7 +300,7 @@ namespace Dotnet.Fbit.Tests
                 // Assert
                 result.Should().BeTrue();
                 sb.ToString().Should().Be("Feature bit enum successfully written to Features.cs.");
-                it.FileContent.ToString().Should().Be("\r\nnamespace bar\r\n{\r\n    /// <summary>\r\n    /// This is a generated list of Enums that list the names/ID numbers for the feature bits used in your application.\r\n    /// </summary>\r\n    public enum Features\r\n    {\r\n        foo = 1,\r\n        bar = 2,\r\n        bat = 3,\r\n    }\r\n}\r\n");
+                it.FileContent.ToString().Should().Contain("namespace bar");
             }
         }
 

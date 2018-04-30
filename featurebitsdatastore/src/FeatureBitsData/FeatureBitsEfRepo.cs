@@ -64,5 +64,11 @@ namespace FeatureBitsData
             DbContext.Update(definition);
             DbContext.SaveChanges();
         }
+
+        public void Remove(FeatureBitDefinition definitionToRemove)
+        {
+            DbContext.Remove(definitionToRemove);
+            DbContext.SaveChanges();
+        }
     }
 }

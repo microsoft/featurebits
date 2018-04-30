@@ -148,6 +148,24 @@ namespace FeatureBitsDataTests
             }
         }
 
+        [Fact]
+        public void ItCanRemoveFeatureBitDefinitions()
+        {
+            // Arrange
+            var entities = AddThreeDefinitions();
+            var entityToRemove = entities[1].Entity;
+
+            // Act
+            _it.Remove(entityToRemove);
+
+            // Assert
+            using (var context = new FeatureBitsEfDbContext(_options))
+            {
+                 context.FeatureBitDefinitions.Count().Should().Be(2);
+                 context.FeatureBitDefinitions.Should().NotContain(f => f.Name == "item2");
+            }
+        }
+
 
         private IList<EntityEntry<FeatureBitDefinition>> AddThreeDefinitions()
         {
