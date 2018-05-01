@@ -113,7 +113,6 @@ namespace FeatureBitsDataTests
             var defToUpdate = entities[1].Entity;
             defToUpdate.AllowedUsers = "Updated Value";
 
-
             // Act
             _it.Update(defToUpdate);
 

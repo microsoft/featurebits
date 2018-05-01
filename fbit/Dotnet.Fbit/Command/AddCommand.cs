@@ -27,7 +27,7 @@ namespace Dotnet.FBit.Command
             int returnValue = 0;
             try
             {
-                var newBit = BuildBit();
+                FeatureBitDefinition newBit = BuildBit();
                 _repo.Add(newBit);
                 SystemContext.ConsoleWriteLine("Feature bit added.");
             }
