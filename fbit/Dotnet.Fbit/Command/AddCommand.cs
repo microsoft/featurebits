@@ -18,8 +18,8 @@ namespace Dotnet.FBit.Command
 
         public AddCommand(AddOptions opts, IFeatureBitsRepo repo)
         {
-            _opts = opts ?? throw new ArgumentNullException(nameof(opts));
-            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+            _opts = opts ?? throw new ArgumentNullException(nameof(opts), "AddOptions object is required.");
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo), "FeatureBits repository is required.");
         }
 
         public int Run()
