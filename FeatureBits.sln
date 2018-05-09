@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeatureBits.Console", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeatureBits.Console.Test", "test\FeatureBits.Console.Test\FeatureBits.Console.Test.csproj", "{4F23FE92-1E1C-4E90-8D63-F76E1719A548}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeatureBits", "src\FeatureBits.Core\FeatureBits.csproj", "{430A62C1-3295-4B25-B425-246B27862C1C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{4F23FE92-1E1C-4E90-8D63-F76E1719A548}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F23FE92-1E1C-4E90-8D63-F76E1719A548}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F23FE92-1E1C-4E90-8D63-F76E1719A548}.Release|Any CPU.Build.0 = Release|Any CPU
+		{430A62C1-3295-4B25-B425-246B27862C1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{430A62C1-3295-4B25-B425-246B27862C1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{430A62C1-3295-4B25-B425-246B27862C1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{430A62C1-3295-4B25-B425-246B27862C1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 		{3C9971F9-BC25-44FA-B500-F0362AC5C7AD} = {1CF443C1-93CC-4044-AD13-0FD025A28203}
 		{B69E82A8-AC16-4D2B-9F3A-EF93D8A8B9B9} = {D8565DF9-99D2-4ECA-9B7C-9DBBE650C24A}
 		{4F23FE92-1E1C-4E90-8D63-F76E1719A548} = {1CF443C1-93CC-4044-AD13-0FD025A28203}
+		{430A62C1-3295-4B25-B425-246B27862C1C} = {D8565DF9-99D2-4ECA-9B7C-9DBBE650C24A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EDAF64CC-9851-4EBD-BCCC-9ADAE8486917}
