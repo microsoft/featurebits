@@ -20,6 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\featurebitsdatastore\src\FeatureBitsData\FeatureBitsData.csproj" />
+    <ProjectReference Include="..\FeatureBits.Data\FeatureBits.Data.csproj" />
   </ItemGroup>
 </Project>

@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\FeatureBitsData\FeatureBitsData.csproj" />
+    <ProjectReference Include="..\..\src\FeatureBits.Data\FeatureBits.Data.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Dotnet.Fbit.Tests/Dotnet.Fbit.Tests.csproj"
+                "${workspaceFolder}/src/FeatureBits.Console/FeatureBits.Console.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
