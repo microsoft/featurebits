@@ -4,7 +4,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FeatureBitsData
+namespace FeatureBits.Data
 {
     /// <summary>
     /// This represents the data structure used to define Feature BitsData

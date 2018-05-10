@@ -3,6 +3,7 @@
 
 using System;
 using System.Linq;
+using FeatureBits.Data;
 using FeatureBitsData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

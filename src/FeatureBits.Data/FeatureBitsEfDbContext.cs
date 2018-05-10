@@ -3,7 +3,7 @@
 
 using Microsoft.EntityFrameworkCore;
 
-namespace FeatureBitsData
+namespace FeatureBits.Data
 {
     public class FeatureBitsEfDbContext : DbContext
     {

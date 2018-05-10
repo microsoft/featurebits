@@ -3,8 +3,7 @@
 
 using System;
 
-// TODO: remove this file
-namespace FeatureBits
+namespace FeatureBits.Core
 {
     public class FeatureBitFormatProvider : IFormatProvider
     {

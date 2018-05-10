@@ -4,7 +4,7 @@
 using System;
 using System.Data;
 using Dotnet.FBit.CommandOptions;
-using FeatureBitsData;
+using FeatureBits.Data;
 
 namespace Dotnet.FBit.Command
 {

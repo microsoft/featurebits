@@ -3,7 +3,7 @@
 
 using Microsoft.EntityFrameworkCore;
 
-namespace FeatureBits
+namespace FeatureBits.Core
 {
     // TODO: Eliminate this in favor of the FeatureBits.Data package
     public class FeatureBitsDbContext : DbContext

@@ -6,13 +6,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using FeatureBitsData;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Xunit;
 
-namespace FeatureBitsDataTests
+namespace FeatureBits.Data.Test
 {
     public class FeatureBitsEfRepoTests : IDisposable
     {

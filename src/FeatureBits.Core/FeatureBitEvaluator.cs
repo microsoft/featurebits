@@ -6,13 +6,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace FeatureBits
+namespace FeatureBits.Core
 {
     /// <summary>
     /// This static class allows the user of the class to determine if a particular feature should be turned on or off.
     /// </summary>
     public class FeatureBitEvaluator : IFeatureBitEvaluator
     {
+        // TODO: Replace this with an IFeatureBitsRepo
         private readonly IFeatureBitsReader _bitsReader;
         private FeatureBitsData _bitsData;
 

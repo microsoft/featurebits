@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace FeatureBitsData
+namespace FeatureBits.Data
 {
     public interface IFeatureBitsRepo
     {

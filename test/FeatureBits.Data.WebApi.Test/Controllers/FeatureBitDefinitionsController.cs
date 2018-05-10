@@ -2,10 +2,9 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
-using FeatureBitsData;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebApiTestClient.Controllers
+namespace FeatureBits.Data.WebApi.Test.Controllers
 {
     [Route("api/[controller]")]
     public class FeatureBitDefinitionsController : Controller

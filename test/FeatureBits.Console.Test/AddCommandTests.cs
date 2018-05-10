@@ -9,12 +9,12 @@ using System.Text;
 using Dotnet.FBit;
 using Dotnet.FBit.Command;
 using Dotnet.FBit.CommandOptions;
-using FeatureBitsData;
+using FeatureBits.Data;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
-namespace Dotnet.Fbit.Tests
+namespace FeatureBits.Console.Test
 {
     public class AddCommandTests
     {

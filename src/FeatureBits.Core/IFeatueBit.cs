@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FeatureBits
+namespace FeatureBits.Core
 {
     public interface IFeatureBitEvaluator
     {

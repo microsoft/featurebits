@@ -2,11 +2,10 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System;
-using FeatureBitsData;
 using FluentAssertions;
 using Xunit;
 
-namespace FeatureBitsDataTests
+namespace FeatureBits.Data.Test
 {
     public class FeatureBitsEfDbContextTests : IDisposable
     {

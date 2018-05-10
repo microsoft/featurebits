@@ -3,7 +3,7 @@
 
 using System.Linq;
 
-namespace FeatureBits
+namespace FeatureBits.Core
 {
     /// <summary>
     /// This class is an implementation of the IFeatureBitsReader that reads the data from a SQL backend.

@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FeatureBits
+namespace FeatureBits.Core
 {
     /// <summary>
     /// This class contains overall information on all defined feature bits.

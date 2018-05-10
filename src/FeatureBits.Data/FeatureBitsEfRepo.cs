@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace FeatureBitsData
+namespace FeatureBits.Data
 {
     public class FeatureBitsEfRepo : IFeatureBitsRepo
     {

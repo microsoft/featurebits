@@ -8,7 +8,7 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
 using Dotnet.FBit.CommandOptions;
-using FeatureBitsData;
+using FeatureBits.Data;
 
 namespace Dotnet.FBit.Command
 {

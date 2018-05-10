@@ -10,12 +10,12 @@ using System.Text;
 using Dotnet.FBit;
 using Dotnet.FBit.Command;
 using Dotnet.FBit.CommandOptions;
-using FeatureBitsData;
+using FeatureBits.Data;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
-namespace Dotnet.Fbit.Tests
+namespace FeatureBits.Console.Test
 {
     public class GenerateCommandTests
     {
@@ -267,7 +267,6 @@ namespace Dotnet.Fbit.Tests
             using (var ms = new MemoryStream())
             {
                 var opts = new GenerateOptions();
-                IEnumerable<(string, int)> input = _featureBitDefinitions.Select(x => (x.Name, x.Id));
 
                 // Arrange Mocks
                 var sb = new StringBuilder();

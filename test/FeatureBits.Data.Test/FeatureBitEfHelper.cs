@@ -2,10 +2,9 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System;
-using FeatureBitsData;
 using Microsoft.EntityFrameworkCore;
 
-namespace FeatureBitsDataTests
+namespace FeatureBits.Data.Test
 {
     public class FeatureBitEfHelper
     {

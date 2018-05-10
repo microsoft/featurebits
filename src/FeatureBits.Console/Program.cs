@@ -5,7 +5,7 @@ using System.IO.Abstractions;
 using CommandLine;
 using Dotnet.FBit.Command;
 using Dotnet.FBit.CommandOptions;
-using FeatureBitsData;
+using FeatureBits.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dotnet.FBit

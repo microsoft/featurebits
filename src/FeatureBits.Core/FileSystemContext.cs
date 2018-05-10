@@ -4,7 +4,7 @@
 using System;
 using System.IO;
 
-namespace FeatureBits
+namespace FeatureBits.Core
 {
     public static class FileSystemContext
     {

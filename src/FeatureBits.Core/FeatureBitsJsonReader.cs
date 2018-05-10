@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace FeatureBits
+namespace FeatureBits.Core
 {
     /// <summary>
     /// This class is the default implementation of IFeatureBitsReader and reads all the feature bits from the data store.

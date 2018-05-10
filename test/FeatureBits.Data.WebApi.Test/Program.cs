@@ -4,7 +4,7 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace WebApiTestClient
+namespace FeatureBits.Data.WebApi.Test
 {
     public class Program
     {

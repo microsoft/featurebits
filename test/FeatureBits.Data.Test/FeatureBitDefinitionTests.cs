@@ -4,11 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using FeatureBitsData;
 using FluentAssertions;
 using Xunit;
 
-namespace FeatureBitsDataTests
+namespace FeatureBits.Data.Test
 {
     public class FeatureBitDefinitionTests
     {
