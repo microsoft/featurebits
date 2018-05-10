@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using FeatureBits.Data;
 
 namespace FeatureBits.Core
 {

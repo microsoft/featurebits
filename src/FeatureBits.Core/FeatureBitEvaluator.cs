@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using FeatureBits.Data;
 
 namespace FeatureBits.Core
 {
@@ -13,24 +14,21 @@ namespace FeatureBits.Core
     /// </summary>
     public class FeatureBitEvaluator : IFeatureBitEvaluator
     {
-        // TODO: Replace this with an IFeatureBitsRepo
-        private readonly IFeatureBitsReader _bitsReader;
-        private FeatureBitsData _bitsData;
+        private readonly IFeatureBitsRepo _repo;
 
         /// <summary>
         /// Public constructor
         /// </summary>
         /// <param name="reader">Object used to read the Feature Bits</param>
-        public FeatureBitEvaluator(IFeatureBitsReader reader)
+        public FeatureBitEvaluator(IFeatureBitsRepo reader)
         {
-            _bitsReader = reader;
+            _repo = reader;
         }
 
         /// <summary>
-        /// Feature Bits Data
+        /// Feature Bits Data/Definitions
         /// </summary>
-        /// <remarks>Lazy loads all the feature bits data data</remarks>
-        public FeatureBitsData BitsData => _bitsData ?? (_bitsData = _bitsReader.ReadFeatureBits());
+        public IList<FeatureBitDefinition> Definitions => _repo.GetAll().ToList();
 
         /// <summary>
         /// Determine if a feature should be enabled or disabled
@@ -57,7 +55,7 @@ namespace FeatureBits.Core
                 throw new ArgumentException("T must be an enumerated type");
             }
 
-            FeatureBitDefinition bitDef = BitsData.Definitions.FirstOrDefault(x => x.Id == feature.ToInt32(new FeatureBitFormatProvider()));
+            FeatureBitDefinition bitDef = Definitions.FirstOrDefault(x => x.Id == feature.ToInt32(new FeatureBitFormatProvider()));
             if (bitDef != null)
             {
                 return EvaluateBitValue(bitDef, currentPermissionLevel);
@@ -74,7 +72,7 @@ namespace FeatureBits.Core
             {
                 result = EvaluateEnvironmentBasedFeatureState(bitDef);
             }
-            else if (bitDef.MinimumRole > 0)
+            else if (bitDef.MinimumAllowedPermissionLevel > 0)
             {
                 result = CheckMinimumPermission(bitDef, currentUsersPermissionLevel);
             }
@@ -88,7 +86,7 @@ namespace FeatureBits.Core
 
         private static bool CheckMinimumPermission(FeatureBitDefinition bitDef, int currentUsersPermissionLevel)
         {
-            return (currentUsersPermissionLevel >= bitDef.MinimumRole);
+            return (currentUsersPermissionLevel >= bitDef.MinimumAllowedPermissionLevel);
         }
 
         private static bool EvaluateEnvironmentBasedFeatureState(FeatureBitDefinition bitDef)
@@ -99,6 +97,5 @@ namespace FeatureBits.Core
             return featureState;
         }
 
-        public IList<FeatureBitDefinition> Definitions => BitsData.Definitions;
     }
 }

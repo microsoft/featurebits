@@ -25,8 +25,6 @@ namespace FeatureBits.Console.Test
             new FeatureBitDefinition {Name = "bat", Id = 3},
         };
 
-
-
         
         [Fact]
         public void It_can_be_created()
