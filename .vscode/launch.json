@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Dotnet.Fbit.Tests/bin/Debug/netcoreapp2.0/Dotnet.Fbit.Tests.dll",
+            "program": "${workspaceFolder}/src/FeatureBits.Console/bin/Debug/netcoreapp2.0/dotnet-fbit.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Dotnet.Fbit.Tests",
+            "cwd": "${workspaceFolder}/src/FeatureBits.Console",
             // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
             "console": "internalConsole",
             "stopAtEntry": false,
