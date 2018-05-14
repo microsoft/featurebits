@@ -127,7 +127,7 @@ namespace FeatureBits.Data.Test
         public void ItCanUpsertFeatureBitDefinitions()
         {
             // Arrange
-            var entities = AddThreeDefinitions();
+            AddThreeDefinitions();
             var defToUpsert = new FeatureBitDefinition
             {
                 Name = "New feature bit",

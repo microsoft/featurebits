@@ -6,7 +6,7 @@ using CommandLine;
 namespace Dotnet.FBit.CommandOptions
 {
     /// <summary>
-    /// Options for the generate command
+    /// Options for the 'add' command
     /// </summary>
     [Verb(name: "add", HelpText = "Add a feature bit to the data store")]
     public class AddOptions
@@ -18,7 +18,7 @@ namespace Dotnet.FBit.CommandOptions
         public string DatabaseConnectionString { get; set; }
 
         /// <summary>
-        /// Connection string to the database storing the feature bits
+        /// Name of the feature bit to add
         /// </summary>
         [Option('n', Required = true, HelpText = "Name of the feature bit")]
         public string Name { get; set; }
