@@ -3,13 +3,14 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.WindowsAzure.Storage.Table;
 
 namespace FeatureBits.Data
 {
     /// <summary>
     /// This represents the data structure used to define Feature BitsData
     /// </summary>
-    public class FeatureBitDefinition
+    public class FeatureBitDefinition : TableEntity
     {
         /// <summary>
         /// The unique ID of the feature bit
