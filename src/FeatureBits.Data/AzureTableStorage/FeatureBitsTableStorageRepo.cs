@@ -16,6 +16,7 @@ namespace FeatureBits.Data.AzureTableStorage
             storageAccount = CloudStorageAccount.Parse(connectionString);
             tableClient = storageAccount.CreateCloudTableClient();
             table = tableClient.GetTableReference("FeatureBits");
+            table.CreateIfNotExistsAsync().GetAwaiter().GetResult();
         }
         public IEnumerable<FeatureBitDefinition> GetAll()
         {
@@ -35,8 +36,7 @@ namespace FeatureBits.Data.AzureTableStorage
         public FeatureBitDefinition Add(FeatureBitDefinition definition)
         {
             var insertOp = TableOperation.Insert(definition);
-            var result = table.ExecuteAsync(insertOp).Result;
-            return definition;
+            return table.ExecuteAsync(insertOp).Result.Result as FeatureBitDefinition;
         }
 
         public void Update(FeatureBitDefinition definition)

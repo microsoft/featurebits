@@ -5,6 +5,7 @@ using System;
 using System.Data;
 using Dotnet.FBit.CommandOptions;
 using FeatureBits.Data;
+using Microsoft.WindowsAzure.Storage;
 
 namespace Dotnet.FBit.Command
 {
@@ -31,14 +32,15 @@ namespace Dotnet.FBit.Command
                 _repo.Add(newBit);
                 SystemContext.ConsoleWriteLine("Feature bit added.");
             }
-            catch (DataException e)
-            {
-                returnValue = HandleFeatureBitAlreadyExists(e);
-            }
             catch (Exception e)
             {
                 returnValue = 1;
-                SystemContext.ConsoleErrorWriteLine(e.ToString());
+                if (e is DataException || e.InnerException is StorageException)
+                {
+                    returnValue = HandleFeatureBitAlreadyExists(e);
+                } else {
+                    SystemContext.ConsoleErrorWriteLine(e.ToString());
+                }
             }
 
             return returnValue;
@@ -51,6 +53,8 @@ namespace Dotnet.FBit.Command
             return new FeatureBitDefinition
             {
                 Name = _opts.Name,
+                RowKey = _opts.Name,
+                PartitionKey = "featurebits",
                 CreatedDateTime = now,
                 LastModifiedDateTime = now,
                 CreatedByUser = username,
@@ -61,10 +65,10 @@ namespace Dotnet.FBit.Command
             };
         }
 
-        private int HandleFeatureBitAlreadyExists(DataException e)
+        private int HandleFeatureBitAlreadyExists(Exception e)
         {
             int returnValue;
-            if (e.Message == ($"Cannot add. Feature bit with name '{_opts.Name}' already exists."))
+            if (e.Message == $"Cannot add. Feature bit with name '{_opts.Name}' already exists." || e.InnerException.Message == "Conflict")
             {
                 returnValue = !_opts.Force ? FailWithoutForce() : ForceUpdate();
             }
