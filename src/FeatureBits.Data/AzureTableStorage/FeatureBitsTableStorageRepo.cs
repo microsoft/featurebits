@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
@@ -33,9 +34,12 @@ namespace FeatureBits.Data.AzureTableStorage
             return results;
         }
 
-        public FeatureBitDefinition Add(FeatureBitDefinition definition)
+        public FeatureBitDefinition Add(FeatureBitDefinition featureBit)
         {
-            var insertOp = TableOperation.Insert(definition);
+            if (Exists(featureBit)) {
+                throw new DataException($"Cannot add. Feature bit with name '{featureBit.Name}' already exists.");
+            }
+            var insertOp = TableOperation.Insert(featureBit);
             return table.ExecuteAsync(insertOp).Result.Result as FeatureBitDefinition;
         }
 
@@ -49,9 +53,14 @@ namespace FeatureBits.Data.AzureTableStorage
             throw new NotImplementedException();
         }
 
-        public async Task DoThings()
-        {
-            await table.CreateIfNotExistsAsync();
+        private bool Exists(FeatureBitDefinition featureBit) {
+            if (table.ExecuteAsync(
+                TableOperation.Retrieve<FeatureBitDefinition>(featureBit.PartitionKey, featureBit.RowKey)
+            ).GetAwaiter().GetResult().Result is FeatureBitDefinition result)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
