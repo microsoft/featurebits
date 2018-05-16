@@ -36,7 +36,7 @@ namespace FeatureBits.Data.AzureTableStorage
 
         public FeatureBitDefinition Add(FeatureBitDefinition featureBit)
         {
-            if (Exists(featureBit)) {
+            if (GetExistingFeatureBit(featureBit) != null) {
                 throw new DataException($"Cannot add. Feature bit with name '{featureBit.Name}' already exists.");
             }
             var insertOp = TableOperation.Insert(featureBit);
@@ -50,17 +50,17 @@ namespace FeatureBits.Data.AzureTableStorage
 
         public void Remove(FeatureBitDefinition definition)
         {
-            throw new NotImplementedException();
+            var existing = GetExistingFeatureBit(definition);
+            if (existing != null) {
+                // TODO: Remove object from table
+            }
         }
 
-        private bool Exists(FeatureBitDefinition featureBit) {
-            if (table.ExecuteAsync(
+        private FeatureBitDefinition GetExistingFeatureBit(FeatureBitDefinition featureBit)
+        {
+            return table.ExecuteAsync(
                 TableOperation.Retrieve<FeatureBitDefinition>(featureBit.PartitionKey, featureBit.RowKey)
-            ).GetAwaiter().GetResult().Result is FeatureBitDefinition result)
-            {
-                return true;
-            }
-            return false;
+            ).GetAwaiter().GetResult().Result as FeatureBitDefinition;
         }
     }
 }
