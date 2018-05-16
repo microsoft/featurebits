@@ -39,6 +39,7 @@ namespace FeatureBits.Data.AzureTableStorage
             if (GetExistingFeatureBit(featureBit) != null) {
                 throw new DataException($"Cannot add. Feature bit with name '{featureBit.Name}' already exists.");
             }
+            // TODO: Get highest Id in table and attach incremented number to featurebit
             var insertOp = TableOperation.Insert(featureBit);
             return table.ExecuteAsync(insertOp).Result.Result as FeatureBitDefinition;
         }
@@ -52,7 +53,7 @@ namespace FeatureBits.Data.AzureTableStorage
         {
             var existing = GetExistingFeatureBit(definition);
             if (existing != null) {
-                // TODO: Remove object from table
+                var result = table.ExecuteAsync(TableOperation.Delete(existing)).GetAwaiter().GetResult();
             }
         }
 
