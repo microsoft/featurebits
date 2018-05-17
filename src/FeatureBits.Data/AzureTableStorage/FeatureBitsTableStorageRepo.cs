@@ -9,15 +9,13 @@ namespace FeatureBits.Data.AzureTableStorage
 {
     public class FeatureBitsTableStorageRepo : IFeatureBitsRepo
     {
-        private CloudStorageAccount storageAccount;
-        private CloudTableClient tableClient;
-        private CloudTable table;
+        private readonly CloudTable _table;
         public FeatureBitsTableStorageRepo(string connectionString)
         {
-            storageAccount = CloudStorageAccount.Parse(connectionString);
-            tableClient = storageAccount.CreateCloudTableClient();
-            table = tableClient.GetTableReference("FeatureBits");
-            table.CreateIfNotExistsAsync().GetAwaiter().GetResult();
+            _table = CloudStorageAccount.Parse(connectionString)
+                .CreateCloudTableClient()
+                .GetTableReference("FeatureBits");
+            _table.CreateIfNotExistsAsync().GetAwaiter().GetResult();
         }
         public IEnumerable<FeatureBitDefinition> GetAll()
         {
@@ -26,7 +24,7 @@ namespace FeatureBits.Data.AzureTableStorage
             TableQuery<FeatureBitDefinition> query = new TableQuery<FeatureBitDefinition>();
             do
             {
-                var resultSegment = table.ExecuteQuerySegmentedAsync(query, token).Result;
+                var resultSegment = _table.ExecuteQuerySegmentedAsync(query, token).Result;
                 results.AddRange(resultSegment.Results);
                 token = resultSegment.ContinuationToken;
 
@@ -41,7 +39,7 @@ namespace FeatureBits.Data.AzureTableStorage
             }
             featureBit.Id = GetNewId();
             var insertOp = TableOperation.Insert(featureBit);
-            return table.ExecuteAsync(insertOp).Result.Result as FeatureBitDefinition;
+            return _table.ExecuteAsync(insertOp).Result.Result as FeatureBitDefinition;
         }
 
         public void Update(FeatureBitDefinition definition)
@@ -53,13 +51,13 @@ namespace FeatureBits.Data.AzureTableStorage
         {
             var existing = GetExistingFeatureBit(definition);
             if (existing != null) {
-                var result = table.ExecuteAsync(TableOperation.Delete(existing)).GetAwaiter().GetResult();
+                var result = _table.ExecuteAsync(TableOperation.Delete(existing)).GetAwaiter().GetResult();
             }
         }
 
         private FeatureBitDefinition GetExistingFeatureBit(FeatureBitDefinition featureBit)
         {
-            return table.ExecuteAsync(
+            return _table.ExecuteAsync(
                 TableOperation.Retrieve<FeatureBitDefinition>(featureBit.PartitionKey, featureBit.RowKey)
             ).GetAwaiter().GetResult().Result as FeatureBitDefinition;
         }
@@ -72,7 +70,7 @@ namespace FeatureBits.Data.AzureTableStorage
 
             do
             {
-                var resultSegment = table.ExecuteQuerySegmentedAsync(projectionQuery, resolver, token, null, null).Result;
+                var resultSegment = _table.ExecuteQuerySegmentedAsync(projectionQuery, resolver, token, null, null).Result;
                 ints.AddRange(resultSegment.Results);
                 token = resultSegment.ContinuationToken;
             }
