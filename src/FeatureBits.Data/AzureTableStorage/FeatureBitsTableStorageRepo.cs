@@ -39,19 +39,25 @@ namespace FeatureBits.Data.AzureTableStorage
             }
             featureBit.Id = GetNewId();
             var insertOp = TableOperation.Insert(featureBit);
-            return _table.ExecuteAsync(insertOp).Result.Result as FeatureBitDefinition;
+            return _table.ExecuteAsync(insertOp).GetAwaiter().GetResult().Result as FeatureBitDefinition;
         }
 
-        public void Update(FeatureBitDefinition definition)
+        public void Update(FeatureBitDefinition featureBit)
         {
-            throw new NotImplementedException();
+            var existing = GetExistingFeatureBit(featureBit);
+            if (existing == null)
+            {
+                throw new DataException($"Could not update.  Feature bit with name '{featureBit.Name}' does not exist");
+            }
+            var replaceOp = TableOperation.Replace(UpdateEntity(existing, featureBit));
+            _table.ExecuteAsync(replaceOp).GetAwaiter().GetResult();
         }
 
         public void Remove(FeatureBitDefinition definition)
         {
             var existing = GetExistingFeatureBit(definition);
             if (existing != null) {
-                var result = _table.ExecuteAsync(TableOperation.Delete(existing)).GetAwaiter().GetResult();
+                _table.ExecuteAsync(TableOperation.Delete(existing)).GetAwaiter().GetResult();
             }
         }
 
@@ -60,6 +66,17 @@ namespace FeatureBits.Data.AzureTableStorage
             return _table.ExecuteAsync(
                 TableOperation.Retrieve<FeatureBitDefinition>(featureBit.PartitionKey, featureBit.RowKey)
             ).GetAwaiter().GetResult().Result as FeatureBitDefinition;
+        }
+
+        private FeatureBitDefinition UpdateEntity(FeatureBitDefinition existingEntity, FeatureBitDefinition newEntity)
+        {
+            existingEntity.AllowedUsers = newEntity.AllowedUsers;
+            existingEntity.LastModifiedByUser = newEntity.LastModifiedByUser;
+            existingEntity.ExcludedEnvironments = newEntity.ExcludedEnvironments;
+            existingEntity.LastModifiedDateTime = newEntity.LastModifiedDateTime;
+            existingEntity.MinimumAllowedPermissionLevel = newEntity.MinimumAllowedPermissionLevel;
+            existingEntity.OnOff = newEntity.OnOff;
+            return existingEntity;
         }
 
         private int GetNewId() {
