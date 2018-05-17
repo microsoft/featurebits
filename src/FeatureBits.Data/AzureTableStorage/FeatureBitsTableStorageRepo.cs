@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Threading.Tasks;
+using System.Linq;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 
@@ -39,7 +39,7 @@ namespace FeatureBits.Data.AzureTableStorage
             if (GetExistingFeatureBit(featureBit) != null) {
                 throw new DataException($"Cannot add. Feature bit with name '{featureBit.Name}' already exists.");
             }
-            // TODO: Get highest Id in table and attach incremented number to featurebit
+            featureBit.Id = GetNewId();
             var insertOp = TableOperation.Insert(featureBit);
             return table.ExecuteAsync(insertOp).Result.Result as FeatureBitDefinition;
         }
@@ -62,6 +62,22 @@ namespace FeatureBits.Data.AzureTableStorage
             return table.ExecuteAsync(
                 TableOperation.Retrieve<FeatureBitDefinition>(featureBit.PartitionKey, featureBit.RowKey)
             ).GetAwaiter().GetResult().Result as FeatureBitDefinition;
+        }
+
+        private int GetNewId() {
+            TableContinuationToken token = null;
+            List<int> ints = new List<int>();
+            TableQuery<DynamicTableEntity> projectionQuery = new TableQuery<DynamicTableEntity>().Select(new string[] { "Id" });
+            EntityResolver<int> resolver = (pk, rk, ts, props, etag) => props.ContainsKey("Id") ? props["Id"].Int32Value.Value : 0;
+
+            do
+            {
+                var resultSegment = table.ExecuteQuerySegmentedAsync(projectionQuery, resolver, token, null, null).Result;
+                ints.AddRange(resultSegment.Results);
+                token = resultSegment.ContinuationToken;
+            }
+            while (token != null);
+            return ints.OrderByDescending(x => x).First() + 1;
         }
     }
 }
