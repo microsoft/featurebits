@@ -73,6 +73,10 @@ namespace FeatureBits.Data
         [Required, MaxLength(100)]
         public string LastModifiedByUser { get; set; }
 
+        /// <summary>
+        /// Update the feature bit entity
+        /// </summary>
+        /// <param name="newEntity">Update values</param>
         public void Update(FeatureBitDefinition newEntity)
         {
             AllowedUsers = newEntity.AllowedUsers;
