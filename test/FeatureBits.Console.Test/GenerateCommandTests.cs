@@ -7,6 +7,7 @@ using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Dotnet.FBit;
 using Dotnet.FBit.Command;
 using Dotnet.FBit.CommandOptions;
@@ -42,7 +43,7 @@ namespace FeatureBits.Console.Test
         }
 
         [Fact]
-        public void It_can_GetBits()
+        public async Task It_can_GetBits()
         {
             // Arrange
             var opts = new GenerateOptions();
@@ -50,10 +51,10 @@ namespace FeatureBits.Console.Test
             var filesystem = Substitute.For<IFileSystem>();
             var it = new GenerateCommand(opts, repo, filesystem);
 
-            repo.GetAll().Returns(info => _featureBitDefinitions);
+            repo.GetAllAsync().Returns(info => _featureBitDefinitions);
 
             // Act
-            (string Name, int Id)[] result = it.GetBits().ToArray();
+            (string Name, int Id)[] result = (await it.GetBits()).ToArray();
 
             // Assert
             result[0].Name.Should().Be("foo");
@@ -259,7 +260,7 @@ namespace FeatureBits.Console.Test
         }
 
         [Fact]
-        public void It_can_Run()
+        public async Task It_can_Run()
         {
             // Arrange
             using (var ms = new MemoryStream())
@@ -275,7 +276,7 @@ namespace FeatureBits.Console.Test
                 var csprojFile = Substitute.For<FileInfoBase>();
                 var outputFile = Substitute.For<FileInfoBase>();
 
-                repo.GetAll().Returns(info => _featureBitDefinitions);
+                repo.GetAllAsync().Returns(_featureBitDefinitions);
                 filesystem.FileInfo.FromFileName(Arg.Any<string>()).Returns(outputFile);
                 directory.GetFiles("*.csproj", SearchOption.TopDirectoryOnly).Returns(info => new[] {csprojFile});
                 csprojFile.OpenRead().Returns(info => StringToStream("Sorry no namespace here"));
@@ -292,7 +293,7 @@ namespace FeatureBits.Console.Test
                 var it = new GenerateCommand(opts, repo, filesystem);
 
                 // Act
-                var result = it.Run();
+                var result = await it.RunAsync();
 
                 // Assert
                 result.Should().BeTrue();

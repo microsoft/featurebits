@@ -7,6 +7,7 @@ using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Dotnet.FBit.CommandOptions;
 using FeatureBits.Data;
 
@@ -38,15 +39,15 @@ namespace Dotnet.FBit.Command
             _options = options;
         }
 
-        public bool Run()
+        public async Task<bool> RunAsync()
         {
-            var fbitEnums = GetBits();
+            var fbitEnums = await GetBits();
             return WriteDataToFile(fbitEnums, _options.Namespace);
         }
 
-        public IEnumerable<(string Name, int Id)> GetBits()
+        public async Task<IEnumerable<(string Name, int Id)>> GetBits()
         {
-            var bits = _repo.GetAll();
+            var bits = await _repo.GetAllAsync();
             IEnumerable<(string Name, int Id)> fbitEnums = bits.Select(x => (x.Name, x.Id));
             return fbitEnums;
         }

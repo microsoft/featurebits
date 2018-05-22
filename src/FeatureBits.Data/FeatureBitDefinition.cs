@@ -3,13 +3,14 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.WindowsAzure.Storage.Table;
 
 namespace FeatureBits.Data
 {
     /// <summary>
     /// This represents the data structure used to define Feature BitsData
     /// </summary>
-    public class FeatureBitDefinition
+    public class FeatureBitDefinition : TableEntity
     {
         /// <summary>
         /// The unique ID of the feature bit
@@ -71,5 +72,15 @@ namespace FeatureBits.Data
         /// </summary>
         [Required, MaxLength(100)]
         public string LastModifiedByUser { get; set; }
+
+        public void Update(FeatureBitDefinition newEntity)
+        {
+            AllowedUsers = newEntity.AllowedUsers;
+            LastModifiedByUser = newEntity.LastModifiedByUser;
+            ExcludedEnvironments = newEntity.ExcludedEnvironments;
+            LastModifiedDateTime = newEntity.LastModifiedDateTime;
+            MinimumAllowedPermissionLevel = newEntity.MinimumAllowedPermissionLevel;
+            OnOff = newEntity.OnOff;
+        }
     }
 }

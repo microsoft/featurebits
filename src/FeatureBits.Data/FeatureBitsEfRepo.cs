@@ -6,8 +6,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.IO;
-using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace FeatureBits.Data
 {
@@ -20,31 +21,33 @@ namespace FeatureBits.Data
             DbContext = dbContext;
         }
 
-        public IEnumerable<FeatureBitDefinition> GetAll()
+        public async Task<IEnumerable<FeatureBitDefinition>> GetAllAsync()
         {
-            return DbContext.FeatureBitDefinitions;
+            return await DbContext.FeatureBitDefinitions.ToListAsync();
         }
 
-        public IEnumerable<FeatureBitDefinition> GetByName(string featureBitName)
+        public async Task<FeatureBitDefinition> GetByNameAsync(string featureBitName)
         {
-            
+            var result = await DbContext.FeatureBitDefinitions.FirstOrDefaultAsync(definition =>
+                definition.Name == featureBitName);
+            return result;
         }
 
-        public FeatureBitDefinition Add(FeatureBitDefinition definition)
+        public async  Task<FeatureBitDefinition> AddAsync(FeatureBitDefinition definition)
         {
             ValidateDefinition(definition);
 
-            MakeSureAFeatureBitWithThatNameDoesNotExist(definition);
+            await MakeSureAFeatureBitWithThatNameDoesNotExist(definition);
 
-            var entity = DbContext.FeatureBitDefinitions.Add(definition);
-            DbContext.SaveChanges();
+            var entity = await DbContext.FeatureBitDefinitions.AddAsync(definition);
+            await DbContext.SaveChangesAsync();
 
             return entity.Entity;
         }
 
-        private void MakeSureAFeatureBitWithThatNameDoesNotExist(FeatureBitDefinition definition)
+        private async Task MakeSureAFeatureBitWithThatNameDoesNotExist(FeatureBitDefinition definition)
         {
-            var existenceCheck = DbContext.FeatureBitDefinitions.FirstOrDefault(fb => fb.Name == definition.Name);
+            var existenceCheck = await DbContext.FeatureBitDefinitions.FirstOrDefaultAsync(fb => fb.Name == definition.Name);
             if (existenceCheck != null)
             {
                 throw new DataException($"Cannot add. Feature bit with name '{definition.Name}' already exists.");
@@ -64,16 +67,16 @@ namespace FeatureBits.Data
             }
         }
 
-        public void  Update(FeatureBitDefinition definition)
+        public async Task UpdateAsync(FeatureBitDefinition definition)
         {
             DbContext.Update(definition);
-            DbContext.SaveChanges();
+            await DbContext.SaveChangesAsync();
         }
 
-        public void Remove(FeatureBitDefinition definitionToRemove)
+        public async Task RemoveAsync(FeatureBitDefinition definitionToRemove)
         {
             DbContext.Remove(definitionToRemove);
-            DbContext.SaveChanges();
+            await DbContext.SaveChangesAsync();
         }
     }
 }

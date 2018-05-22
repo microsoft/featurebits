@@ -3,6 +3,7 @@
 
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using Dotnet.FBit;
 using Dotnet.FBit.Command;
 using Dotnet.FBit.CommandOptions;
@@ -13,7 +14,7 @@ using Xunit;
 
 namespace FeatureBits.Console.Test
 {
-    public class RmoveCommandTests
+    public class RemoveCommandTests
     {
         [Fact]
         public void It_can_be_created()
@@ -49,17 +50,42 @@ namespace FeatureBits.Console.Test
         public void It_should_run_and_remove_a_FeatureBit()
         {
             // Arrange
+            var sb = new StringBuilder();
+            SystemContext.ConsoleWriteLine = s => sb.Append(s);
             var opts = new RemoveOptions{Name = "foo"};
             var repo = Substitute.For<IFeatureBitsRepo>();
-            repo.Remove(Arg.Any<FeatureBitDefinition>());
-            
+            repo.GetByNameAsync("foo").Returns(Task.FromResult(new FeatureBitDefinition { Name = "foo", Id = 5}));
+            repo.RemoveAsync(Arg.Any<FeatureBitDefinition>());
             var it = new RemoveCommand(opts, repo);
 
             // Act
-            var result = it.Run();
+            var result = it.Run().Result;
 
             // Assert
-            repo.Received().Remove(Arg.Any<FeatureBitDefinition>());
+            result.Should().Be(0);
+            repo.Received().GetByNameAsync("foo");
+            repo.Received().RemoveAsync(Arg.Any<FeatureBitDefinition>());
+            sb.ToString().Should().Be("Feature bit removed.");
+        }
+
+        [Fact]
+        public void It_should_run_and_show_an_error_if_it_cannot_be_found_()
+        {
+            // Arrange
+            var sb = new StringBuilder();
+            SystemContext.ConsoleErrorWriteLine = s => sb.Append(s);
+            var opts = new RemoveOptions{Name = "foo"};
+            var repo = Substitute.For<IFeatureBitsRepo>();
+            repo.GetByNameAsync("foo").Returns(Task.FromResult( (FeatureBitDefinition) null ));
+            var it = new RemoveCommand(opts, repo);
+
+            // Act
+            var result = it.Run().Result;
+
+            // Assert
+            result.Should().Be(1);
+            repo.Received().GetByNameAsync("foo");
+            sb.ToString().Should().Be("Feature bit 'foo' could not be found.");
         }
 
     }
