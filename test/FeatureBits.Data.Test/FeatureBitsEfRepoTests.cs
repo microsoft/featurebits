@@ -6,9 +6,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using NSubstitute.ExceptionExtensions;
 using Xunit;
 
 namespace FeatureBits.Data.Test
@@ -47,26 +49,26 @@ namespace FeatureBits.Data.Test
         }
 
         [Fact]
-        public void ItCanGetAllFeatureBitDefinitions()
+        public async Task ItCanGetAllFeatureBitDefinitions()
         {
             // Arrange
             AddThreeDefinitions();
 
             // Act
-            FeatureBitDefinition[] result = _it.GetAll().ToArray();
+            FeatureBitDefinition[] result = (await _it.GetAllAsync()).ToArray();
 
             // Assert
             result.Length.Should().Be(3);
         }
 
         [Fact]
-        public void ItCanAddFeatureBitDefinitions()
+        public async Task ItCanAddFeatureBitDefinitions()
         {
             // Arrange
             var item1 = new FeatureBitDefinition {Name = "item1", CreatedByUser = "foo", LastModifiedByUser = "foo"};
 
             // Act
-            FeatureBitDefinition result = _it.Add(item1);
+            FeatureBitDefinition result = await _it.AddAsync(item1);
 
             // Assert
             result.Name.Should().Be("item1");
@@ -78,34 +80,32 @@ namespace FeatureBits.Data.Test
         }
 
         [Fact]
-        public void It_throws_if_you_try_to_add_an_invalid_entity()
+        public async Task It_throws_if_you_try_to_add_an_invalid_entity()
         {
             // Arrange
             var item1 = new FeatureBitDefinition {Name = "item1"};
 
             // Act
-            Action action = () => _it.Add(item1);
 
             // Assert
-            action.Should().Throw<InvalidDataException>();
+            await Assert.ThrowsAsync<InvalidDataException>(async () => await _it.AddAsync(item1));
         }
 
         [Fact]
-        public void It_throws_if_you_try_to_add_an_entity_with_a_duplicate_name()
+        public async Task It_throws_if_you_try_to_add_an_entity_with_a_duplicate_name()
         {
             // Arrange
             AddThreeDefinitions();
             var item1 = new FeatureBitDefinition {Name = "item1", CreatedByUser = "foo", LastModifiedByUser = "foo"};
 
             // Act
-            Action action = () => { _it.Add(item1); };
 
             // Assert
-            action.Should().Throw<DataException>().WithMessage("Cannot add. Feature bit with name 'item1' already exists.");
+            await Assert.ThrowsAsync<DataException>(async () => await _it.AddAsync(item1));
         }
 
         [Fact]
-        public void ItCanUpdateFeatureBitDefinitions()
+        public async Task ItCanUpdateFeatureBitDefinitions()
         {
             // Arrange
             var entities = AddThreeDefinitions();
@@ -113,7 +113,7 @@ namespace FeatureBits.Data.Test
             defToUpdate.AllowedUsers = "Updated Value";
 
             // Act
-            _it.Update(defToUpdate);
+            await _it.UpdateAsync(defToUpdate);
 
             // Assert
             using (var context = new FeatureBitsEfDbContext(_options))
@@ -124,7 +124,7 @@ namespace FeatureBits.Data.Test
         }
 
         [Fact]
-        public void ItCanUpsertFeatureBitDefinitions()
+        public async Task ItCanUpsertFeatureBitDefinitions()
         {
             // Arrange
             AddThreeDefinitions();
@@ -136,7 +136,7 @@ namespace FeatureBits.Data.Test
             };
 
             // Act
-            _it.Update(defToUpsert);
+            await _it.UpdateAsync(defToUpsert);
 
             // Assert
             using (var context = new FeatureBitsEfDbContext(_options))
@@ -147,14 +147,14 @@ namespace FeatureBits.Data.Test
         }
 
         [Fact]
-        public void ItCanRemoveFeatureBitDefinitions()
+        public async Task ItCanRemoveFeatureBitDefinitions()
         {
             // Arrange
             var entities = AddThreeDefinitions();
             var entityToRemove = entities[1].Entity;
 
             // Act
-            _it.Remove(entityToRemove);
+            await _it.RemoveAsync(entityToRemove);
 
             // Assert
             using (var context = new FeatureBitsEfDbContext(_options))

@@ -62,7 +62,7 @@ namespace FeatureBits.Data
 
         public async Task UpdateAsync(FeatureBitDefinition definition)
         {
-            DbContext.Update(definition);
+            var entity = DbContext.Update(definition);
             await DbContext.SaveChangesAsync();
         }
 
