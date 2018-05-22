@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using FeatureBits.Data;
 
 namespace FeatureBits.Core
@@ -20,15 +21,23 @@ namespace FeatureBits.Core
         /// Public constructor
         /// </summary>
         /// <param name="reader">Object used to read the Feature Bits</param>
-        public FeatureBitEvaluator(IFeatureBitsRepo reader)
+        internal FeatureBitEvaluator(IFeatureBitsRepo reader)
         {
             _repo = reader;
+        }
+
+        public static async Task<FeatureBitEvaluator> BuildEvaluatorAsync(IFeatureBitsRepo reader)
+        {
+            return new FeatureBitEvaluator(reader)
+            {
+                Definitions = (await reader.GetAllAsync()).ToList()
+            };
         }
 
         /// <summary>
         /// Feature Bits Data/Definitions
         /// </summary>
-        public IList<FeatureBitDefinition> Definitions => _repo.GetAll().ToList();
+        public IList<FeatureBitDefinition> Definitions { get; set; }
 
         /// <summary>
         /// Determine if a feature should be enabled or disabled
@@ -86,7 +95,7 @@ namespace FeatureBits.Core
 
         private static bool CheckMinimumPermission(FeatureBitDefinition bitDef, int currentUsersPermissionLevel)
         {
-            return (currentUsersPermissionLevel >= bitDef.MinimumAllowedPermissionLevel);
+            return currentUsersPermissionLevel >= bitDef.MinimumAllowedPermissionLevel;
         }
 
         private static bool EvaluateEnvironmentBasedFeatureState(FeatureBitDefinition bitDef)

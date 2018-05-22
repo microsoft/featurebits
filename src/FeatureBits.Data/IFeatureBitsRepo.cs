@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FeatureBits.Data
 {
@@ -11,25 +12,25 @@ namespace FeatureBits.Data
         /// Get all feature bit definitions
         /// </summary>
         /// <returns></returns>
-        IEnumerable<FeatureBitDefinition> GetAll();
+        Task<IEnumerable<FeatureBitDefinition>> GetAllAsync();
 
         /// <summary>
         /// Add a new feature bit definition
         /// </summary>
         /// <param name="definition">The feature bit definition to add.</param>
         /// <returns>The completed new feature bit definition</returns>
-        FeatureBitDefinition Add(FeatureBitDefinition definition);
+        Task<FeatureBitDefinition> AddAsync(FeatureBitDefinition definition);
 
         /// <summary>
         /// Update an existing feature bit definition
         /// </summary>
         /// <param name="definition">The feature bit definition to update.</param>
-        void Update(FeatureBitDefinition definition);
+        Task UpdateAsync(FeatureBitDefinition definition);
 
         /// <summary>
         /// Remove an existing feature bit definition
         /// </summary>
         /// <param name="definition">The feature bit definition to remove.</param>
-        void Remove(FeatureBitDefinition definition);
+        Task RemoveAsync(FeatureBitDefinition definition);
     }
 }
