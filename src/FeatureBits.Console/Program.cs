@@ -41,7 +41,7 @@ namespace Dotnet.FBit
         {
             var dbConnStr = opts.DatabaseConnectionString;
             // TODO - this looks an awful lot like a job for dependency injection
-            var repo = GetCorrectRepo(useTable, dbConnStr);
+            var repo = GetCorrectRepo(useTable, dbConnStr, opts.AzureStorageTableName);
 
             var cmd = new AddCommand(opts, repo);
             int result = await cmd.RunAsync();
@@ -52,13 +52,13 @@ namespace Dotnet.FBit
         {
             var dbConnStr = opts.DatabaseConnectionString;
             // TODO - this looks an awful lot like a job for dependency injection
-            var repo = GetCorrectRepo(useTable, dbConnStr);
+            var repo = GetCorrectRepo(useTable, dbConnStr, opts.AzureStorageTableName);
             var cmd = new RemoveCommand(opts, repo);
             int result = await cmd.RunAsync();
             return result;
         }
 
-        private static IFeatureBitsRepo GetCorrectRepo(bool useTable, string dbConnStr)
+        private static IFeatureBitsRepo GetCorrectRepo(bool useTable, string dbConnStr, string tableName)
         {
             IFeatureBitsRepo repo;
             if (!useTable)
@@ -71,7 +71,7 @@ namespace Dotnet.FBit
             }
             else
             {
-                repo = new FeatureBitsTableStorageRepo(dbConnStr);
+                repo = new FeatureBitsTableStorageRepo(dbConnStr, tableName);
             }
 
             return repo;

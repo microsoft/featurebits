@@ -21,5 +21,11 @@ namespace Dotnet.FBit.CommandOptions
         /// </summary>
         [Option('c', "tableconnectionstring", Required = true, HelpText = "Connection string to the Azure Table storing the feature bits", SetName = "ATS")]
         public string AzureTableConnectionString { get; set; }
+
+        /// <summary>
+        /// Override for Azure Table Storage table name
+        /// </summary>
+        [Option('t', "AzureStorageTableName", Required = false, HelpText = "Override for the Azure Table Storage table Name.  Defaults to 'featurebits'", SetName = "ATS")]
+        public string AzureStorageTableName { get; set; } = "featurebits";
     }
 }
