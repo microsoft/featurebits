@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System;
-using System.Data;
+using System.Threading.Tasks;
 using Dotnet.FBit.CommandOptions;
 using FeatureBits.Data;
 
@@ -22,25 +22,21 @@ namespace Dotnet.FBit.Command
             _repo = repo ?? throw new ArgumentNullException(nameof(repo), "FeatureBits repository is required.");
         }
 
-        public int Run()
+        public async Task<int> RunAsync()
         {
             int returnValue = 0;
-            // TODO 001: Make this work
-            //try
-            //{
-                
-            //    // _repo.Remove(_opts.);
-            ////    SystemContext.ConsoleWriteLine("Feature bit Removeed.");
-            //}
-            //catch (DataException e)
-            //{
-            ////    returnValue = HandleFeatureBitAlreadyExists(e);
-            //}
-            //catch (Exception e)
-            ////{
-            ////    returnValue = 1;
-            ////    SystemContext.ConsoleErrorWriteLine(e.ToString());
-            //}
+            var name = _opts.Name;
+            var def = await _repo.GetByNameAsync(name);
+            if (def == null)
+            {
+                SystemContext.ConsoleErrorWriteLine($"Feature bit '{_opts.Name}' could not be found.");
+                returnValue = 1;
+            }
+            else
+            {
+                await _repo.RemoveAsync(def);
+                SystemContext.ConsoleWriteLine("Feature bit removed.");
+            }
 
             return returnValue;
         }

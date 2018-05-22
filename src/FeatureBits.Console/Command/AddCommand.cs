@@ -3,6 +3,7 @@
 
 using System;
 using System.Data;
+using System.Threading.Tasks;
 using Dotnet.FBit.CommandOptions;
 using FeatureBits.Data;
 
@@ -22,18 +23,18 @@ namespace Dotnet.FBit.Command
             _repo = repo ?? throw new ArgumentNullException(nameof(repo), "FeatureBits repository is required.");
         }
 
-        public int Run()
+        public async Task<int> RunAsync()
         {
             int returnValue = 0;
             try
             {
                 FeatureBitDefinition newBit = BuildBit();
-                _repo.Add(newBit);
+                await _repo.AddAsync(newBit);
                 SystemContext.ConsoleWriteLine("Feature bit added.");
             }
             catch (DataException e)
             {
-                returnValue = HandleFeatureBitAlreadyExists(e);
+                returnValue = await HandleFeatureBitAlreadyExists(e);
             }
             catch (Exception e)
             {
@@ -44,13 +45,15 @@ namespace Dotnet.FBit.Command
             return returnValue;
         }
 
-        public FeatureBitDefinition BuildBit()
+        public FeatureBitDefinition BuildBit(string partitionKey = "featurebits")
         {
             var now = SystemContext.Now();
             var username = SystemContext.GetEnvironmentVariable("USERNAME");
             return new FeatureBitDefinition
             {
                 Name = _opts.Name,
+                RowKey = _opts.Name,
+                PartitionKey = partitionKey,
                 CreatedDateTime = now,
                 LastModifiedDateTime = now,
                 CreatedByUser = username,
@@ -61,12 +64,12 @@ namespace Dotnet.FBit.Command
             };
         }
 
-        private int HandleFeatureBitAlreadyExists(DataException e)
+        private async Task<int> HandleFeatureBitAlreadyExists(DataException e)
         {
             int returnValue;
             if (e.Message == ($"Cannot add. Feature bit with name '{_opts.Name}' already exists."))
             {
-                returnValue = !_opts.Force ? FailWithoutForce() : ForceUpdate();
+                returnValue = !_opts.Force ? FailWithoutForce() : await ForceUpdate();
             }
             else
             {
@@ -77,10 +80,10 @@ namespace Dotnet.FBit.Command
             return returnValue;
         }
 
-        private int ForceUpdate()
+        private async Task<int> ForceUpdate()
         {
             var newBit = BuildBit();
-            _repo.Update(newBit);
+            await _repo.UpdateAsync(newBit);
             SystemContext.ConsoleWriteLine("Feature bit updated.");
             return 0;
         }

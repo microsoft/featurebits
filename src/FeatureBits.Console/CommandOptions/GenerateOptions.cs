@@ -6,17 +6,11 @@ using CommandLine;
 namespace Dotnet.FBit.CommandOptions
 {
     /// <summary>
-    /// Options for the generate command
+    /// Options for the 'generate' command
     /// </summary>
     [Verb(name: "generate", HelpText = "Generate feature bit enum file(s)")]
-    public class GenerateOptions
+    public class GenerateOptions : CommonOptions
     {
-        /// <summary>
-        /// Connection string to the database storing the feature bits
-        /// </summary>
-        [Option('c', "connectionstring", Required = true, HelpText = "Connection string to the database storing the feature bits")]
-        public string DatabaseConnectionString { get; set; }
-
         /// <summary>
         /// Given namespace for the resulting enum file
         /// </summary>

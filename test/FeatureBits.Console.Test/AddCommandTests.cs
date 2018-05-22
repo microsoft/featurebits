@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Text;
+using System.Threading.Tasks;
 using Dotnet.FBit;
 using Dotnet.FBit.Command;
 using Dotnet.FBit.CommandOptions;
@@ -56,12 +57,12 @@ namespace FeatureBits.Console.Test
             var bit = new FeatureBitDefinition {Name = "foo"};
             var opts = new AddOptions{Name = "foo"};
             var repo = Substitute.For<IFeatureBitsRepo>();
-            repo.Add(bit).Returns(bit);
+            repo.AddAsync(bit).Returns(Task.FromResult(bit));
             
             var it = new AddCommand(opts, repo);
 
             // Act
-            var result = it.Run();
+            var result = it.RunAsync().Result;
 
             // Assert
             result.Should().Be(0);
@@ -76,12 +77,12 @@ namespace FeatureBits.Console.Test
             SystemContext.ConsoleErrorWriteLine = s => sb.Append(s);
             var opts = new AddOptions{Name = "foo"};
             var repo = Substitute.For<IFeatureBitsRepo>();
-            repo.Add(Arg.Any<FeatureBitDefinition>()).Returns(x => throw new Exception("Yow!"));
+            repo.AddAsync(Arg.Any<FeatureBitDefinition>()).Returns<Task<FeatureBitDefinition>>(x => throw new Exception("Yow!"));
             
             var it = new AddCommand(opts, repo);
 
             // Act
-            var result = it.Run();
+            var result = it.RunAsync().Result;
 
             // Assert
             result.Should().Be(1);
@@ -130,12 +131,12 @@ namespace FeatureBits.Console.Test
             SystemContext.ConsoleErrorWriteLine = s => sb.Append(s);
             var opts = new AddOptions{Name = "foo"};
             var repo = Substitute.For<IFeatureBitsRepo>();
-            repo.Add(Arg.Any<FeatureBitDefinition>()).Returns(x => throw new DataException("Cannot add. Feature bit with name 'foo' already exists."));
+            repo.AddAsync(Arg.Any<FeatureBitDefinition>()).Returns<Task<FeatureBitDefinition>>(x => throw new DataException("Cannot add. Feature bit with name 'foo' already exists."));
 
             var it = new AddCommand(opts, repo);
 
             // Act
-            var result = it.Run();
+            var result = it.RunAsync().Result;
 
             // Assert
             result.Should().Be(1);
@@ -150,12 +151,12 @@ namespace FeatureBits.Console.Test
             SystemContext.ConsoleErrorWriteLine = s => sb.Append(s);
             var opts = new AddOptions{Name = "foo"};
             var repo = Substitute.For<IFeatureBitsRepo>();
-            repo.Add(Arg.Any<FeatureBitDefinition>()).Returns(x => throw new DataException("Some random DataException."));
+            repo.AddAsync(Arg.Any<FeatureBitDefinition>()).Returns<Task<FeatureBitDefinition>>(x => throw new DataException("Some random DataException."));
 
             var it = new AddCommand(opts, repo);
 
             // Act
-            var result = it.Run();
+            var result = it.RunAsync().Result;
 
             // Assert
             result.Should().Be(1);
@@ -170,15 +171,15 @@ namespace FeatureBits.Console.Test
             SystemContext.ConsoleWriteLine = s => sb.Append(s);
             var opts = new AddOptions{Name = "foo", Force = true};
             var repo = Substitute.For<IFeatureBitsRepo>();
-            repo.Add(Arg.Any<FeatureBitDefinition>()).Returns(x => throw new DataException("Cannot add. Feature bit with name 'foo' already exists."));
+            repo.AddAsync(Arg.Any<FeatureBitDefinition>()).Returns<Task<FeatureBitDefinition>>(x => throw new DataException("Cannot add. Feature bit with name 'foo' already exists."));
 
             int counter = 0;
-            repo.When(x => x.Update(Arg.Any<FeatureBitDefinition>())).Do((x => counter++));
+            repo.When(x => x.UpdateAsync(Arg.Any<FeatureBitDefinition>())).Do((x => counter++));
             
             var it = new AddCommand(opts, repo);
 
             // Act
-            var result = it.Run();
+            var result = it.RunAsync().Result;
 
             // Assert
             sb.ToString().Should().Be("Feature bit updated.");

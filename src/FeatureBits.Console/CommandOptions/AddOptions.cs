@@ -9,14 +9,8 @@ namespace Dotnet.FBit.CommandOptions
     /// Options for the 'add' command
     /// </summary>
     [Verb(name: "add", HelpText = "Add a feature bit to the data store")]
-    public class AddOptions
+    public class AddOptions : CommonOptions
     {
-        /// <summary>
-        /// Connection string to the database storing the feature bits
-        /// </summary>
-        [Option('c', "connectionstring", Required = true, HelpText = "Connection string to the database storing the feature bits")]
-        public string DatabaseConnectionString { get; set; }
-
         /// <summary>
         /// Name of the feature bit to add
         /// </summary>

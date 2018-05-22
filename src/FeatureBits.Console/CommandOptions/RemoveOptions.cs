@@ -8,14 +8,9 @@ namespace Dotnet.FBit.CommandOptions
     /// <summary>
     /// Options for the 'remove' command
     /// </summary>
-    public class RemoveOptions
+    [Verb(name: "remove", HelpText = "Remove a feature bit from the data store")]
+    public class RemoveOptions : CommonOptions
     {
-        /// <summary>
-        /// Connection string to the database storing the feature bits
-        /// </summary>
-        [Option('c', "connectionstring", Required = true, HelpText = "Connection string to the database storing the feature bits")]
-        public string DatabaseConnectionString { get; set; }
-
         /// <summary>
         /// Name of the feature bit to remove
         /// </summary>
