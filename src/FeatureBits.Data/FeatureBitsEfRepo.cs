@@ -25,6 +25,11 @@ namespace FeatureBits.Data
             return DbContext.FeatureBitDefinitions;
         }
 
+        public IEnumerable<FeatureBitDefinition> GetByName(string featureBitName)
+        {
+            
+        }
+
         public FeatureBitDefinition Add(FeatureBitDefinition definition)
         {
             ValidateDefinition(definition);

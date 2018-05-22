@@ -10,8 +10,14 @@ namespace FeatureBits.Data
         /// <summary>
         /// Get all feature bit definitions
         /// </summary>
-        /// <returns></returns>
+        /// <returns>List of feture bit definitions</returns>
         IEnumerable<FeatureBitDefinition> GetAll();
+
+        /// <summary>
+        /// Gets a single feature bit definition by its name
+        /// </summary>
+        /// <returns>The feature bit with the matching Name, or throws exeption if none foound</returns>
+        IEnumerable<FeatureBitDefinition> GetByName(string featureBitName);
 
         /// <summary>
         /// Add a new feature bit definition

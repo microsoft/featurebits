@@ -29,7 +29,8 @@ namespace Dotnet.FBit.Command
             //try
             //{
                 
-            //    // _repo.Remove(_opts.);
+            
+            //_repo.Remove();
             ////    SystemContext.ConsoleWriteLine("Feature bit Removeed.");
             //}
             //catch (DataException e)
