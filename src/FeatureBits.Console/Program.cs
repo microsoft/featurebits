@@ -16,21 +16,11 @@ namespace Dotnet.FBit
     {
         public static int Main(string[] args)
         {
-            //var addo = new AddOptions {
-            //    DatabaseConnectionString = "DefaultEndpointsProtocol=https;AccountName=mtabletest;AccountKey=Ubb4pX/Lp9NHFWm4uxmj4dRTNMvqlHdH1A6kQ33gC+ZRYNXKu0UK6rFofUQalR7CQzGr4MVS3ezsqjNMlAfkHw==;BlobEndpoint=https://mtabletest.blob.core.windows.net/;QueueEndpoint=https://mtabletest.queue.core.windows.net/;TableEndpoint=https://mtabletest.table.core.windows.net/;FileEndpoint=https://mtabletest.file.core.windows.net/;",
-            //    OnOff = true,
-            //    Name = "mitchtest",
-            //    ExcludedEnvironments = null,
-            //    PermissionLevel = 0,
-            //    Force = false
-            //};
-
-            //RunAddAndReturnExitCode(addo, true).Result;
-            
             return Parser.Default.ParseArguments<GenerateOptions, AddOptions>(args)
                 .MapResult(
                     (GenerateOptions opts) => RunGenerateAndReturnExitCode(opts).Result,
                     (AddOptions opts) => RunAddAndReturnExitCode(opts, true).Result,
+                    (RemoveOptions opts) => RunRemoveAndReturnExitCode(opts, true).Result,
                     errs => 1);
         }
 
@@ -49,22 +39,42 @@ namespace Dotnet.FBit
 
         private static async Task<int> RunAddAndReturnExitCode(AddOptions opts, bool useTable)
         {
+            var dbConnStr = opts.DatabaseConnectionString;
+            // TODO - this looks an awful lot like a job for dependency injection
+            var repo = GetCorrectRepo(useTable, dbConnStr);
+
+            var cmd = new AddCommand(opts, repo);
+            int result = await cmd.RunAsync();
+            return result;
+        }
+
+        private static async Task<int> RunRemoveAndReturnExitCode(RemoveOptions opts, bool useTable)
+        {
+            var dbConnStr = opts.DatabaseConnectionString;
+            // TODO - this looks an awful lot like a job for dependency injection
+            var repo = GetCorrectRepo(useTable, dbConnStr);
+            var cmd = new RemoveCommand(opts, repo);
+            int result = await cmd.RunAsync();
+            return result;
+        }
+
+        private static IFeatureBitsRepo GetCorrectRepo(bool useTable, string dbConnStr)
+        {
             IFeatureBitsRepo repo;
             if (!useTable)
             {
                 DbContextOptionsBuilder<FeatureBitsEfDbContext> options =
                     new DbContextOptionsBuilder<FeatureBitsEfDbContext>();
-                options.UseSqlServer(opts.DatabaseConnectionString);
+                options.UseSqlServer(dbConnStr);
                 var context = new FeatureBitsEfDbContext(options.Options);
                 repo = new FeatureBitsEfRepo(context);
             }
             else
             {
-                repo = new FeatureBitsTableStorageRepo(opts.DatabaseConnectionString);
+                repo = new FeatureBitsTableStorageRepo(dbConnStr);
             }
-            var cmd = new AddCommand(opts, repo);
-            int result = await cmd.Run();
-            return result;
+
+            return repo;
         }
 
         private static DbContextOptionsBuilder<FeatureBitsEfDbContext> GetDbContextOptionsBuilder(GenerateOptions opts)

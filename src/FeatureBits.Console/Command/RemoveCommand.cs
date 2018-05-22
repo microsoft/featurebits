@@ -22,11 +22,11 @@ namespace Dotnet.FBit.Command
             _repo = repo ?? throw new ArgumentNullException(nameof(repo), "FeatureBits repository is required.");
         }
 
-        public async Task<int> Run()
+        public async Task<int> RunAsync()
         {
             int returnValue = 0;
             var name = _opts.Name;
-            var def = _repo.GetByNameAsync(name).Result;
+            var def = await _repo.GetByNameAsync(name);
             if (def == null)
             {
                 SystemContext.ConsoleErrorWriteLine($"Feature bit '{_opts.Name}' could not be found.");

@@ -59,7 +59,7 @@ namespace FeatureBits.Console.Test
             var it = new RemoveCommand(opts, repo);
 
             // Act
-            var result = it.Run().Result;
+            var result = it.RunAsync().Result;
 
             // Assert
             result.Should().Be(0);
@@ -80,7 +80,7 @@ namespace FeatureBits.Console.Test
             var it = new RemoveCommand(opts, repo);
 
             // Act
-            var result = it.Run().Result;
+            var result = it.RunAsync().Result;
 
             // Assert
             result.Should().Be(1);
