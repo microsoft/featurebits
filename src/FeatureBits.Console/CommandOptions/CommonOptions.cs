@@ -25,7 +25,7 @@ namespace Dotnet.FBit.CommandOptions
         /// <summary>
         /// Override for Azure Table Storage table name
         /// </summary>
-        [Option('t', "AzureStorageTableName", Required = false, HelpText = "Override for the Azure Table Storage table Name.  Defaults to 'featurebits'", SetName = "ATS")]
-        public string AzureStorageTableName { get; set; } = "featurebits";
+        [Option('t', "azuretablename", Required = false, HelpText = "Override for the Azure Table name.  Defaults to 'featurebits'", SetName = "ATS")]
+        public string AzureTableName { get; set; } = "featurebits";
     }
 }
