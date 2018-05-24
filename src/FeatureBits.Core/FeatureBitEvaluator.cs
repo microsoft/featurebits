@@ -41,14 +41,14 @@ namespace FeatureBits.Core
         /// <summary>
         /// Determine if a feature should be enabled or disabled
         /// </summary>
-        /// <param name="feature">Feature to be chedked</param>
+        /// <param name="feature">Feature to be checked</param>
         /// <returns>True if the feature is enabled.</returns>
         public bool IsEnabled<T>(T feature) where T : struct, IConvertible => IsEnabled(feature, 0);
 
         /// <summary>
         /// Determine if a feature should be enabled or disabled
         /// </summary>
-        /// <param name="feature">Feature to be chedked</param>
+        /// <param name="feature">Feature to be checked</param>
         /// <param name="currentPermissionLevel">The permission level of the current user</param>
         /// <typeparam name="T">An enumeration or an integer</typeparam>
         /// <returns>True if the feature is enabled.</returns>
@@ -59,7 +59,7 @@ namespace FeatureBits.Core
             {
                 throw new ArgumentException("T must be an enumerated type");
             }
-
+            
             FeatureBitDefinition bitDef = Definitions.FirstOrDefault(x => x.Id == feature.ToInt32(new FeatureBitFormatProvider()));
             if (bitDef != null)
             {
@@ -68,6 +68,36 @@ namespace FeatureBits.Core
             
             string featureString = tType.IsEnum ? Enum.GetName(tType, feature) : feature.ToString(CultureInfo.InvariantCulture);
             throw new KeyNotFoundException($"Unable to find Feature {featureString}");
+        }
+
+        /// <summary>
+        /// Get a list of Features and corresponding state (enabled or disabled)
+        /// </summary>
+        /// <param name="features">list of Features to be checked</param>
+        /// <typeparam name="T">An enumeration or an integer</typeparam>
+        /// <returns>Returns a list of <see cref="KeyValuePair{TKey, bool}"/> mapping Feature to State (disabled or enabled)</returns>
+        public IList<KeyValuePair<T, bool>> GetFeatureFlags<T>(IList<T> features) where T : struct, IConvertible => GetFeatureFlags(features, 0);
+
+        /// <summary>
+        /// Get a list of Features and corresponding state (enabled or disabled)
+        /// </summary>
+        /// <param name="features">list of Features to be checked</param>
+        /// <param name="currentPermissionLevel">The permission level of the current user</param>
+        /// <typeparam name="T">An enumeration or an integer</typeparam>
+        /// <returns>Returns a list of <see cref="KeyValuePair{TKey, bool}"/> mapping Feature to State (disabled or enabled)</returns>
+        public IList<KeyValuePair<T, bool>> GetFeatureFlags<T>(IList<T> features, int currentPermissionLevel) where T : struct, IConvertible
+        {
+            var featureFlags = new List<KeyValuePair<T, bool>>();
+
+            foreach (var feature in features)
+            {
+                var isEnabled = IsEnabled(feature, currentPermissionLevel);
+                var featureFlag = new KeyValuePair<T, bool>(feature, isEnabled);
+
+                featureFlags.Add(featureFlag);
+            }
+
+            return featureFlags;
         }
 
         private static bool EvaluateBitValue(FeatureBitDefinition bitDef, int currentUsersPermissionLevel)
