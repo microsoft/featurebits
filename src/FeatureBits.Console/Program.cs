@@ -19,8 +19,8 @@ namespace Dotnet.FBit
             return Parser.Default.ParseArguments<GenerateOptions, AddOptions>(args)
                 .MapResult(
                     (GenerateOptions opts) => RunGenerateAndReturnExitCode(opts).Result,
-                    (AddOptions opts) => RunAddAndReturnExitCode(opts, true).Result,
-                    (RemoveOptions opts) => RunRemoveAndReturnExitCode(opts, true).Result,
+                    (AddOptions opts) => RunAddAndReturnExitCode(opts).Result,
+                    (RemoveOptions opts) => RunRemoveAndReturnExitCode(opts).Result,
                     errs => 1);
         }
 
@@ -37,22 +37,24 @@ namespace Dotnet.FBit
             }
         }
 
-        private static async Task<int> RunAddAndReturnExitCode(AddOptions opts, bool useTable)
+        private static async Task<int> RunAddAndReturnExitCode(AddOptions opts)
         {
-            var dbConnStr = opts.DatabaseConnectionString;
+            bool useTable = string.IsNullOrEmpty(opts.DatabaseConnectionString);
+            var dbConnStr = useTable ? opts.AzureTableConnectionString : opts.DatabaseConnectionString; 
             // TODO - this looks an awful lot like a job for dependency injection
-            var repo = GetCorrectRepo(useTable, dbConnStr, opts.AzureStorageTableName);
+            var repo = GetCorrectRepo(useTable, dbConnStr, opts.AzureTableName);
 
             var cmd = new AddCommand(opts, repo);
             int result = await cmd.RunAsync();
             return result;
         }
 
-        private static async Task<int> RunRemoveAndReturnExitCode(RemoveOptions opts, bool useTable)
+        private static async Task<int> RunRemoveAndReturnExitCode(RemoveOptions opts)
         {
-            var dbConnStr = opts.DatabaseConnectionString;
+            bool useTable = string.IsNullOrEmpty(opts.DatabaseConnectionString);
+            var dbConnStr = useTable ? opts.AzureTableConnectionString : opts.DatabaseConnectionString;
             // TODO - this looks an awful lot like a job for dependency injection
-            var repo = GetCorrectRepo(useTable, dbConnStr, opts.AzureStorageTableName);
+            var repo = GetCorrectRepo(useTable, dbConnStr, opts.AzureTableName);
             var cmd = new RemoveCommand(opts, repo);
             int result = await cmd.RunAsync();
             return result;
