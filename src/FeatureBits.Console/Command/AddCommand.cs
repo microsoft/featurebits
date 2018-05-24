@@ -45,7 +45,7 @@ namespace Dotnet.FBit.Command
             return returnValue;
         }
 
-        public FeatureBitDefinition BuildBit(string partitionKey = "featurebits")
+        public FeatureBitDefinition BuildBit()
         {
             var now = SystemContext.Now();
             var username = SystemContext.GetEnvironmentVariable("USERNAME");
@@ -53,7 +53,7 @@ namespace Dotnet.FBit.Command
             {
                 Name = _opts.Name,
                 RowKey = _opts.Name,
-                PartitionKey = partitionKey,
+                PartitionKey = _opts.AzureStorageTableName,
                 CreatedDateTime = now,
                 LastModifiedDateTime = now,
                 CreatedByUser = username,

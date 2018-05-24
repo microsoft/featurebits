@@ -11,11 +11,11 @@ namespace FeatureBits.Data.AzureTableStorage
     public class FeatureBitsTableStorageRepo : IFeatureBitsRepo
     {
         private readonly CloudTable _table;
-        public FeatureBitsTableStorageRepo(string connectionString)
+        public FeatureBitsTableStorageRepo(string connectionString, string tableName)
         {
             _table = CloudStorageAccount.Parse(connectionString)
                 .CreateCloudTableClient()
-                .GetTableReference("FeatureBits");
+                .GetTableReference(tableName);
             _table.CreateIfNotExistsAsync().GetAwaiter().GetResult();
         }
         public async Task<IEnumerable<FeatureBitDefinition>> GetAllAsync()
@@ -35,7 +35,8 @@ namespace FeatureBits.Data.AzureTableStorage
 
         public async Task<FeatureBitDefinition> AddAsync(FeatureBitDefinition definition)
         {
-            if (await GetExistingFeatureBit(definition) != null) {
+            if (await GetExistingFeatureBit(definition) != null)
+            {
                 throw new DataException($"Cannot add. Feature bit with name '{definition.Name}' already exists.");
             }
             definition.Id = await GetNextId();
@@ -59,7 +60,8 @@ namespace FeatureBits.Data.AzureTableStorage
         public async Task RemoveAsync(FeatureBitDefinition definition)
         {
             var existing = await GetExistingFeatureBit(definition);
-            if (existing != null) {
+            if (existing != null)
+            {
                 await _table.ExecuteAsync(TableOperation.Delete(existing));
             }
         }
@@ -70,7 +72,8 @@ namespace FeatureBits.Data.AzureTableStorage
             return tableResult.Result as FeatureBitDefinition;
         }
 
-        private async Task<int> GetNextId() {
+        private async Task<int> GetNextId()
+        {
             TableContinuationToken token = null;
             List<int> ints = new List<int>();
             TableQuery<DynamicTableEntity> projectionQuery = new TableQuery<DynamicTableEntity>().Select(new string[] { "Id" });
@@ -88,9 +91,10 @@ namespace FeatureBits.Data.AzureTableStorage
             return maxInt + 1;
         }
 
-        public Task<FeatureBitDefinition> GetByNameAsync(string featureBitName)
+        public async Task<FeatureBitDefinition> GetByNameAsync(string featureBitName)
         {
-            throw new NotImplementedException();
+            var tableResult = await _table.ExecuteAsync(TableOperation.Retrieve<FeatureBitDefinition>(_table.Name, featureBitName));
+            return tableResult.Result as FeatureBitDefinition;
         }
     }
 }
