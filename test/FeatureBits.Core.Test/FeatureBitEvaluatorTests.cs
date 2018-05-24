@@ -83,6 +83,34 @@ namespace FeatureBits.Core.Test
             result.Should().Be(true);
         }
 
+        [Fact]
+        public async Task It_can_evaluate_an_exact_Role_FeatureBit_to_true()
+        {
+            int userPermission = 30;
+            // Arrange
+            var it = await SetupFeatureBitEvaluator(new FeatureBitDefinition { Id = 0, OnOff = false, ExactAllowedPermissionLevel = 30 });
+
+            // Act
+            var result = it.IsEnabled(0, userPermission);
+
+            // Assert
+            result.Should().Be(true);
+        }
+
+        [Fact]
+        public async Task It_can_evaluate_an_exact_Role_FeatureBit_to_false()
+        {
+            int userPermission = 30;
+            // Arrange
+            var it = await SetupFeatureBitEvaluator(new FeatureBitDefinition { Id = 0, OnOff = false, ExactAllowedPermissionLevel = 20 });
+
+            // Act
+            var result = it.IsEnabled(0, userPermission);
+
+            // Assert
+            result.Should().Be(false);
+        }
+
         [Theory]
         [InlineData(20)]
         [InlineData(10)]
