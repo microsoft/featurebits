@@ -93,10 +93,8 @@ namespace FeatureBits.Data.AzureTableStorage
 
         public async Task<FeatureBitDefinition> GetByNameAsync(string featureBitName)
         {
-            TableQuery<FeatureBitDefinition> query = new TableQuery<FeatureBitDefinition>().Where(
-                    TableQuery.GenerateFilterCondition("Name", QueryComparisons.Equal, featureBitName));
-            var result = (await _table.ExecuteQuerySegmentedAsync(query, null)).Results;
-            return result.FirstOrDefault();
+            var tableResult = await _table.ExecuteAsync(TableOperation.Retrieve<FeatureBitDefinition>(_table.Name, featureBitName));
+            return tableResult.Result as FeatureBitDefinition;
         }
     }
 }
