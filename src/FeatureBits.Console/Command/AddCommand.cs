@@ -60,7 +60,8 @@ namespace Dotnet.FBit.Command
                 LastModifiedByUser = username,
                 OnOff = _opts.OnOff,
                 ExcludedEnvironments = _opts.ExcludedEnvironments,
-                MinimumAllowedPermissionLevel = _opts.PermissionLevel
+                MinimumAllowedPermissionLevel = _opts.MinimumPermissionLevel,
+                ExactAllowedPermissionLevel = _opts.ExactPermissionLevel
             };
         }
 

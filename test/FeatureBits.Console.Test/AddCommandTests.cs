@@ -104,7 +104,7 @@ namespace FeatureBits.Console.Test
                 Name = "foo",
                 OnOff = true,
                 ExcludedEnvironments = "QA,Production",
-                PermissionLevel = 20
+                MinimumPermissionLevel = 20
             };
             var repo = Substitute.For<IFeatureBitsRepo>();
             
