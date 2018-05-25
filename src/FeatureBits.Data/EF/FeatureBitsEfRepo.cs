@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace FeatureBits.Data
+namespace FeatureBits.Data.EF
 {
     public class FeatureBitsEfRepo : IFeatureBitsRepo
     {
