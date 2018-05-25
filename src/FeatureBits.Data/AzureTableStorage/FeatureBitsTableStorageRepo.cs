@@ -40,7 +40,7 @@ namespace FeatureBits.Data.AzureTableStorage
                 throw new DataException($"Cannot add. Feature bit with name '{definition.Name}' already exists.");
             }
             definition.Id = await GetNextId();
-            var insertOp = TableOperation.Insert(ConvertToTableDefinition(definition));
+            var insertOp = TableOperation.Insert(definition.ToTableDefinition(_table.Name));
             var result = await _table.ExecuteAsync(insertOp);
             return (IFeatureBitDefinition)result.Result;
         }
@@ -53,7 +53,7 @@ namespace FeatureBits.Data.AzureTableStorage
                 throw new DataException($"Could not update.  Feature bit with name '{definition.Name}' does not exist");
             }
             existing.Update(definition);
-            var replaceOp = TableOperation.Replace(ConvertToTableDefinition(existing));
+            var replaceOp = TableOperation.Replace(existing.ToTableDefinition(_table.Name));
             await _table.ExecuteAsync(replaceOp);
         }
 
@@ -62,13 +62,13 @@ namespace FeatureBits.Data.AzureTableStorage
             var existing = await GetExistingFeatureBit(definition);
             if (existing != null)
             {
-                await _table.ExecuteAsync(TableOperation.Delete(ConvertToTableDefinition(definition)));
+                await _table.ExecuteAsync(TableOperation.Delete(definition.ToTableDefinition(_table.Name)));
             }
         }
 
         private async Task<IFeatureBitDefinition> GetExistingFeatureBit(IFeatureBitDefinition definition)
         {
-            var tableDefinition = ConvertToTableDefinition(definition);
+            var tableDefinition = definition.ToTableDefinition(_table.Name);
             var tableResult = await _table.ExecuteAsync(TableOperation.Retrieve<FeatureBitTableDefinition>(tableDefinition.PartitionKey, tableDefinition.RowKey));
             return (IFeatureBitDefinition)tableResult.Result;
         }
@@ -89,17 +89,6 @@ namespace FeatureBits.Data.AzureTableStorage
             }
             while (token != null);
             return maxInt + 1;
-        }
-
-        private FeatureBitTableDefinition ConvertToTableDefinition(IFeatureBitDefinition definition)
-        {
-            var fbit = definition as FeatureBitTableDefinition;
-            if (fbit != null)
-            {
-                fbit.RowKey = definition.Name;
-                fbit.PartitionKey = _table.Name;
-            }
-            return fbit;
         }
 
         public async Task<IFeatureBitDefinition> GetByNameAsync(string featureBitName)
