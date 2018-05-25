@@ -8,12 +8,13 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
-namespace FeatureBits.Data.Migrations
+namespace FeatureBitsData.Migrations
 {
     [DbContext(typeof(FeatureBitsEfDbContext))]
-    partial class FeatureBitsEfDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180525114034_ExactPermissionLevel")]
+    partial class ExactPermissionLevel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
