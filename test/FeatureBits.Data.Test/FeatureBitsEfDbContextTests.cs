@@ -29,9 +29,9 @@ namespace FeatureBits.Data.Test
         }
 
         [Fact]
-        public void ItHasAFeatureBitDefinitionsDbSet()
+        public void ItHasAIFeatureBitDefinitionsDbSet()
         {
-            _it.FeatureBitDefinitions.Should().NotBeNull();
+            _it.IFeatureBitDefinitions.Should().NotBeNull();
         }
     }
 }

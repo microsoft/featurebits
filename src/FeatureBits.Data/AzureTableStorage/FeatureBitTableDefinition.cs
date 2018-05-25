@@ -5,90 +5,86 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace FeatureBits.Data
+namespace FeatureBits.Data.AzureTableStorage
 {
     /// <summary>
     /// This represents the data structure used to define Feature BitsData
     /// </summary>
-    public class FeatureBitDefinition : TableEntity
+    public class FeatureBitTableDefinition : TableEntity, IIFeatureBitDefinition
     {
         /// <summary>
-        /// The unique ID of the feature bit
+        /// <see cref="IIFeatureBitDefinition.Id"/>
         /// </summary>
         public int Id { get; set; }
 
         /// <summary>
-        /// The unique name of the feature bit
+        /// <see cref="IIFeatureBitDefinition.Name"/>
         /// </summary>
         [Required, MaxLength(100)]
         public string Name { get; set; }
 
         /// <summary>
-        /// If no other rules are set on the feature bit, this attribute tells whether the feature bit should be turned on or off.
-        /// Since bools default to false, the feature would default to off.
+        /// <see cref="IIFeatureBitDefinition.OnOff"/>
         /// </summary>
         public bool OnOff { get; set; }
 
         /// <summary>
-        /// Comma-separated list of environments in which the feature should be turned OFF.
-        /// Feature-bit check must pass in the current environment. If no environment is passed in, the feature would be turned ON since no environment would 
-        /// be excluded.
+        /// <see cref="IIFeatureBitDefinition.ExcludedEnvironments"/>
         /// </summary>
         [MaxLength(300)]
         public string ExcludedEnvironments { get; set; }
 
         /// <summary>
-        /// The minimum allowed permission level for this feature to be enabled. Permissions are cumulative. A lower permission means lower access.
+        /// <see cref="IIFeatureBitDefinition.MinimumAllowedPermissionLevel"/>
         /// </summary>
         public int MinimumAllowedPermissionLevel { get; set; }
-        
+
         /// <summary>
-        /// The exact allowed permission level for this feature to be enabled.
+        /// <see cref="IIFeatureBitDefinition.ExactAllowedPermissionLevel"/>
         /// </summary>
         public int ExactAllowedPermissionLevel { get; set; }
 
         /// <summary>
-        /// Comma-separated list of users for which the feature should be enabled. If it's not NULL it will be checked against the user for which the request 
-        /// is being performed.
+        /// <see cref="IIFeatureBitDefinition.AllowedUsers"/>
         /// </summary>
         [MaxLength(2048)]
         public string AllowedUsers { get; set; }
 
         /// <summary>
-        /// The date and time the feature bit definition was created.
+        /// <see cref="IIFeatureBitDefinition.CreatedDateTime"/>
         /// </summary>
         [Required]
         public DateTime CreatedDateTime { get; set; }
 
         /// <summary>
-        /// The user that created the feature bit.
+        /// <see cref="IIFeatureBitDefinition.CreatedByUser"/>
         /// </summary>
         [Required, MaxLength(100)]
         public string CreatedByUser { get; set; }
 
         /// <summary>
-        /// The date and time the feature bit was last modified
+        /// <see cref="IIFeatureBitDefinition.LastModifiedDateTime"/>
         /// </summary>
         [Required]
         public DateTime LastModifiedDateTime { get; set; }
 
         /// <summary>
-        /// The user that last modified the feature bit.
+        /// <see cref="IIFeatureBitDefinition.LastModifiedByUser"/>
         /// </summary>
         [Required, MaxLength(100)]
         public string LastModifiedByUser { get; set; }
 
         /// <summary>
-        /// Update the feature bit entity
+        /// <see cref="IIFeatureBitDefinition.Update"/>
         /// </summary>
-        /// <param name="newEntity">Update values</param>
-        public void Update(FeatureBitDefinition newEntity)
+        public void Update(IIFeatureBitDefinition newEntity)
         {
             AllowedUsers = newEntity.AllowedUsers;
             LastModifiedByUser = newEntity.LastModifiedByUser;
             ExcludedEnvironments = newEntity.ExcludedEnvironments;
             LastModifiedDateTime = newEntity.LastModifiedDateTime;
             MinimumAllowedPermissionLevel = newEntity.MinimumAllowedPermissionLevel;
+            ExactAllowedPermissionLevel = newEntity.ExactAllowedPermissionLevel;
             OnOff = newEntity.OnOff;
         }
     }

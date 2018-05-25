@@ -9,13 +9,13 @@ using Xunit;
 
 namespace FeatureBits.Data.Test
 {
-    public class FeatureBitDefinitionTests
+    public class IFeatureBitDefinitionTests
     {
         [Fact]
         public void It_has_certain_properties()
         {
             // Arrange
-            var it = new FeatureBitDefinition
+            var it = new IFeatureBitDefinition
             {
                 ExcludedEnvironments = "foo",
                 LastModifiedByUser = "bar",
@@ -41,7 +41,7 @@ namespace FeatureBits.Data.Test
         public void It_requires_certain_properties()
         {
             // Arrange
-            var it = new FeatureBitDefinition();
+            var it = new IFeatureBitDefinition();
             var validationResults = new List<ValidationResult>();
 
             // Act
@@ -57,7 +57,7 @@ namespace FeatureBits.Data.Test
         public void It_has_MaxLength_for_certain_properties()
         {
             // Arrange
-            var it = new FeatureBitDefinition{ Name = "foo", CreatedByUser = "bar", LastModifiedByUser = "bat"};
+            var it = new IFeatureBitDefinition{ Name = "foo", CreatedByUser = "bar", LastModifiedByUser = "bat"};
             it.Name = new string('*', 101);
             it.ExcludedEnvironments = new string('*', 301);
             it.AllowedUsers = new string('*', 2049);

@@ -28,7 +28,7 @@ namespace Dotnet.FBit.Command
             int returnValue = 0;
             try
             {
-                FeatureBitDefinition newBit = BuildBit();
+                IFeatureBitDefinition newBit = BuildBit();
                 await _repo.AddAsync(newBit);
                 SystemContext.ConsoleWriteLine("Feature bit added.");
             }
@@ -45,11 +45,11 @@ namespace Dotnet.FBit.Command
             return returnValue;
         }
 
-        public FeatureBitDefinition BuildBit(string partitionKey = "featurebits")
+        public IFeatureBitDefinition BuildBit(string partitionKey = "featurebits")
         {
             var now = SystemContext.Now();
             var username = SystemContext.GetEnvironmentVariable("USERNAME");
-            return new FeatureBitDefinition
+            return new IFeatureBitDefinition
             {
                 Name = _opts.Name,
                 RowKey = _opts.Name,

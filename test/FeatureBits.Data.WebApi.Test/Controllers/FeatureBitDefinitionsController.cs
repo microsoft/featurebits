@@ -7,20 +7,20 @@ using Microsoft.AspNetCore.Mvc;
 namespace FeatureBits.Data.WebApi.Test.Controllers
 {
     [Route("api/[controller]")]
-    public class FeatureBitDefinitionsController : Controller
+    public class IFeatureBitDefinitionsController : Controller
     {
         private readonly FeatureBitsEfDbContext _context;
 
-        public FeatureBitDefinitionsController(FeatureBitsEfDbContext context)
+        public IFeatureBitDefinitionsController(FeatureBitsEfDbContext context)
         {
             _context = context;
         }
 
         // GET api/featurebitdefinitions
         [HttpGet]
-        public IEnumerable<FeatureBitDefinition> Get()
+        public IEnumerable<IFeatureBitDefinition> Get()
         {
-            return _context.FeatureBitDefinitions;
+            return _context.IFeatureBitDefinitions;
         }
     }
 }

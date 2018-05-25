@@ -28,6 +28,6 @@ namespace FeatureBits.Core
         /// <summary>
         /// Gets a copy of the list of feature bits from the data store
         /// </summary>
-        IList<FeatureBitDefinition> Definitions { get; }
+        IList<IFeatureBitDefinition> Definitions { get; }
     }
 }

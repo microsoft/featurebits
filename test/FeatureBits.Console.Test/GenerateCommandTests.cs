@@ -20,10 +20,10 @@ namespace FeatureBits.Console.Test
 {
     public class GenerateCommandTests
     {
-        readonly FeatureBitDefinition[] _featureBitDefinitions = {
-            new FeatureBitDefinition {Name = "foo", Id = 1},
-            new FeatureBitDefinition {Name = "bar", Id = 2},
-            new FeatureBitDefinition {Name = "bat", Id = 3},
+        readonly IFeatureBitDefinition[] _featureBitDefinitions = {
+            new IFeatureBitDefinition {Name = "foo", Id = 1},
+            new IFeatureBitDefinition {Name = "bar", Id = 2},
+            new IFeatureBitDefinition {Name = "bat", Id = 3},
         };
 
         

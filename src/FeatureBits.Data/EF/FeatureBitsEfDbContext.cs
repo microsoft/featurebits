@@ -9,6 +9,6 @@ namespace FeatureBits.Data.EF
     {
         public FeatureBitsEfDbContext(DbContextOptions<FeatureBitsEfDbContext> options) : base(options) { }
 
-        public DbSet<FeatureBitDefinition> FeatureBitDefinitions { get; set; }
+        public DbSet<FeatureBitEfDefinition> FeatureBitDefinitions { get; set; }        
     }
 }

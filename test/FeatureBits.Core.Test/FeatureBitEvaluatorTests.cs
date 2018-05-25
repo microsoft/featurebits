@@ -19,7 +19,7 @@ namespace FeatureBits.Core.Test
         public async Task It_can_evaluate_a_Simple_FeatureBit_to_true() 
         {
             // Arrange
-            var it = await SetupFeatureBitEvaluator(new FeatureBitDefinition {Id = 1, OnOff = true});
+            var it = await SetupFeatureBitEvaluator(new IFeatureBitDefinition {Id = 1, OnOff = true});
 
             // Act
             var result = it.IsEnabled(1);
@@ -32,7 +32,7 @@ namespace FeatureBits.Core.Test
         public async Task It_can_evaluate_a_Simple_FeatureBit_to_false()
         {
             // Arrange
-            var it = await SetupFeatureBitEvaluator(new FeatureBitDefinition {Id = 0});
+            var it = await SetupFeatureBitEvaluator(new IFeatureBitDefinition {Id = 0});
 
             // Act
             var result = it.IsEnabled(0);
@@ -45,7 +45,7 @@ namespace FeatureBits.Core.Test
         public async Task It_throws_when_the_bit_cant_be_found()
         {
             // Arrange
-            var it = await SetupFeatureBitEvaluator(new FeatureBitDefinition {Id = 10});
+            var it = await SetupFeatureBitEvaluator(new IFeatureBitDefinition {Id = 10});
 
             // Act / Assert
             Assert.Throws<KeyNotFoundException>(() => { it.IsEnabled(0); });
@@ -56,7 +56,7 @@ namespace FeatureBits.Core.Test
         {
             // Arrange
             // Excluded Environment trumps "OnOff"
-            var it = await SetupFeatureBitEvaluator(new FeatureBitDefinition { Id = 0, OnOff = true, ExcludedEnvironments = "LocalDevelopment" } );
+            var it = await SetupFeatureBitEvaluator(new IFeatureBitDefinition { Id = 0, OnOff = true, ExcludedEnvironments = "LocalDevelopment" } );
 
             // Act
             var result = it.IsEnabled(0);
@@ -74,7 +74,7 @@ namespace FeatureBits.Core.Test
         {
             // Arrange
             // Excluded Environment trumps "OnOff"
-            var it = await SetupFeatureBitEvaluator(new FeatureBitDefinition { Id = 0, OnOff = false, MinimumAllowedPermissionLevel = permissionLevel});
+            var it = await SetupFeatureBitEvaluator(new IFeatureBitDefinition { Id = 0, OnOff = false, MinimumAllowedPermissionLevel = permissionLevel});
 
             // Act
             var result = it.IsEnabled(0, permissionLevel);
@@ -88,7 +88,7 @@ namespace FeatureBits.Core.Test
         {
             int userPermission = 30;
             // Arrange
-            var it = await SetupFeatureBitEvaluator(new FeatureBitDefinition { Id = 0, OnOff = false, ExactAllowedPermissionLevel = 30 });
+            var it = await SetupFeatureBitEvaluator(new IFeatureBitDefinition { Id = 0, OnOff = false, ExactAllowedPermissionLevel = 30 });
 
             // Act
             var result = it.IsEnabled(0, userPermission);
@@ -102,7 +102,7 @@ namespace FeatureBits.Core.Test
         {
             int userPermission = 30;
             // Arrange
-            var it = await SetupFeatureBitEvaluator(new FeatureBitDefinition { Id = 0, OnOff = false, ExactAllowedPermissionLevel = 20 });
+            var it = await SetupFeatureBitEvaluator(new IFeatureBitDefinition { Id = 0, OnOff = false, ExactAllowedPermissionLevel = 20 });
 
             // Act
             var result = it.IsEnabled(0, userPermission);
@@ -119,7 +119,7 @@ namespace FeatureBits.Core.Test
         {
             // Arrange
             // Excluded Environment trumps "OnOff"
-            var it = await SetupFeatureBitEvaluator(new FeatureBitDefinition { Id = 0, OnOff = false, MinimumAllowedPermissionLevel = 30 });
+            var it = await SetupFeatureBitEvaluator(new IFeatureBitDefinition { Id = 0, OnOff = false, MinimumAllowedPermissionLevel = 30 });
 
             // Act
             var result = it.IsEnabled(0, permissionLevel);
@@ -128,15 +128,15 @@ namespace FeatureBits.Core.Test
             result.Should().Be(false);
         }
 
-        private static async Task<FeatureBitEvaluator> SetupFeatureBitEvaluator(FeatureBitDefinition bitDefinition)
+        private static async Task<FeatureBitEvaluator> SetupFeatureBitEvaluator(IFeatureBitDefinition bitDefinition)
         {
-            var response = new List<FeatureBitDefinition>();
+            var response = new List<IFeatureBitDefinition>();
             if (bitDefinition != null)
             {
                 response.Add(bitDefinition);
             }
             var repo = Substitute.For<IFeatureBitsRepo>();
-            repo.GetAllAsync().Returns(Task.FromResult((IEnumerable<FeatureBitDefinition>) response));
+            repo.GetAllAsync().Returns(Task.FromResult((IEnumerable<IFeatureBitDefinition>) response));
             var it = await FeatureBitEvaluator.BuildEvaluatorAsync(repo);
 
             return it;

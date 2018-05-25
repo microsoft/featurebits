@@ -10,28 +10,28 @@ namespace FeatureBitsData.Migrations
         {
             migrationBuilder.AddColumn<string>(
                 name: "ETag",
-                table: "FeatureBitDefinitions",
+                table: "IFeatureBitDefinitions",
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
                 name: "ExactAllowedPermissionLevel",
-                table: "FeatureBitDefinitions",
+                table: "IFeatureBitDefinitions",
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<string>(
                 name: "PartitionKey",
-                table: "FeatureBitDefinitions",
+                table: "IFeatureBitDefinitions",
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "RowKey",
-                table: "FeatureBitDefinitions",
+                table: "IFeatureBitDefinitions",
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTimeOffset>(
                 name: "Timestamp",
-                table: "FeatureBitDefinitions",
+                table: "IFeatureBitDefinitions",
                 nullable: false,
                 defaultValue: new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)));
         }
@@ -40,23 +40,23 @@ namespace FeatureBitsData.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "ETag",
-                table: "FeatureBitDefinitions");
+                table: "IFeatureBitDefinitions");
 
             migrationBuilder.DropColumn(
                 name: "ExactAllowedPermissionLevel",
-                table: "FeatureBitDefinitions");
+                table: "IFeatureBitDefinitions");
 
             migrationBuilder.DropColumn(
                 name: "PartitionKey",
-                table: "FeatureBitDefinitions");
+                table: "IFeatureBitDefinitions");
 
             migrationBuilder.DropColumn(
                 name: "RowKey",
-                table: "FeatureBitDefinitions");
+                table: "IFeatureBitDefinitions");
 
             migrationBuilder.DropColumn(
                 name: "Timestamp",
-                table: "FeatureBitDefinitions");
+                table: "IFeatureBitDefinitions");
         }
     }
 }

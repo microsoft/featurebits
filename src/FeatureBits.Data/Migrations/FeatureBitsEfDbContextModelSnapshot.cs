@@ -20,7 +20,7 @@ namespace FeatureBits.Data.Migrations
                 .HasAnnotation("ProductVersion", "2.0.2-rtm-10011")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("FeatureBits.Data.FeatureBitDefinition", b =>
+            modelBuilder.Entity("FeatureBits.Data.IFeatureBitDefinition", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -63,7 +63,7 @@ namespace FeatureBits.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FeatureBitDefinitions");
+                    b.ToTable("IFeatureBitDefinitions");
                 });
 #pragma warning restore 612, 618
         }

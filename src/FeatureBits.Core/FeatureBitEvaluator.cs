@@ -21,22 +21,16 @@ namespace FeatureBits.Core
         /// Public constructor
         /// </summary>
         /// <param name="reader">Object used to read the Feature Bits</param>
-        internal FeatureBitEvaluator(IFeatureBitsRepo reader) => _repo = reader;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <returns></returns>
-        public static async Task<FeatureBitEvaluator> BuildEvaluatorAsync(IFeatureBitsRepo reader) => new FeatureBitEvaluator(reader)
+        public FeatureBitEvaluator(IFeatureBitsRepo repo)
         {
-            Definitions = (await reader.GetAllAsync()).ToList()
-        };
+            _repo = repo;
+            Definitions = _repo.GetAllAsync().GetAwaiter().GetResult().ToList();
+        }
 
         /// <summary>
         /// Feature Bits Data/Definitions
         /// </summary>
-        public IList<FeatureBitDefinition> Definitions { get; set; }
+        public IList<IFeatureBitDefinition> Definitions { get; set; }
 
         /// <summary>
         /// Determine if a feature should be enabled or disabled
@@ -60,7 +54,7 @@ namespace FeatureBits.Core
                 throw new ArgumentException("T must be an enumerated type");
             }
 
-            FeatureBitDefinition bitDef = Definitions.FirstOrDefault(x => x.Id == feature.ToInt32(new FeatureBitFormatProvider()));
+            IFeatureBitDefinition bitDef = Definitions.FirstOrDefault(x => x.Id == feature.ToInt32(new FeatureBitFormatProvider()));
             if (bitDef != null)
             {
                 return EvaluateBitValue(bitDef, currentPermissionLevel);
@@ -70,7 +64,7 @@ namespace FeatureBits.Core
             throw new KeyNotFoundException($"Unable to find Feature {featureString}");
         }
 
-        private static bool EvaluateBitValue(FeatureBitDefinition bitDef, int currentUsersPermissionLevel)
+        private static bool EvaluateBitValue(IFeatureBitDefinition bitDef, int currentUsersPermissionLevel)
         {
             bool result;
             if (bitDef.ExcludedEnvironments?.Length > 0)
@@ -92,9 +86,9 @@ namespace FeatureBits.Core
             return result;
         }
 
-        private static bool CheckMinimumPermission(FeatureBitDefinition bitDef, int currentUsersPermissionLevel) => currentUsersPermissionLevel >= bitDef.MinimumAllowedPermissionLevel;
+        private static bool CheckMinimumPermission(IFeatureBitDefinition bitDef, int currentUsersPermissionLevel) => currentUsersPermissionLevel >= bitDef.MinimumAllowedPermissionLevel;
 
-        private static bool EvaluateEnvironmentBasedFeatureState(FeatureBitDefinition bitDef)
+        private static bool EvaluateEnvironmentBasedFeatureState(IFeatureBitDefinition bitDef)
         {
             bool featureState;
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT").ToUpperInvariant();

@@ -21,19 +21,19 @@ namespace FeatureBits.Data.EF
             DbContext = dbContext;
         }
 
-        public async Task<IEnumerable<FeatureBitDefinition>> GetAllAsync()
+        public async Task<IEnumerable<IFeatureBitDefinition>> GetAllAsync()
         {
             return await DbContext.FeatureBitDefinitions.ToListAsync();
         }
 
-        public async Task<FeatureBitDefinition> GetByNameAsync(string featureBitName)
+        public async Task<IFeatureBitDefinition> GetByNameAsync(string featureBitName)
         {
             var result = await DbContext.FeatureBitDefinitions.FirstOrDefaultAsync(definition =>
                 definition.Name == featureBitName);
             return result;
         }
 
-        public async  Task<FeatureBitDefinition> AddAsync(FeatureBitDefinition definition)
+        public async  Task<IFeatureBitDefinition> AddAsync(IFeatureBitDefinition definition)
         {
             ValidateDefinition(definition);
 
@@ -45,7 +45,7 @@ namespace FeatureBits.Data.EF
             return entity.Entity;
         }
 
-        private async Task MakeSureAFeatureBitWithThatNameDoesNotExist(FeatureBitDefinition definition)
+        private async Task MakeSureAFeatureBitWithThatNameDoesNotExist(IFeatureBitDefinition definition)
         {
             var existenceCheck = await DbContext.FeatureBitDefinitions.FirstOrDefaultAsync(fb => fb.Name == definition.Name);
             if (existenceCheck != null)
@@ -54,7 +54,7 @@ namespace FeatureBits.Data.EF
             }
         }
 
-        private static void ValidateDefinition(FeatureBitDefinition definition)
+        private static void ValidateDefinition(IFeatureBitDefinition definition)
         {
             var validationResults = new List<ValidationResult>();
             Validator.TryValidateObject(definition, new ValidationContext(definition), validationResults, true);
@@ -67,13 +67,13 @@ namespace FeatureBits.Data.EF
             }
         }
 
-        public async Task UpdateAsync(FeatureBitDefinition definition)
+        public async Task UpdateAsync(IFeatureBitDefinition definition)
         {
             DbContext.Update(definition);
             await DbContext.SaveChangesAsync();
         }
 
-        public async Task RemoveAsync(FeatureBitDefinition definitionToRemove)
+        public async Task RemoveAsync(IFeatureBitDefinition definitionToRemove)
         {
             DbContext.Remove(definitionToRemove);
             await DbContext.SaveChangesAsync();

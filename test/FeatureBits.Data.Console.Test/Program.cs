@@ -25,7 +25,7 @@ namespace ConsoleTestClient
             
             using (var context = new FeatureBitsEfDbContext(options.Options))
             {
-                var count = context.FeatureBitDefinitions.Count();
+                var count = context.IFeatureBitDefinitions.Count();
                 Console.WriteLine(count);    
             }
             
