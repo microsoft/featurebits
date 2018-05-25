@@ -77,7 +77,7 @@ namespace FeatureBits.Core
             {
                 result = EvaluateEnvironmentBasedFeatureState(bitDef);
             }
-            else if (bitDef.ExactAllowedPermissionLevel == currentUsersPermissionLevel) {
+            else if (currentUsersPermissionLevel > 0 && bitDef.ExactAllowedPermissionLevel == currentUsersPermissionLevel) {
                 result = true;
             }
             else if (bitDef.MinimumAllowedPermissionLevel > 0)

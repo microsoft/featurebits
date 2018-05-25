@@ -48,12 +48,6 @@ namespace FeatureBits.Data
         public int ExactAllowedPermissionLevel { get; set; }
 
         /// <summary>
-        /// The exact permission level for this feature to be enabled.  Ignores MinimumAllowedPermissionLevel
-        /// </summary>
-        /// <value>The exact allowed permission level.</value>
-        public int ExactAllowedPermissionLevel { get; set; }
-
-        /// <summary>
         /// Comma-separated list of users for which the feature should be enabled. If it's not NULL it will be checked against the user for which the request 
         /// is being performed.
         /// </summary>
