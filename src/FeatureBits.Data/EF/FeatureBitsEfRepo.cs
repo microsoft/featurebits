@@ -39,7 +39,7 @@ namespace FeatureBits.Data.EF
 
             await MakeSureAFeatureBitWithThatNameDoesNotExist(definition);
 
-            var entity = await DbContext.FeatureBitDefinitions.AddAsync(definition);
+            var entity = await DbContext.FeatureBitDefinitions.AddAsync((FeatureBitEfDefinition)definition);
             await DbContext.SaveChangesAsync();
 
             return entity.Entity;

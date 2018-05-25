@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System;
+using FeatureBits.Data.EF;
 using FluentAssertions;
 using Xunit;
 
@@ -29,9 +30,9 @@ namespace FeatureBits.Data.Test
         }
 
         [Fact]
-        public void ItHasAIFeatureBitDefinitionsDbSet()
+        public void ItHasAFeatureBitDefinitionsDbSet()
         {
-            _it.IFeatureBitDefinitions.Should().NotBeNull();
+            _it.FeatureBitDefinitions.Should().NotBeNull();
         }
     }
 }

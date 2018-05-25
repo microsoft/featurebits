@@ -21,9 +21,9 @@ namespace FeatureBits.Console.Test
     public class GenerateCommandTests
     {
         readonly IFeatureBitDefinition[] _featureBitDefinitions = {
-            new IFeatureBitDefinition {Name = "foo", Id = 1},
-            new IFeatureBitDefinition {Name = "bar", Id = 2},
-            new IFeatureBitDefinition {Name = "bat", Id = 3},
+            new CommandFeatureBitDefintion {Name = "foo", Id = 1},
+            new CommandFeatureBitDefintion {Name = "bar", Id = 2},
+            new CommandFeatureBitDefintion {Name = "bat", Id = 3},
         };
 
         

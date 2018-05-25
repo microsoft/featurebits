@@ -5,74 +5,74 @@ using System.Text;
 
 namespace FeatureBits.Data.EF
 {
-    public class FeatureBitEfDefinition: IIFeatureBitDefinition
+    public class FeatureBitEfDefinition: IFeatureBitDefinition
     {
         /// <summary>
-        /// <see cref="IIFeatureBitDefinition.Id"/>
+        /// <see cref="IFeatureBitDefinition.Id"/>
         /// </summary>
         public int Id { get; set; }
 
         /// <summary>
-        /// <see cref="IIFeatureBitDefinition.Name"/>
+        /// <see cref="IFeatureBitDefinition.Name"/>
         /// </summary>
         [Required, MaxLength(100)]
         public string Name { get; set; }
 
         /// <summary>
-        /// <see cref="IIFeatureBitDefinition.OnOff"/>
+        /// <see cref="IFeatureBitDefinition.OnOff"/>
         /// </summary>
         public bool OnOff { get; set; }
 
         /// <summary>
-        /// <see cref="IIFeatureBitDefinition.ExcludedEnvironments"/>
+        /// <see cref="IFeatureBitDefinition.ExcludedEnvironments"/>
         /// </summary>
         [MaxLength(300)]
         public string ExcludedEnvironments { get; set; }
 
         /// <summary>
-        /// <see cref="IIFeatureBitDefinition.MinimumAllowedPermissionLevel"/>
+        /// <see cref="IFeatureBitDefinition.MinimumAllowedPermissionLevel"/>
         /// </summary>
         public int MinimumAllowedPermissionLevel { get; set; }
 
         /// <summary>
-        /// <see cref="IIFeatureBitDefinition.ExactAllowedPermissionLevel"/>
+        /// <see cref="IFeatureBitDefinition.ExactAllowedPermissionLevel"/>
         /// </summary>
         public int ExactAllowedPermissionLevel { get; set; }
 
         /// <summary>
-        /// <see cref="IIFeatureBitDefinition.AllowedUsers"/>
+        /// <see cref="IFeatureBitDefinition.AllowedUsers"/>
         /// </summary>
         [MaxLength(2048)]
         public string AllowedUsers { get; set; }
 
         /// <summary>
-        /// <see cref="IIFeatureBitDefinition.CreatedDateTime"/>
+        /// <see cref="IFeatureBitDefinition.CreatedDateTime"/>
         /// </summary>
         [Required]
         public DateTime CreatedDateTime { get; set; }
 
         /// <summary>
-        /// <see cref="IIFeatureBitDefinition.CreatedByUser"/>
+        /// <see cref="IFeatureBitDefinition.CreatedByUser"/>
         /// </summary>
         [Required, MaxLength(100)]
         public string CreatedByUser { get; set; }
 
         /// <summary>
-        /// <see cref="IIFeatureBitDefinition.LastModifiedDateTime"/>
+        /// <see cref="IFeatureBitDefinition.LastModifiedDateTime"/>
         /// </summary>
         [Required]
         public DateTime LastModifiedDateTime { get; set; }
 
         /// <summary>
-        /// <see cref="IIFeatureBitDefinition.LastModifiedByUser"/>
+        /// <see cref="IFeatureBitDefinition.LastModifiedByUser"/>
         /// </summary>
         [Required, MaxLength(100)]
         public string LastModifiedByUser { get; set; }
 
         /// <summary>
-        /// <see cref="IIFeatureBitDefinition.Update"/>
+        /// <see cref="IFeatureBitDefinition.Update"/>
         /// </summary>
-        public void Update(IIFeatureBitDefinition newEntity)
+        public void Update(IFeatureBitDefinition newEntity)
         {
             AllowedUsers = newEntity.AllowedUsers;
             LastModifiedByUser = newEntity.LastModifiedByUser;

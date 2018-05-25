@@ -30,7 +30,7 @@ namespace FeatureBits.Data.AzureTableStorage
                 token = resultSegment.ContinuationToken;
 
             } while (token != null);
-            return results;
+            return results.Select(x => (IFeatureBitDefinition)x).ToList();
         }
 
         public async Task<IFeatureBitDefinition> AddAsync(IFeatureBitDefinition definition)
@@ -40,9 +40,9 @@ namespace FeatureBits.Data.AzureTableStorage
                 throw new DataException($"Cannot add. Feature bit with name '{definition.Name}' already exists.");
             }
             definition.Id = await GetNextId();
-            var insertOp = TableOperation.Insert(definition);
+            var insertOp = TableOperation.Insert(ConvertToTableDefinition(definition));
             var result = await _table.ExecuteAsync(insertOp);
-            return result.Result as IFeatureBitDefinition;
+            return (IFeatureBitDefinition)result.Result;
         }
 
         public async Task UpdateAsync(IFeatureBitDefinition definition)
@@ -53,7 +53,7 @@ namespace FeatureBits.Data.AzureTableStorage
                 throw new DataException($"Could not update.  Feature bit with name '{definition.Name}' does not exist");
             }
             existing.Update(definition);
-            var replaceOp = TableOperation.Replace(existing);
+            var replaceOp = TableOperation.Replace(ConvertToTableDefinition(existing));
             await _table.ExecuteAsync(replaceOp);
         }
 
@@ -62,20 +62,20 @@ namespace FeatureBits.Data.AzureTableStorage
             var existing = await GetExistingFeatureBit(definition);
             if (existing != null)
             {
-                await _table.ExecuteAsync(TableOperation.Delete(existing));
+                await _table.ExecuteAsync(TableOperation.Delete(ConvertToTableDefinition(definition)));
             }
         }
 
         private async Task<IFeatureBitDefinition> GetExistingFeatureBit(IFeatureBitDefinition definition)
         {
-            var tableResult = await _table.ExecuteAsync(TableOperation.Retrieve<IFeatureBitDefinition>(definition.PartitionKey, definition.RowKey));
-            return tableResult.Result as IFeatureBitDefinition;
+            var tableDefinition = ConvertToTableDefinition(definition);
+            var tableResult = await _table.ExecuteAsync(TableOperation.Retrieve<FeatureBitTableDefinition>(tableDefinition.PartitionKey, tableDefinition.RowKey));
+            return (IFeatureBitDefinition)tableResult.Result;
         }
 
         private async Task<int> GetNextId()
         {
             TableContinuationToken token = null;
-            List<int> ints = new List<int>();
             TableQuery<DynamicTableEntity> projectionQuery = new TableQuery<DynamicTableEntity>().Select(new string[] { "Id" });
             EntityResolver<int> resolver = (pk, rk, ts, props, etag) => props.ContainsKey("Id") ? props["Id"].Int32Value.GetValueOrDefault() : -1;
 
@@ -91,10 +91,21 @@ namespace FeatureBits.Data.AzureTableStorage
             return maxInt + 1;
         }
 
-        public async Task<FeatureBitDefinition> GetByNameAsync(string featureBitName)
+        private FeatureBitTableDefinition ConvertToTableDefinition(IFeatureBitDefinition definition)
         {
-            var tableResult = await _table.ExecuteAsync(TableOperation.Retrieve<FeatureBitDefinition>(_table.Name, featureBitName));
-            return tableResult.Result as FeatureBitDefinition;
+            var fbit = definition as FeatureBitTableDefinition;
+            if (fbit != null)
+            {
+                fbit.RowKey = definition.Name;
+                fbit.PartitionKey = _table.Name;
+            }
+            return fbit;
+        }
+
+        public async Task<IFeatureBitDefinition> GetByNameAsync(string featureBitName)
+        {
+            var tableResult = await _table.ExecuteAsync(TableOperation.Retrieve<FeatureBitTableDefinition>(_table.Name, featureBitName));
+            return (IFeatureBitDefinition)tableResult.Result;
         }
     }
 }

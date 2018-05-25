@@ -68,6 +68,6 @@ namespace FeatureBits.Data
         /// Update the feature bit entity
         /// </summary>
         /// <param name="newEntity">Update values</param>
-        void Update(IIFeatureBitDefinition newEntity);
+        void Update(IFeatureBitDefinition newEntity);
     }
 }

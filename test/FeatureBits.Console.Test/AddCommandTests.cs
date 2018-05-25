@@ -54,10 +54,10 @@ namespace FeatureBits.Console.Test
             // Arrange
             var sb = new StringBuilder();
             SystemContext.ConsoleWriteLine = s => sb.Append(s);
-            var bit = new IFeatureBitDefinition {Name = "foo"};
+            var bit = new CommandFeatureBitDefintion {Name = "foo"};
             var opts = new AddOptions{Name = "foo"};
             var repo = Substitute.For<IFeatureBitsRepo>();
-            repo.AddAsync(bit).Returns(Task.FromResult(bit));
+            repo.AddAsync(bit).Returns(Task.FromResult((IFeatureBitDefinition)bit));
             
             var it = new AddCommand(opts, repo);
 

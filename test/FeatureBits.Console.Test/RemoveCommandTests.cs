@@ -54,7 +54,7 @@ namespace FeatureBits.Console.Test
             SystemContext.ConsoleWriteLine = s => sb.Append(s);
             var opts = new RemoveOptions{Name = "foo"};
             var repo = Substitute.For<IFeatureBitsRepo>();
-            repo.GetByNameAsync("foo").Returns(Task.FromResult(new IFeatureBitDefinition { Name = "foo", Id = 5}));
+            repo.GetByNameAsync("foo").Returns(Task.FromResult((IFeatureBitDefinition)new CommandFeatureBitDefintion { Name = "foo", Id = 5}));
             repo.RemoveAsync(Arg.Any<IFeatureBitDefinition>());
             var it = new RemoveCommand(opts, repo);
 

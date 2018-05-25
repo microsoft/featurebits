@@ -1,16 +1,12 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See License.txt in the project root for license information.
-
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.WindowsAzure.Storage.Table;
+using System.Text;
+using FeatureBits.Data;
 
-namespace FeatureBits.Data.AzureTableStorage
+namespace Dotnet.FBit.Command
 {
-    /// <summary>
-    /// This represents the data structure used to define Feature BitsData
-    /// </summary>
-    public class FeatureBitTableDefinition : TableEntity, IFeatureBitDefinition
+    public class CommandFeatureBitDefintion : IFeatureBitDefinition
     {
         /// <summary>
         /// <see cref="IFeatureBitDefinition.Id"/>
@@ -84,7 +80,6 @@ namespace FeatureBits.Data.AzureTableStorage
             ExcludedEnvironments = newEntity.ExcludedEnvironments;
             LastModifiedDateTime = newEntity.LastModifiedDateTime;
             MinimumAllowedPermissionLevel = newEntity.MinimumAllowedPermissionLevel;
-            ExactAllowedPermissionLevel = newEntity.ExactAllowedPermissionLevel;
             OnOff = newEntity.OnOff;
         }
     }

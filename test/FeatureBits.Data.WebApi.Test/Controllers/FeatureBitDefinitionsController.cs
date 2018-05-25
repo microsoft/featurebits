@@ -2,16 +2,17 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using FeatureBits.Data.EF;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FeatureBits.Data.WebApi.Test.Controllers
 {
     [Route("api/[controller]")]
-    public class IFeatureBitDefinitionsController : Controller
+    public class FeatureBitDefinitionsController : Controller
     {
         private readonly FeatureBitsEfDbContext _context;
 
-        public IFeatureBitDefinitionsController(FeatureBitsEfDbContext context)
+        public FeatureBitDefinitionsController(FeatureBitsEfDbContext context)
         {
             _context = context;
         }
@@ -20,7 +21,7 @@ namespace FeatureBits.Data.WebApi.Test.Controllers
         [HttpGet]
         public IEnumerable<IFeatureBitDefinition> Get()
         {
-            return _context.IFeatureBitDefinitions;
+            return _context.FeatureBitDefinitions;
         }
     }
 }

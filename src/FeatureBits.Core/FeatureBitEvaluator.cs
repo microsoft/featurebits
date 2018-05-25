@@ -94,7 +94,7 @@ namespace FeatureBits.Core
             return featureFlags;
         }
 
-        private static bool EvaluateBitValue(FeatureBitDefinition bitDef, int currentUsersPermissionLevel)
+        private static bool EvaluateBitValue(IFeatureBitDefinition bitDef, int currentUsersPermissionLevel)
         {
             bool result;
             if (bitDef.ExcludedEnvironments?.Length > 0)

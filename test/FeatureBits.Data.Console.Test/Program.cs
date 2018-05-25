@@ -4,6 +4,7 @@
 using System;
 using System.Linq;
 using FeatureBits.Data;
+using FeatureBits.Data.EF;
 using FeatureBitsData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -25,7 +26,7 @@ namespace ConsoleTestClient
             
             using (var context = new FeatureBitsEfDbContext(options.Options))
             {
-                var count = context.IFeatureBitDefinitions.Count();
+                var count = context.FeatureBitDefinitions.Count();
                 Console.WriteLine(count);    
             }
             

@@ -8,6 +8,7 @@ using Dotnet.FBit.Command;
 using Dotnet.FBit.CommandOptions;
 using FeatureBits.Data;
 using FeatureBits.Data.AzureTableStorage;
+using FeatureBits.Data.EF;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dotnet.FBit

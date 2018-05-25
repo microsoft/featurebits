@@ -7,6 +7,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using FeatureBits.Data.EF;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -64,7 +65,7 @@ namespace FeatureBits.Data.Test
         public async Task ItCanAddIFeatureBitDefinitions()
         {
             // Arrange
-            var item1 = new IFeatureBitDefinition {Name = "item1", CreatedByUser = "foo", LastModifiedByUser = "foo"};
+            var item1 = new FeatureBitEfDefinition {Name = "item1", CreatedByUser = "foo", LastModifiedByUser = "foo"};
 
             // Act
             IFeatureBitDefinition result = await _it.AddAsync(item1);
@@ -74,7 +75,7 @@ namespace FeatureBits.Data.Test
             result.Id.Should().NotBe(0);
             using (var context = new FeatureBitsEfDbContext(_options))
             {
-                context.IFeatureBitDefinitions.Should().Contain(f => f.Name == "item1");
+                context.FeatureBitDefinitions.Should().Contain(f => f.Name == "item1");
             }
         }
 
@@ -82,7 +83,7 @@ namespace FeatureBits.Data.Test
         public async Task It_throws_if_you_try_to_add_an_invalid_entity()
         {
             // Arrange
-            var item1 = new IFeatureBitDefinition {Name = "item1"};
+            var item1 = new FeatureBitEfDefinition { Name = "item1"};
 
             // Act
 
@@ -95,7 +96,7 @@ namespace FeatureBits.Data.Test
         {
             // Arrange
             AddThreeDefinitions();
-            var item1 = new IFeatureBitDefinition {Name = "item1", CreatedByUser = "foo", LastModifiedByUser = "foo"};
+            var item1 = new FeatureBitEfDefinition { Name = "item1", CreatedByUser = "foo", LastModifiedByUser = "foo"};
 
             // Act
 
@@ -117,8 +118,8 @@ namespace FeatureBits.Data.Test
             // Assert
             using (var context = new FeatureBitsEfDbContext(_options))
             {
-                context.IFeatureBitDefinitions.Count().Should().Be(3);
-                context.IFeatureBitDefinitions.Should().Contain(f => f.AllowedUsers == "Updated Value");
+                context.FeatureBitDefinitions.Count().Should().Be(3);
+                context.FeatureBitDefinitions.Should().Contain(f => f.AllowedUsers == "Updated Value");
             }
         }
 
@@ -127,7 +128,7 @@ namespace FeatureBits.Data.Test
         {
             // Arrange
             AddThreeDefinitions();
-            var defToUpsert = new IFeatureBitDefinition
+            var defToUpsert = new FeatureBitEfDefinition
             {
                 Name = "New feature bit",
                 CreatedByUser = "foo",
@@ -140,8 +141,8 @@ namespace FeatureBits.Data.Test
             // Assert
             using (var context = new FeatureBitsEfDbContext(_options))
             {
-                context.IFeatureBitDefinitions.Count().Should().Be(4);
-                context.IFeatureBitDefinitions.Should().Contain(f => f.Name == "New feature bit");
+                context.FeatureBitDefinitions.Count().Should().Be(4);
+                context.FeatureBitDefinitions.Should().Contain(f => f.Name == "New feature bit");
             }
         }
 
@@ -158,8 +159,8 @@ namespace FeatureBits.Data.Test
             // Assert
             using (var context = new FeatureBitsEfDbContext(_options))
             {
-                 context.IFeatureBitDefinitions.Count().Should().Be(2);
-                 context.IFeatureBitDefinitions.Should().NotContain(f => f.Name == "item2");
+                 context.FeatureBitDefinitions.Count().Should().Be(2);
+                 context.FeatureBitDefinitions.Should().NotContain(f => f.Name == "item2");
             }
         }
 
@@ -177,13 +178,13 @@ namespace FeatureBits.Data.Test
             result.MinimumAllowedPermissionLevel.Should().Be(10);
         }
 
-        private IList<EntityEntry<IFeatureBitDefinition>> AddThreeDefinitions()
+        private IList<EntityEntry<FeatureBitEfDefinition>> AddThreeDefinitions()
         {
-            var entities = new List<EntityEntry<IFeatureBitDefinition>>
+            var entities = new List<EntityEntry<FeatureBitEfDefinition>>
             {
-                _context.IFeatureBitDefinitions.Add(new IFeatureBitDefinition {Name = "item1"}),
-                _context.IFeatureBitDefinitions.Add(new IFeatureBitDefinition {Name = "item2", MinimumAllowedPermissionLevel = 10}),
-                _context.IFeatureBitDefinitions.Add(new IFeatureBitDefinition {Name = "item3"})
+                _context.FeatureBitDefinitions.Add(new FeatureBitEfDefinition {Name = "item1"}),
+                _context.FeatureBitDefinitions.Add(new FeatureBitEfDefinition {Name = "item2", MinimumAllowedPermissionLevel = 10}),
+                _context.FeatureBitDefinitions.Add(new FeatureBitEfDefinition {Name = "item3"})
             };
             _context.SaveChanges();
 
