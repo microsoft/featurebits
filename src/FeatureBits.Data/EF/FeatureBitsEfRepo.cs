@@ -35,17 +35,18 @@ namespace FeatureBits.Data.EF
 
         public async  Task<IFeatureBitDefinition> AddAsync(IFeatureBitDefinition definition)
         {
-            ValidateDefinition(definition);
+            FeatureBitEfDefinition newEntity = definition.ToEfDefinition();
+            ValidateDefinition(newEntity);
 
-            await MakeSureAFeatureBitWithThatNameDoesNotExist(definition);
+            await MakeSureAFeatureBitWithThatNameDoesNotExist(newEntity);
 
-            var entity = await DbContext.FeatureBitDefinitions.AddAsync((FeatureBitEfDefinition)definition);
+            var entity = await DbContext.FeatureBitDefinitions.AddAsync(newEntity);
             await DbContext.SaveChangesAsync();
 
             return entity.Entity;
         }
 
-        private async Task MakeSureAFeatureBitWithThatNameDoesNotExist(IFeatureBitDefinition definition)
+        private async Task MakeSureAFeatureBitWithThatNameDoesNotExist(FeatureBitEfDefinition definition)
         {
             var existenceCheck = await DbContext.FeatureBitDefinitions.FirstOrDefaultAsync(fb => fb.Name == definition.Name);
             if (existenceCheck != null)
@@ -54,7 +55,7 @@ namespace FeatureBits.Data.EF
             }
         }
 
-        private static void ValidateDefinition(IFeatureBitDefinition definition)
+        private static void ValidateDefinition(FeatureBitEfDefinition definition)
         {
             var validationResults = new List<ValidationResult>();
             Validator.TryValidateObject(definition, new ValidationContext(definition), validationResults, true);
@@ -69,13 +70,13 @@ namespace FeatureBits.Data.EF
 
         public async Task UpdateAsync(IFeatureBitDefinition definition)
         {
-            DbContext.Update(definition);
+            DbContext.Update(definition.ToEfDefinition());
             await DbContext.SaveChangesAsync();
         }
 
         public async Task RemoveAsync(IFeatureBitDefinition definitionToRemove)
         {
-            DbContext.Remove(definitionToRemove);
+            DbContext.Remove(definitionToRemove.ToEfDefinition());
             await DbContext.SaveChangesAsync();
         }
     }
