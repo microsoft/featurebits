@@ -17,7 +17,7 @@ namespace Dotnet.FBit
     {
         public static int Main(string[] args)
         {
-            return Parser.Default.ParseArguments<GenerateOptions, AddOptions>(args)
+            return Parser.Default.ParseArguments<GenerateOptions, AddOptions, RemoveOptions>(args)
                 .MapResult(
                     (GenerateOptions opts) => RunGenerateAndReturnExitCode(opts).Result,
                     (AddOptions opts) => RunAddAndReturnExitCode(opts).Result,
@@ -27,21 +27,20 @@ namespace Dotnet.FBit
 
         private static async Task<int> RunGenerateAndReturnExitCode(GenerateOptions opts)
         {
-            var options = GetDbContextOptionsBuilder(opts);
+            bool useTable = string.IsNullOrEmpty(opts.DatabaseConnectionString);
+            var dbConnStr = useTable ? opts.AzureTableConnectionString : opts.DatabaseConnectionString;
 
-            using (var context = new FeatureBitsEfDbContext(options.Options))
-            {
-                var repo = new FeatureBitsEfRepo(context);
-                var cmd = new GenerateCommand(opts, repo, new FileSystem());
-                var result = await cmd.RunAsync();
-                return result == false ? 1 : 0;
-            }
+            var repo = GetCorrectRepo(useTable, dbConnStr, opts.AzureTableName);
+
+            var cmd = new GenerateCommand(opts, repo, new FileSystem());
+            var result = await cmd.RunAsync();
+            return result == false ? 1 : 0;
         }
 
         private static async Task<int> RunAddAndReturnExitCode(AddOptions opts)
         {
             bool useTable = string.IsNullOrEmpty(opts.DatabaseConnectionString);
-            var dbConnStr = useTable ? opts.AzureTableConnectionString : opts.DatabaseConnectionString; 
+            var dbConnStr = useTable ? opts.AzureTableConnectionString : opts.DatabaseConnectionString;
             // TODO - this looks an awful lot like a job for dependency injection
             var repo = GetCorrectRepo(useTable, dbConnStr, opts.AzureTableName);
 
