@@ -11,8 +11,7 @@ namespace FeatureBitsData.Migrations
             migrationBuilder.AddColumn<int>(
                 name: "ExactAllowedPermissionLevel",
                 table: "FeatureBitDefinitions",
-                nullable: false,
-                defaultValue: 0);
+                nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

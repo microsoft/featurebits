@@ -11,7 +11,7 @@ using System;
 namespace FeatureBitsData.Migrations
 {
     [DbContext(typeof(FeatureBitsEfDbContext))]
-    [Migration("20180525202322_ExactPermissionLevel")]
+    [Migration("20180529212823_ExactPermissionLevel")]
     partial class ExactPermissionLevel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,7 +35,7 @@ namespace FeatureBitsData.Migrations
 
                     b.Property<DateTime>("CreatedDateTime");
 
-                    b.Property<int>("ExactAllowedPermissionLevel");
+                    b.Property<int?>("ExactAllowedPermissionLevel");
 
                     b.Property<string>("ExcludedEnvironments")
                         .HasMaxLength(300);

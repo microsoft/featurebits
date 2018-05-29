@@ -34,7 +34,7 @@ namespace FeatureBits.Data.Migrations
 
                     b.Property<DateTime>("CreatedDateTime");
 
-                    b.Property<int>("ExactAllowedPermissionLevel");
+                    b.Property<int?>("ExactAllowedPermissionLevel");
 
                     b.Property<string>("ExcludedEnvironments")
                         .HasMaxLength(300);

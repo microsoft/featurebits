@@ -35,7 +35,7 @@ namespace FeatureBits.Data
         /// <summary>
         /// The exact allowed permission level for this feature to be enabled.
         /// </summary>
-        int ExactAllowedPermissionLevel { get; set; }
+        int? ExactAllowedPermissionLevel { get; set; }
 
         /// <summary>
         /// Comma-separated list of users for which the feature should be enabled. If it's not NULL it will be checked against the user for which the request 

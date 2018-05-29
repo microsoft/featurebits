@@ -37,7 +37,7 @@ namespace FeatureBits.Data.EF
         /// <summary>
         /// <see cref="IFeatureBitDefinition.ExactAllowedPermissionLevel"/>
         /// </summary>
-        public int ExactAllowedPermissionLevel { get; set; }
+        public int? ExactAllowedPermissionLevel { get; set; }
 
         /// <summary>
         /// <see cref="IFeatureBitDefinition.AllowedUsers"/>
