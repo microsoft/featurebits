@@ -33,7 +33,7 @@ namespace FeatureBits.Data.EF
             return result;
         }
 
-        public async  Task<IFeatureBitDefinition> AddAsync(IFeatureBitDefinition definition)
+        public async Task<IFeatureBitDefinition> AddAsync(IFeatureBitDefinition definition)
         {
             FeatureBitEfDefinition newEntity = definition.ToEfDefinition();
             ValidateDefinition(newEntity);
@@ -70,14 +70,18 @@ namespace FeatureBits.Data.EF
 
         public async Task UpdateAsync(IFeatureBitDefinition definition)
         {
-            DbContext.Update(definition.ToEfDefinition());
+            DbContext.Update(definition);
             await DbContext.SaveChangesAsync();
         }
 
         public async Task RemoveAsync(IFeatureBitDefinition definitionToRemove)
         {
-            DbContext.Remove(definitionToRemove.ToEfDefinition());
-            await DbContext.SaveChangesAsync();
+            var toRemove = await GetByNameAsync(definitionToRemove.Name);
+            if (toRemove != null)
+            {
+                DbContext.Remove(toRemove);
+                await DbContext.SaveChangesAsync();
+            }
         }
     }
 }
