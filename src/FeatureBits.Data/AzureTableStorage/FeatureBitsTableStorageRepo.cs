@@ -53,7 +53,7 @@ namespace FeatureBits.Data.AzureTableStorage
                 throw new DataException($"Could not update.  Feature bit with name '{definition.Name}' does not exist");
             }
             existing.Update(definition);
-            var replaceOp = TableOperation.Replace(existing.ToTableDefinition(_table.Name));
+            var replaceOp = TableOperation.Replace(existing);
             await _table.ExecuteAsync(replaceOp);
         }
 
@@ -62,15 +62,15 @@ namespace FeatureBits.Data.AzureTableStorage
             var existing = await GetExistingFeatureBit(definition);
             if (existing != null)
             {
-                await _table.ExecuteAsync(TableOperation.Delete(definition.ToTableDefinition(_table.Name)));
+                await _table.ExecuteAsync(TableOperation.Delete(existing));
             }
         }
 
-        private async Task<IFeatureBitDefinition> GetExistingFeatureBit(IFeatureBitDefinition definition)
+        private async Task<FeatureBitTableDefinition> GetExistingFeatureBit(IFeatureBitDefinition definition)
         {
             var tableDefinition = definition.ToTableDefinition(_table.Name);
             var tableResult = await _table.ExecuteAsync(TableOperation.Retrieve<FeatureBitTableDefinition>(tableDefinition.PartitionKey, tableDefinition.RowKey));
-            return (IFeatureBitDefinition)tableResult.Result;
+            return (FeatureBitTableDefinition)tableResult.Result;
         }
 
         private async Task<int> GetNextId()
@@ -83,7 +83,7 @@ namespace FeatureBits.Data.AzureTableStorage
             do
             {
                 var resultSegment = await _table.ExecuteQuerySegmentedAsync(projectionQuery, resolver, token, null, null);
-                var currentMax = resultSegment.Results?.Max() ?? maxInt;
+                var currentMax = resultSegment.Results.Count > 0 ? resultSegment.Results.Max() : maxInt;
                 maxInt = Math.Max(currentMax, maxInt);
                 token = resultSegment.ContinuationToken;
             }
