@@ -17,7 +17,7 @@ namespace Dotnet.FBit
     {
         public static int Main(string[] args)
         {
-            return Parser.Default.ParseArguments<GenerateOptions, AddOptions>(args)
+            return Parser.Default.ParseArguments<GenerateOptions, AddOptions, RemoveOptions>(args)
                 .MapResult(
                     (GenerateOptions opts) => RunGenerateAndReturnExitCode(opts).Result,
                     (AddOptions opts) => RunAddAndReturnExitCode(opts).Result,
