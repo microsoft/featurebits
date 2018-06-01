@@ -13,19 +13,19 @@ namespace Dotnet.FBit.CommandOptions
         /// <summary>
         /// Connection string to the SQL database storing the feature bits
         /// </summary>
-        [Option('s', "sql-connectionstring", Required = true, HelpText = "Connection string to the SQL database storing the feature bits", SetName = "SQL")]
+        [Option('s', "sqlconnectionstring", Required = true, HelpText = "Connection string to the SQL database storing the feature bits", SetName = "SQL")]
         public string DatabaseConnectionString { get; set; }
 
         /// <summary>
         /// Connection string to the Azure Table storing the feature bits
         /// </summary>
-        [Option('a', "table-connectionstring", Required = true, HelpText = "Connection string to the Azure Table storing the feature bits", SetName = "ATS")]
+        [Option('a', "tableconnectionstring", Required = true, HelpText = "Connection string to the Azure Table storing the feature bits", SetName = "ATS")]
         public string AzureTableConnectionString { get; set; }
 
         /// <summary>
         /// Override for Azure Table Storage table name
         /// </summary>
-        [Option('t', "azure-table-name", Required = false, HelpText = "Override for the Azure Table name.  Defaults to 'featurebits'", SetName = "ATS")]
+        [Option('t', "azuretablename", Required = false, HelpText = "Override for the Azure Table name.  Defaults to 'featurebits'", SetName = "ATS")]
         public string AzureTableName { get; set; } = "featurebits";
     }
 }

@@ -193,7 +193,6 @@ namespace FeatureBits.Core.Test
             var repo = Substitute.For<IFeatureBitsRepo>();
             repo.GetAllAsync().Returns(Task.FromResult((IEnumerable<IFeatureBitDefinition>) response));
             var it = new FeatureBitEvaluator(repo);
-            
             return it;
         }
     }

@@ -83,7 +83,7 @@ namespace FeatureBits.Data.AzureTableStorage
             do
             {
                 var resultSegment = await _table.ExecuteQuerySegmentedAsync(projectionQuery, resolver, token, null, null);
-                var currentMax = resultSegment.Results.Count > 0 ? resultSegment.Results.Max() : maxInt;
+                var currentMax = resultSegment.Results.Any() ? resultSegment.Results.Max() : maxInt;
                 maxInt = Math.Max(currentMax, maxInt);
                 token = resultSegment.ContinuationToken;
             }
