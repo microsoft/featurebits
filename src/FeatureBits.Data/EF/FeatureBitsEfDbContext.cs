@@ -3,12 +3,12 @@
 
 using Microsoft.EntityFrameworkCore;
 
-namespace FeatureBits.Data
+namespace FeatureBits.Data.EF
 {
     public class FeatureBitsEfDbContext : DbContext
     {
         public FeatureBitsEfDbContext(DbContextOptions<FeatureBitsEfDbContext> options) : base(options) { }
 
-        public DbSet<FeatureBitDefinition> FeatureBitDefinitions { get; set; }
+        public DbSet<FeatureBitEfDefinition> FeatureBitDefinitions { get; set; }
     }
 }

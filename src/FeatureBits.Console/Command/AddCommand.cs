@@ -28,7 +28,7 @@ namespace Dotnet.FBit.Command
             int returnValue = 0;
             try
             {
-                FeatureBitDefinition newBit = BuildBit();
+                IFeatureBitDefinition newBit = BuildBit();
                 await _repo.AddAsync(newBit);
                 SystemContext.ConsoleWriteLine("Feature bit added.");
             }
@@ -45,22 +45,21 @@ namespace Dotnet.FBit.Command
             return returnValue;
         }
 
-        public FeatureBitDefinition BuildBit()
+        public IFeatureBitDefinition BuildBit()
         {
             var now = SystemContext.Now();
             var username = SystemContext.GetEnvironmentVariable("USERNAME");
-            return new FeatureBitDefinition
+            return new CommandFeatureBitDefintion
             {
                 Name = _opts.Name,
-                RowKey = _opts.Name,
-                PartitionKey = _opts.AzureStorageTableName,
                 CreatedDateTime = now,
                 LastModifiedDateTime = now,
                 CreatedByUser = username,
                 LastModifiedByUser = username,
                 OnOff = _opts.OnOff,
                 ExcludedEnvironments = _opts.ExcludedEnvironments,
-                MinimumAllowedPermissionLevel = _opts.PermissionLevel
+                MinimumAllowedPermissionLevel = _opts.MinimumPermissionLevel,
+                ExactAllowedPermissionLevel = _opts.ExactPermissionLevel
             };
         }
 

@@ -10,7 +10,7 @@ namespace FeatureBitsData.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "FeatureBitDefinitions",
+                name: "IFeatureBitDefinitions",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -27,14 +27,14 @@ namespace FeatureBitsData.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FeatureBitDefinitions", x => x.Id);
+                    table.PrimaryKey("PK_IFeatureBitDefinitions", x => x.Id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "FeatureBitDefinitions");
+                name: "IFeatureBitDefinitions");
         }
     }
 }

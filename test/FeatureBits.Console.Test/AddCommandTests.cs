@@ -54,10 +54,10 @@ namespace FeatureBits.Console.Test
             // Arrange
             var sb = new StringBuilder();
             SystemContext.ConsoleWriteLine = s => sb.Append(s);
-            var bit = new FeatureBitDefinition {Name = "foo"};
+            var bit = new CommandFeatureBitDefintion {Name = "foo"};
             var opts = new AddOptions{Name = "foo"};
             var repo = Substitute.For<IFeatureBitsRepo>();
-            repo.AddAsync(bit).Returns(Task.FromResult(bit));
+            repo.AddAsync(bit).Returns(Task.FromResult((IFeatureBitDefinition)bit));
             
             var it = new AddCommand(opts, repo);
 
@@ -77,7 +77,7 @@ namespace FeatureBits.Console.Test
             SystemContext.ConsoleErrorWriteLine = s => sb.Append(s);
             var opts = new AddOptions{Name = "foo"};
             var repo = Substitute.For<IFeatureBitsRepo>();
-            repo.AddAsync(Arg.Any<FeatureBitDefinition>()).Returns<Task<FeatureBitDefinition>>(x => throw new Exception("Yow!"));
+            repo.AddAsync(Arg.Any<IFeatureBitDefinition>()).Returns<Task<IFeatureBitDefinition>>(x => throw new Exception("Yow!"));
             
             var it = new AddCommand(opts, repo);
 
@@ -104,7 +104,7 @@ namespace FeatureBits.Console.Test
                 Name = "foo",
                 OnOff = true,
                 ExcludedEnvironments = "QA,Production",
-                PermissionLevel = 20
+                MinimumPermissionLevel = 20
             };
             var repo = Substitute.For<IFeatureBitsRepo>();
             
@@ -131,7 +131,7 @@ namespace FeatureBits.Console.Test
             SystemContext.ConsoleErrorWriteLine = s => sb.Append(s);
             var opts = new AddOptions{Name = "foo"};
             var repo = Substitute.For<IFeatureBitsRepo>();
-            repo.AddAsync(Arg.Any<FeatureBitDefinition>()).Returns<Task<FeatureBitDefinition>>(x => throw new DataException("Cannot add. Feature bit with name 'foo' already exists."));
+            repo.AddAsync(Arg.Any<IFeatureBitDefinition>()).Returns<Task<IFeatureBitDefinition>>(x => throw new DataException("Cannot add. Feature bit with name 'foo' already exists."));
 
             var it = new AddCommand(opts, repo);
 
@@ -151,7 +151,7 @@ namespace FeatureBits.Console.Test
             SystemContext.ConsoleErrorWriteLine = s => sb.Append(s);
             var opts = new AddOptions{Name = "foo"};
             var repo = Substitute.For<IFeatureBitsRepo>();
-            repo.AddAsync(Arg.Any<FeatureBitDefinition>()).Returns<Task<FeatureBitDefinition>>(x => throw new DataException("Some random DataException."));
+            repo.AddAsync(Arg.Any<IFeatureBitDefinition>()).Returns<Task<IFeatureBitDefinition>>(x => throw new DataException("Some random DataException."));
 
             var it = new AddCommand(opts, repo);
 
@@ -171,10 +171,10 @@ namespace FeatureBits.Console.Test
             SystemContext.ConsoleWriteLine = s => sb.Append(s);
             var opts = new AddOptions{Name = "foo", Force = true};
             var repo = Substitute.For<IFeatureBitsRepo>();
-            repo.AddAsync(Arg.Any<FeatureBitDefinition>()).Returns<Task<FeatureBitDefinition>>(x => throw new DataException("Cannot add. Feature bit with name 'foo' already exists."));
+            repo.AddAsync(Arg.Any<IFeatureBitDefinition>()).Returns<Task<IFeatureBitDefinition>>(x => throw new DataException("Cannot add. Feature bit with name 'foo' already exists."));
 
             int counter = 0;
-            repo.When(x => x.UpdateAsync(Arg.Any<FeatureBitDefinition>())).Do((x => counter++));
+            repo.When(x => x.UpdateAsync(Arg.Any<IFeatureBitDefinition>())).Do((x => counter++));
             
             var it = new AddCommand(opts, repo);
 

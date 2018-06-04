@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using FeatureBits.Data.EF;
 using FluentAssertions;
 using Xunit;
 
@@ -15,7 +16,7 @@ namespace FeatureBits.Data.Test
         public void It_has_certain_properties()
         {
             // Arrange
-            var it = new FeatureBitDefinition
+            var it = new FeatureBitEfDefinition
             {
                 ExcludedEnvironments = "foo",
                 LastModifiedByUser = "bar",
@@ -41,7 +42,7 @@ namespace FeatureBits.Data.Test
         public void It_requires_certain_properties()
         {
             // Arrange
-            var it = new FeatureBitDefinition();
+            var it = new FeatureBitEfDefinition();
             var validationResults = new List<ValidationResult>();
 
             // Act
@@ -57,7 +58,7 @@ namespace FeatureBits.Data.Test
         public void It_has_MaxLength_for_certain_properties()
         {
             // Arrange
-            var it = new FeatureBitDefinition{ Name = "foo", CreatedByUser = "bar", LastModifiedByUser = "bat"};
+            var it = new FeatureBitEfDefinition { Name = "foo", CreatedByUser = "bar", LastModifiedByUser = "bat"};
             it.Name = new string('*', 101);
             it.ExcludedEnvironments = new string('*', 301);
             it.AllowedUsers = new string('*', 2049);

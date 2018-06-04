@@ -13,13 +13,13 @@ namespace Dotnet.FBit.CommandOptions
         /// <summary>
         /// Connection string to the SQL database storing the feature bits
         /// </summary>
-        [Option('c', "sqlconnectionstring", Required = true, HelpText = "Connection string to the SQL database storing the feature bits", SetName = "SQL")]
+        [Option('s', "sqlconnectionstring", Required = true, HelpText = "Connection string to the SQL database storing the feature bits", SetName = "SQL")]
         public string DatabaseConnectionString { get; set; }
 
         /// <summary>
         /// Connection string to the Azure Table storing the feature bits
         /// </summary>
-        [Option('c', "tableconnectionstring", Required = true, HelpText = "Connection string to the Azure Table storing the feature bits", SetName = "ATS")]
+        [Option('a', "tableconnectionstring", Required = true, HelpText = "Connection string to the Azure Table storing the feature bits", SetName = "ATS")]
         public string AzureTableConnectionString { get; set; }
 
         /// <summary>

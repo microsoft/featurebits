@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using FeatureBits.Data.EF;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FeatureBits.Data.WebApi.Test.Controllers
@@ -18,7 +19,7 @@ namespace FeatureBits.Data.WebApi.Test.Controllers
 
         // GET api/featurebitdefinitions
         [HttpGet]
-        public IEnumerable<FeatureBitDefinition> Get()
+        public IEnumerable<IFeatureBitDefinition> Get()
         {
             return _context.FeatureBitDefinitions;
         }

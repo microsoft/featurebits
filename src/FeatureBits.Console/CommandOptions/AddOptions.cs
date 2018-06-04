@@ -32,8 +32,14 @@ namespace Dotnet.FBit.CommandOptions
         /// <summary>
         /// Minimum permission level required for this feature to be turned on. (integer)
         /// </summary>
-        [Option('p', "permission-level", HelpText = "Minimum permission level required for this feature to be turned on. (integer)")]
-        public int PermissionLevel { get; set; }
+        [Option('p', "minimum-permission-level", HelpText = "Minimum permission level required for this feature to be turned on. (integer)")]
+        public int MinimumPermissionLevel { get; set; }
+
+        /// <summary>
+        /// Exact permission level required for this feature to be turned on. (integer)
+        /// </summary>
+        [Option("exact-permission-level", HelpText = "Minimum permission level required for this feature to be turned on. (integer)")]
+        public int ExactPermissionLevel { get; set; }
 
         /// <summary>
         /// Specifies whether the feature bit should be blanket on or off.

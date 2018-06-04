@@ -54,8 +54,8 @@ namespace FeatureBits.Console.Test
             SystemContext.ConsoleWriteLine = s => sb.Append(s);
             var opts = new RemoveOptions{Name = "foo"};
             var repo = Substitute.For<IFeatureBitsRepo>();
-            repo.GetByNameAsync("foo").Returns(Task.FromResult(new FeatureBitDefinition { Name = "foo", Id = 5}));
-            repo.RemoveAsync(Arg.Any<FeatureBitDefinition>());
+            repo.GetByNameAsync("foo").Returns(Task.FromResult((IFeatureBitDefinition)new CommandFeatureBitDefintion { Name = "foo", Id = 5}));
+            repo.RemoveAsync(Arg.Any<IFeatureBitDefinition>());
             var it = new RemoveCommand(opts, repo);
 
             // Act
@@ -64,7 +64,7 @@ namespace FeatureBits.Console.Test
             // Assert
             result.Should().Be(0);
             repo.Received().GetByNameAsync("foo");
-            repo.Received().RemoveAsync(Arg.Any<FeatureBitDefinition>());
+            repo.Received().RemoveAsync(Arg.Any<IFeatureBitDefinition>());
             sb.ToString().Should().Be("Feature bit removed.");
         }
 
@@ -76,7 +76,7 @@ namespace FeatureBits.Console.Test
             SystemContext.ConsoleErrorWriteLine = s => sb.Append(s);
             var opts = new RemoveOptions{Name = "foo"};
             var repo = Substitute.For<IFeatureBitsRepo>();
-            repo.GetByNameAsync("foo").Returns(Task.FromResult( (FeatureBitDefinition) null ));
+            repo.GetByNameAsync("foo").Returns(Task.FromResult( (IFeatureBitDefinition) null ));
             var it = new RemoveCommand(opts, repo);
 
             // Act

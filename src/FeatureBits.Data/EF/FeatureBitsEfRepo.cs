@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace FeatureBits.Data
+namespace FeatureBits.Data.EF
 {
     public class FeatureBitsEfRepo : IFeatureBitsRepo
     {
@@ -21,31 +21,32 @@ namespace FeatureBits.Data
             DbContext = dbContext;
         }
 
-        public async Task<IEnumerable<FeatureBitDefinition>> GetAllAsync()
+        public async Task<IEnumerable<IFeatureBitDefinition>> GetAllAsync()
         {
             return await DbContext.FeatureBitDefinitions.ToListAsync();
         }
 
-        public async Task<FeatureBitDefinition> GetByNameAsync(string featureBitName)
+        public async Task<IFeatureBitDefinition> GetByNameAsync(string featureBitName)
         {
             var result = await DbContext.FeatureBitDefinitions.FirstOrDefaultAsync(definition =>
                 definition.Name == featureBitName);
             return result;
         }
 
-        public async  Task<FeatureBitDefinition> AddAsync(FeatureBitDefinition definition)
+        public async Task<IFeatureBitDefinition> AddAsync(IFeatureBitDefinition definition)
         {
-            ValidateDefinition(definition);
+            FeatureBitEfDefinition newEntity = definition.ToEfDefinition();
+            ValidateDefinition(newEntity);
 
-            await MakeSureAFeatureBitWithThatNameDoesNotExist(definition);
+            await MakeSureAFeatureBitWithThatNameDoesNotExist(newEntity);
 
-            var entity = await DbContext.FeatureBitDefinitions.AddAsync(definition);
+            var entity = await DbContext.FeatureBitDefinitions.AddAsync(newEntity);
             await DbContext.SaveChangesAsync();
 
             return entity.Entity;
         }
 
-        private async Task MakeSureAFeatureBitWithThatNameDoesNotExist(FeatureBitDefinition definition)
+        private async Task MakeSureAFeatureBitWithThatNameDoesNotExist(FeatureBitEfDefinition definition)
         {
             var existenceCheck = await DbContext.FeatureBitDefinitions.FirstOrDefaultAsync(fb => fb.Name == definition.Name);
             if (existenceCheck != null)
@@ -54,7 +55,7 @@ namespace FeatureBits.Data
             }
         }
 
-        private static void ValidateDefinition(FeatureBitDefinition definition)
+        private static void ValidateDefinition(FeatureBitEfDefinition definition)
         {
             var validationResults = new List<ValidationResult>();
             Validator.TryValidateObject(definition, new ValidationContext(definition), validationResults, true);
@@ -67,16 +68,20 @@ namespace FeatureBits.Data
             }
         }
 
-        public async Task UpdateAsync(FeatureBitDefinition definition)
+        public async Task UpdateAsync(IFeatureBitDefinition definition)
         {
             DbContext.Update(definition);
             await DbContext.SaveChangesAsync();
         }
 
-        public async Task RemoveAsync(FeatureBitDefinition definitionToRemove)
+        public async Task RemoveAsync(IFeatureBitDefinition definitionToRemove)
         {
-            DbContext.Remove(definitionToRemove);
-            await DbContext.SaveChangesAsync();
+            var toRemove = await GetByNameAsync(definitionToRemove.Name);
+            if (toRemove != null)
+            {
+                DbContext.Remove(toRemove);
+                await DbContext.SaveChangesAsync();
+            }
         }
     }
 }
