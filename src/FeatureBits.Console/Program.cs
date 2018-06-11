@@ -1,6 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO.Abstractions;
 using System.Threading.Tasks;
 using CommandLine;
@@ -17,7 +20,9 @@ namespace Dotnet.FBit
     {
         public static int Main(string[] args)
         {
-            return Parser.Default.ParseArguments<GenerateOptions, AddOptions, RemoveOptions>(args)
+            List<string> argsAsList = new List<string>(args);
+            argsAsList.AddRange(FindUserSecrets());
+            return Parser.Default.ParseArguments<GenerateOptions, AddOptions, RemoveOptions>(argsAsList)
                 .MapResult(
                     (GenerateOptions opts) => RunGenerateAndReturnExitCode(opts).Result,
                     (AddOptions opts) => RunAddAndReturnExitCode(opts).Result,
@@ -27,15 +32,15 @@ namespace Dotnet.FBit
 
         private static async Task<int> RunGenerateAndReturnExitCode(GenerateOptions opts)
         {
-            var repo = GetCorrectRepo(opts);
+            var repo = GetCorrectRepository(opts);
             var cmd = new GenerateCommand(opts, repo, new FileSystem());
             var result = await cmd.RunAsync();
-            return result == false ? 1 : 0;
+            return !result ? 1 : 0;
         }
 
         private static async Task<int> RunAddAndReturnExitCode(AddOptions opts)
         {
-            var repo = GetCorrectRepo(opts);
+            var repo = GetCorrectRepository(opts);
             var cmd = new AddCommand(opts, repo);
             int result = await cmd.RunAsync();
             return result;
@@ -43,13 +48,13 @@ namespace Dotnet.FBit
 
         private static async Task<int> RunRemoveAndReturnExitCode(RemoveOptions opts)
         {
-            var repo = GetCorrectRepo(opts);
+            var repo = GetCorrectRepository(opts);
             var cmd = new RemoveCommand(opts, repo);
             int result = await cmd.RunAsync();
             return result;
         }
 
-        private static IFeatureBitsRepo GetCorrectRepo(CommonOptions opts)
+        private static IFeatureBitsRepo GetCorrectRepository(CommonOptions opts)
         {
             IFeatureBitsRepo repo;
             bool useTable = string.IsNullOrEmpty(opts.DatabaseConnectionString);
@@ -71,11 +76,39 @@ namespace Dotnet.FBit
             return repo;
         }
 
-        private static DbContextOptionsBuilder<FeatureBitsEfDbContext> GetDbContextOptionsBuilder(GenerateOptions opts)
+        /// <summary>
+        /// Add the user secrets from the project referencing the NuGet package
+        /// </summary>
+        /// <returns>Additional strings to be considered as program arguments</returns>
+        private static IEnumerable<string> FindUserSecrets()
         {
-            DbContextOptionsBuilder<FeatureBitsEfDbContext> options = new DbContextOptionsBuilder<FeatureBitsEfDbContext>();
-            options.UseSqlServer(opts.DatabaseConnectionString);
-            return options;
+            Process p = new Process();
+            p.StartInfo.WorkingDirectory = Environment.CurrentDirectory;
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.FileName = "dotnet";
+            p.StartInfo.Arguments = "user-secrets list";
+            p.Start();
+            p.WaitForExit();
+            string cmdOutput = p.StandardOutput.ReadToEnd();
+            string[] userSecrets = cmdOutput.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+            List<string> fbitUserSecrets = new List<string>(userSecrets.Length);
+            const string equalDelimiter = " = ";
+            const string fbitDelimiter = "fbit:";
+            foreach (string secret in userSecrets)
+            {
+                if(!secret.StartsWith(fbitDelimiter))
+                {
+                    continue;
+                }
+
+                int equalDelimiterIndex = secret.IndexOf(equalDelimiter);
+                string argument = secret.Substring(fbitDelimiter.Length, equalDelimiterIndex - fbitDelimiter.Length);
+                string argumentValue = secret.Substring(equalDelimiterIndex + equalDelimiter.Length);
+                fbitUserSecrets.AddRange(new[] { argument, argumentValue});
+            }
+
+            return fbitUserSecrets;
         }
     }
 }
