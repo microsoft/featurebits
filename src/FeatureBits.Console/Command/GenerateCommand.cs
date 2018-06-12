@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
@@ -21,7 +20,7 @@ namespace Dotnet.FBit.Command
         private readonly IFeatureBitsRepo _repo;
         private readonly IFileSystem _fileSystem;
         private readonly GenerateOptions _options;
-        public StringBuilder FileContent = new StringBuilder(600);
+        public StringBuilder FileContent { get; set; } = new StringBuilder(600);
 
         /// <summary>
         /// File system interface to read/write files 
@@ -114,7 +113,7 @@ namespace {0}
         {
             if (string.IsNullOrWhiteSpace(fileNamespace))
             {
-                string namespaceToUse = GetDefaultNamespace(outputFile.Directory);
+                string namespaceToUse = ProjectFileHelper.GetDefaultNamespace(outputFile.Directory);
                 fileNamespace = namespaceToUse;
             }
 
@@ -130,69 +129,6 @@ namespace {0}
         {
             FileInfoBase outputFile = _fileSystem.FileInfo.FromFileName(_options.OutputFileName);
             return outputFile;
-        }
-
-        public string GetDefaultNamespace(DirectoryInfoBase directory)
-        {
-            FileInfoBase[] fileInfos = FindAllCsprojFiles(directory);
-
-            FileInfoBase fileToSearch = ChooseCsproj(fileInfos);
-
-            string nameSpace = GetNamespaceFromCsproj(fileToSearch);
-
-            return nameSpace;
-        }
-
-        private static FileInfoBase[] FindAllCsprojFiles(DirectoryInfoBase directory)
-        {
-            FileInfoBase[] fileInfos = directory.GetFiles("*.csproj", SearchOption.TopDirectoryOnly);
-            if (fileInfos.Length == 0)
-            {
-                SystemContext.ConsoleErrorWriteLine(
-                    "No csproj file found for default namespace. Please specify a namespace as a command argument.");
-                throw new FileNotFoundException();
-            }
-
-            return fileInfos;
-        }
-
-        private static FileInfoBase ChooseCsproj(FileInfoBase[] fileInfos)
-        {
-            if (fileInfos.Length > 1)
-            {
-                SystemContext.ConsoleWriteLine("Multiple csproj files found for namespace, using the first one.");
-            }
-
-            var fileToSearch = fileInfos[0];
-            return fileToSearch;
-        }
-
-        private string GetNamespaceFromCsproj(FileInfoBase fileToSearch)
-        {
-            string nameSpace;
-            using (var fr = fileToSearch.OpenRead())
-            {
-                var sr = new StreamReader(fr);
-                string fileContents = sr.ReadToEnd();
-
-                // Look for a <RootNamespace> tag
-                string openingTag = "<RootNamespace>";
-                string closingTag = "</RootNamespace>";
-                int openingIndex = fileContents.IndexOf(openingTag, StringComparison.Ordinal);
-                if (openingIndex > -1)
-                {
-                    int closingIndex =
-                        fileContents.IndexOf(closingTag, openingIndex + openingTag.Length, StringComparison.Ordinal);
-                    int substringStartingIndex = openingIndex + openingTag.Length;
-                    nameSpace = fileContents.Substring(substringStartingIndex, closingIndex - substringStartingIndex);
-                }
-                else
-                {
-                    nameSpace = _fileSystem.Path.GetFileNameWithoutExtension(fileToSearch.Name);
-                }
-            }
-
-            return nameSpace;
         }
     }
 }

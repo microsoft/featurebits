@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
+using System;
+using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Threading.Tasks;
 using CommandLine;
@@ -10,6 +12,7 @@ using FeatureBits.Data;
 using FeatureBits.Data.AzureTableStorage;
 using FeatureBits.Data.EF;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Dotnet.FBit
 {
@@ -17,7 +20,9 @@ namespace Dotnet.FBit
     {
         public static int Main(string[] args)
         {
-            return Parser.Default.ParseArguments<GenerateOptions, AddOptions, RemoveOptions>(args)
+            List<string> argsAsList = new List<string>(args);
+            argsAsList.AddRange(FindUserSecrets());
+            return Parser.Default.ParseArguments<GenerateOptions, AddOptions, RemoveOptions>(argsAsList)
                 .MapResult(
                     (GenerateOptions opts) => RunGenerateAndReturnExitCode(opts).Result,
                     (AddOptions opts) => RunAddAndReturnExitCode(opts).Result,
@@ -27,15 +32,15 @@ namespace Dotnet.FBit
 
         private static async Task<int> RunGenerateAndReturnExitCode(GenerateOptions opts)
         {
-            var repo = GetCorrectRepo(opts);
+            var repo = GetCorrectRepository(opts);
             var cmd = new GenerateCommand(opts, repo, new FileSystem());
             var result = await cmd.RunAsync();
-            return result == false ? 1 : 0;
+            return !result ? 1 : 0;
         }
 
         private static async Task<int> RunAddAndReturnExitCode(AddOptions opts)
         {
-            var repo = GetCorrectRepo(opts);
+            var repo = GetCorrectRepository(opts);
             var cmd = new AddCommand(opts, repo);
             int result = await cmd.RunAsync();
             return result;
@@ -43,13 +48,13 @@ namespace Dotnet.FBit
 
         private static async Task<int> RunRemoveAndReturnExitCode(RemoveOptions opts)
         {
-            var repo = GetCorrectRepo(opts);
+            var repo = GetCorrectRepository(opts);
             var cmd = new RemoveCommand(opts, repo);
             int result = await cmd.RunAsync();
             return result;
         }
 
-        private static IFeatureBitsRepo GetCorrectRepo(CommonOptions opts)
+        private static IFeatureBitsRepo GetCorrectRepository(CommonOptions opts)
         {
             IFeatureBitsRepo repo;
             bool useTable = string.IsNullOrEmpty(opts.DatabaseConnectionString);
@@ -71,11 +76,34 @@ namespace Dotnet.FBit
             return repo;
         }
 
-        private static DbContextOptionsBuilder<FeatureBitsEfDbContext> GetDbContextOptionsBuilder(GenerateOptions opts)
+        /// <summary>
+        /// Add the user secrets from the project referencing the NuGet package
+        /// </summary>
+        /// <returns>Additional strings to be considered as program arguments</returns>
+        private static IEnumerable<string> FindUserSecrets()
         {
-            DbContextOptionsBuilder<FeatureBitsEfDbContext> options = new DbContextOptionsBuilder<FeatureBitsEfDbContext>();
-            options.UseSqlServer(opts.DatabaseConnectionString);
-            return options;
+            const string fbitDelimiter = "fbit:";
+            List<string> fbitUserSecrets = new List<string>();
+            string userSecretsId = ProjectFileHelper.GetUserSecretsId(Environment.CurrentDirectory);
+            if (!string.IsNullOrWhiteSpace(userSecretsId))
+            {
+                ConfigurationBuilder builder = new ConfigurationBuilder();
+                builder.AddUserSecrets(userSecretsId);
+                IConfiguration configuration = builder.Build();
+                IConfigurationSection fbitSection = configuration.GetSection("fbit");
+                foreach (KeyValuePair<string, string> kvp in fbitSection.AsEnumerable())
+                {
+                    if (!kvp.Key.StartsWith(fbitDelimiter))
+                    {
+                        continue;
+                    }
+
+                    string argument = kvp.Key.Substring(fbitDelimiter.Length);
+                    fbitUserSecrets.AddRange(new[] { argument, kvp.Value });
+                }
+            }
+
+            return fbitUserSecrets;
         }
     }
 }
