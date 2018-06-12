@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
@@ -26,7 +25,6 @@ namespace FeatureBits.Console.Test
             new CommandFeatureBitDefintion {Name = "bat", Id = 3},
         };
 
-        
         [Fact]
         public void It_can_be_created()
         {
@@ -107,88 +105,6 @@ namespace FeatureBits.Console.Test
             // Assert
             result.Should().BeFalse();
             sb.ToString().Should().Be("Output file already exists.");
-        }
-
-        [Fact]
-        public void It_throws_FileNotFoundException_if_GetDefaultNamespace_cannot_find_csproj()
-        {
-            // Arrange
-            var opts = new GenerateOptions();
-
-            // Arrange Mocks
-            var sb = new StringBuilder();
-            SystemContext.ConsoleErrorWriteLine = s => sb.Append(s);
-            var repo = Substitute.For<IFeatureBitsRepo>();
-            var filesystem = Substitute.For<IFileSystem>();
-            var directory = Substitute.For<DirectoryInfoBase>();
-            directory.GetFiles("*.csproj", SearchOption.TopDirectoryOnly).Returns(info => new FileInfoBase[] { });
-
-            // Arrange IT
-            var it = new GenerateCommand(opts, repo, filesystem);
-
-            // Act
-            Action act = () => it.GetDefaultNamespace(directory);
-            
-
-            // Assert
-            act.Should().Throw<FileNotFoundException>();
-            sb.ToString().Should().Be("No csproj file found for default namespace. Please specify a namespace as a command argument.");
-        }
-
-        [Fact]
-        public void It_can_GetDefaultNamespace_even_if_it_finds_too_many_csproj_files()
-        {
-            // Arrange
-            var opts = new GenerateOptions();
-
-            // Arrange Mocks
-            var sb = new StringBuilder();
-            SystemContext.ConsoleWriteLine = s => sb.Append(s);
-            var repo = Substitute.For<IFeatureBitsRepo>();
-            var filesystem = Substitute.For<IFileSystem>();
-            var directory = Substitute.For<DirectoryInfoBase>();
-            var result1 = Substitute.For<FileInfoBase>();
-            var result2 = Substitute.For<FileInfoBase>();
-            var filecontent = "<RootNamespace>Foo</RootNamespace>";
-            directory.GetFiles("*.csproj", SearchOption.TopDirectoryOnly).Returns(info => new[] { result1, result2 });
-            result1.OpenRead().Returns(info => StringToStream(filecontent));
-
-            // Arrange IT
-            var it = new GenerateCommand(opts, repo, filesystem);
-
-            // Act
-            var result = it.GetDefaultNamespace(directory);
-
-            // Assert
-            result.Should().Be("Foo");
-            sb.ToString().Should().Be("Multiple csproj files found for namespace, using the first one.");
-        }
-
-        [Fact]
-        public void It_can_GetDefaultNamespace_even_if_the_rootNamespace_is_not_found_in_csproj()
-        {
-            // Arrange
-            var opts = new GenerateOptions();
-
-            // Arrange Mocks
-            var repo = Substitute.For<IFeatureBitsRepo>();
-            var filesystem = Substitute.For<IFileSystem>();
-            var directory = Substitute.For<DirectoryInfoBase>();
-            var result1 = Substitute.For<FileInfoBase>();
-            var filecontent = "Sorry no namespace here";
-            directory.GetFiles("*.csproj", SearchOption.TopDirectoryOnly).Returns(info => new[] { result1  });
-            result1.OpenRead().Returns(info => StringToStream(filecontent));
-            result1.Name.Returns("bar.csproj");
-            filesystem.Path.GetFileNameWithoutExtension("bar.csproj").Returns("bar");
-
-            // Arrange IT
-            var it = new GenerateCommand(opts, repo, filesystem);
-
-            // Act
-            var result = it.GetDefaultNamespace(directory);
-
-            // Assert
-            result.Should().Be("bar");
         }
 
         [Fact]
@@ -311,6 +227,5 @@ namespace FeatureBits.Console.Test
             stream.Position = 0;
             return stream;
         }
-
     }
 }

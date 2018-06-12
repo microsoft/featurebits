@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO.Abstractions;
 using System.Threading.Tasks;
 using CommandLine;
@@ -13,6 +12,7 @@ using FeatureBits.Data;
 using FeatureBits.Data.AzureTableStorage;
 using FeatureBits.Data.EF;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Dotnet.FBit
 {
@@ -82,30 +82,25 @@ namespace Dotnet.FBit
         /// <returns>Additional strings to be considered as program arguments</returns>
         private static IEnumerable<string> FindUserSecrets()
         {
-            Process p = new Process();
-            p.StartInfo.WorkingDirectory = Environment.CurrentDirectory;
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.RedirectStandardOutput = true;
-            p.StartInfo.FileName = "dotnet";
-            p.StartInfo.Arguments = "user-secrets list";
-            p.Start();
-            p.WaitForExit();
-            string cmdOutput = p.StandardOutput.ReadToEnd();
-            string[] userSecrets = cmdOutput.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
-            List<string> fbitUserSecrets = new List<string>(userSecrets.Length);
-            const string equalDelimiter = " = ";
             const string fbitDelimiter = "fbit:";
-            foreach (string secret in userSecrets)
+            List<string> fbitUserSecrets = new List<string>();
+            string userSecretsId = ProjectFileHelper.GetUserSecretsId(Environment.CurrentDirectory);
+            if (!string.IsNullOrWhiteSpace(userSecretsId))
             {
-                if(!secret.StartsWith(fbitDelimiter))
+                ConfigurationBuilder builder = new ConfigurationBuilder();
+                builder.AddUserSecrets(userSecretsId);
+                IConfiguration configuration = builder.Build();
+                IConfigurationSection fbitSection = configuration.GetSection("fbit");
+                foreach (KeyValuePair<string, string> kvp in fbitSection.AsEnumerable())
                 {
-                    continue;
-                }
+                    if (!kvp.Key.StartsWith(fbitDelimiter))
+                    {
+                        continue;
+                    }
 
-                int equalDelimiterIndex = secret.IndexOf(equalDelimiter);
-                string argument = secret.Substring(fbitDelimiter.Length, equalDelimiterIndex - fbitDelimiter.Length);
-                string argumentValue = secret.Substring(equalDelimiterIndex + equalDelimiter.Length);
-                fbitUserSecrets.AddRange(new[] { argument, argumentValue});
+                    string argument = kvp.Key.Substring(fbitDelimiter.Length);
+                    fbitUserSecrets.AddRange(new[] { argument, kvp.Value });
+                }
             }
 
             return fbitUserSecrets;
