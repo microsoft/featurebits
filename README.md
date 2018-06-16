@@ -5,7 +5,7 @@
 FeatureBits is a feature toggling system meant to support multiple platforms. 
 
 ## Features (no pun intended)
-* Currently supports SQL Server, Azure SQL Database, and Azure Data Tables
+* FeatureBits can be used in .NET Core, and via your own Web API, through TypeScript/Angular. Currently supports SQL Server, Azure SQL Database, and Azure Data Tables on the back end.
 
 ## Limitations
 * Azure Data Tables only lightly tested so far (see CONTRIBUTING.md to learn how you can help extend to other data platforms)
