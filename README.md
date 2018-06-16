@@ -1,23 +1,23 @@
 [![Build Status](https://ciog6.visualstudio.com/_apis/public/build/definitions/caa4674f-bfe7-4029-b620-272567a1e4d7/57/badge)](https://ciog6.visualstudio.com/SID/_build/index?definitionId=57)
 
-# FeatureBitsDataStore
+# FeatureBits
 
-This project supports the FeatureBits open source feature toggling package with various ways to storing and retrieving Feature Bit definitions.
+FeatureBits is a feature toggling system meant to support multiple platforms. 
 
-## Features
-* Supports SQL Server and Azure SQL Database
+## Features (no pun intended)
+* Currently supports SQL Server, Azure SQL Database, and Azure Data Tables
 
 ## Limitations
-* Currently ONLY supports SQL Server and Azure SQL Database (see CONTRIBUTING.md to learn how you can help extend to other data platforms)
+* Azure Data Tables only lightly tested so far (see CONTRIBUTING.md to learn how you can help extend to other data platforms)
 
 ## Current Status
-Private Preview
+Public
 
 ## Contributing
 See CONTRIBUTING.md and review the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 
 ## Description
-This package uses SQL server and you will need access to a SQL Server or Azure SQL in order to use it. For additional information, please contact doug.seelinger@microsoft.com.
+Feature Toggling is important to support Continuous Integration/Continuous Deployment. Features that may be experimental or incomplete can be hidden behind a FeatureBit for some, most, or all users. FeatureBits currently supports both .NET Core and TypeScript/Angular. 
 
 ## Reporting Security Issues
 
