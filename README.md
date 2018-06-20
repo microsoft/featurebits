@@ -1,4 +1,4 @@
-[![Build Status](https://ciog6.visualstudio.com/_apis/public/build/definitions/caa4674f-bfe7-4029-b620-272567a1e4d7/57/badge)](https://ciog6.visualstudio.com/SID/_build/index?definitionId=57)
+[![Build Status](https://arcyber.visualstudio.com/_apis/public/build/definitions/caa4674f-bfe7-4029-b620-272567a1e4d7/57/badge)](https://arcyber.visualstudio.com/CoolBridge/CoolBridge%20Team/_build/index?definitionId=57)
 
 # FeatureBits
 
