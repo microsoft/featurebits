@@ -30,7 +30,7 @@ namespace FeatureBits.Data.AzureTableStorage
                 token = resultSegment.ContinuationToken;
 
             } while (token != null);
-            return results.Select(x => (IFeatureBitDefinition)x).ToList();
+            return results.OrderBy(x => x.Id).Select(x => (IFeatureBitDefinition)x).ToList();
         }
 
         public async Task<IFeatureBitDefinition> AddAsync(IFeatureBitDefinition definition)
