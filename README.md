@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/v3inx358w36q49wl/branch/master?svg=true)](https://ci.appveyor.com/project/ynauls/featurebits/branch/master)
+
 # FeatureBits
 
 FeatureBits is a feature toggling system meant to support multiple platforms. 
