@@ -11,7 +11,7 @@ namespace FeatureBits.Data.AzureTableStorage
     public class FeatureBitsTableStorageRepo : IFeatureBitsRepo
     {
         private readonly CloudTable _table;
-        public FeatureBitsTableStorageRepo(string connectionString, string tableName)
+        public FeatureBitsTableStorageRepo(string connectionString, string tableName = "featurebits")
         {
             _table = CloudStorageAccount.Parse(connectionString)
                 .CreateCloudTableClient()
@@ -30,7 +30,7 @@ namespace FeatureBits.Data.AzureTableStorage
                 token = resultSegment.ContinuationToken;
 
             } while (token != null);
-            return results.Select(x => (IFeatureBitDefinition)x).ToList();
+            return results.OrderBy(x => x.Id).Select(x => (IFeatureBitDefinition)x).ToList();
         }
 
         public async Task<IFeatureBitDefinition> AddAsync(IFeatureBitDefinition definition)
