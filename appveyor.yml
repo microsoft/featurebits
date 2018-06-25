@@ -1,0 +1,47 @@
+# https://www.appveyor.com/docs/appveyor-yml/
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+# version format
+version: '0.1.{build}'          
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+# Build worker image (VM template)
+image: Visual Studio 2017
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+platform: Any CPU
+
+# build Configuration, i.e. Debug, Release, etc.
+configuration: Debug
+
+before_build:
+- cmd: set ASPNETCORE_ENVIRONMENT=LocalDevelopment
+- cmd: dotnet restore
+
+build:
+  # enable MSBuild parallel builds
+  parallel: true   
+  # path to Visual Studio solution or project               
+  project: FeatureBits.sln      
+  # MSBuild verbosity level
+  verbosity: minimal
+
+#---------------------------------#
+#       tests configuration       #
+#---------------------------------#
+
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
+
+#---------------------------------#
+#     deployment configuration    #
+#---------------------------------#
