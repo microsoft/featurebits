@@ -11,7 +11,7 @@ namespace FeatureBits.Data.AzureTableStorage
     public class FeatureBitsTableStorageRepo : IFeatureBitsRepo
     {
         private readonly CloudTable _table;
-        public FeatureBitsTableStorageRepo(string connectionString, string tableName)
+        public FeatureBitsTableStorageRepo(string connectionString, string tableName = "featurebits")
         {
             _table = CloudStorageAccount.Parse(connectionString)
                 .CreateCloudTableClient()
