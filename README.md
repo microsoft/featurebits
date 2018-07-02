@@ -4,6 +4,22 @@
 
 FeatureBits is a feature toggling system meant to support multiple platforms. 
 
+## How to use
+A better usage story is coming in the next few days as we publish the packages to the public NuGet feed. Currently they're only published to a private feed of the original team.
+
+## I can't wait! What if I want to use it now?
+The easiest way to use FeatureBits right now is to create a new SQL DB and use `Update-Database` on the FeatureBits.Data project. This will create your initial DB. From there, add some feature bits definitions in the FeatureBitDefinitions table (The CLI won't be very usable until we get the public NuGet package published - that's why we're recommending updating the DB directly). Next, in your code, create Features.cs, which contains an enum corresponding to each of your feature bit Ids. Now download the source code for FeatureBits and compile the solution. You can then reference the generated assembly, `FeatureBits.Core`, to include in your project. Instantiate in instance of `FeatureBitEvaluator` with the appropriate SQL connection string and you should then be able to use code like `if (_evaluator.IsEnabled(Features.ExportAccess, CurrentPermissionLevel))` to determine whether a feature is "on" or "off".
+
+## What are the different kinds of FeatureBitDefinitions?
+1) On/Off (column OnOff) - if (and only if) no other columns are populated, then the OnOff column determines whether the feature is on or off.
+2) ExcludedEnvironments - Attempts to read the `ASPNETCORE_ENVIRONMENT` environment variable to determine whether the bit should be on or off.
+3) MinimumAllowedPermissionLevel - If the user's permission level (as uniquely determine by your application) is greater than or equal to a certain integer value, then the feature bit is "on".
+4) ExactAllowedPermissionLevel - Same as the last one, but the user's permission level must exactly match (equals).
+
+You can also take a look at the file `FeatureBitEvaluatorTests.cs` to see how the different kinds of feature bit definitions are used.
+
+Other feature bit definitions are in the works.
+
 ## Features (no pun intended)
 * FeatureBits can be used in .NET Core, and via your own Web API, through TypeScript/Angular. Currently supports SQL Server, Azure SQL Database, and Azure Data Tables on the back end.
 
