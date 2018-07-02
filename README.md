@@ -12,7 +12,7 @@ The easiest way to use FeatureBits right now is to create a new SQL DB and use `
 
 ## What are the different kinds of FeatureBitDefinitions?
 1) On/Off (column OnOff) - if (and only if) no other columns are populated, then the OnOff column determines whether the feature is on or off.
-2) ExcludedEnvironments - Attempts to read the `ASPNETCORE_ENVIRONMENT` environment variable to determine whether the bit should be on or off.
+2) ExcludedEnvironments - Comma separated list of environements for which the feature should be turned off. Attempts to read the `ASPNETCORE_ENVIRONMENT` environment variable to determine whether the bit should be on or off.
 3) MinimumAllowedPermissionLevel - If the user's permission level (as uniquely determine by your application) is greater than or equal to a certain integer value, then the feature bit is "on".
 4) ExactAllowedPermissionLevel - Same as the last one, but the user's permission level must exactly match (equals).
 
