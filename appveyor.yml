@@ -2,25 +2,36 @@
 #---------------------------------#
 #      general configuration      #
 #---------------------------------#
-
 # version format
-version: '0.1.{build}'          
+version: '0.2.0.{build}'      
+
+# including commits in the following folders only
+only_commits:
+  files:
+    - src\
+    - test\
+
+# update csproj properties
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
 
 #---------------------------------#
 #    environment configuration    #
 #---------------------------------#
-
 # Build worker image (VM template)
 image: Visual Studio 2017
 
 #---------------------------------#
 #       build configuration       #
 #---------------------------------#
-# build platform, i.e. x86, x64, Any CPU. This setting is optional.
-platform: Any CPU
-
 # build Configuration, i.e. Debug, Release, etc.
-configuration: Debug
+configuration: Release
 
 before_build:
 - cmd: set ASPNETCORE_ENVIRONMENT=LocalDevelopment
@@ -34,14 +45,33 @@ build:
   # MSBuild verbosity level
   verbosity: minimal
 
+after_build:
+- cmd: dotnet pack ".\src\FeatureBits.Core\FeatureBits.Core.csproj" /p:Configuration=Release --no-build
+- cmd: dotnet pack ".\src\FeatureBits.Data\FeatureBits.Data.csproj" /p:Configuration=Release --no-build
+- cmd: dotnet pack ".\src\FeatureBits.Console\FeatureBits.Console.csproj" /p:Configuration=Release --no-build
+
 #---------------------------------#
 #       tests configuration       #
 #---------------------------------#
+# auto discovery
 
 #---------------------------------#
 #      artifacts configuration    #
 #---------------------------------#
+artifacts:
+  # pushing all *.nupkg files in build directory recursively
+  - path: '**\*.nupkg'
 
 #---------------------------------#
 #     deployment configuration    #
 #---------------------------------#
+deploy:
+  provider: NuGet  
+  api_key:
+    secure: qKQnXvIheNPZ4HNi3HdCZah3GrhyrQUYka2jKA5Q4iEjlJwlBDwvPLPP695axHAe
+  skip_symbols: true  
+  artifact: /.*\.nupkg/
+  on:
+    branch: master
+
+
