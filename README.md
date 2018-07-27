@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/hykv6phe9u4kljc5?svg=true)](https://ci.appveyor.com/project/dseelinger/featurebits) 
+[![Build status](https://ci.appveyor.com/api/projects/status/hykv6phe9u4kljc5/branch/master?svg=true)](https://ci.appveyor.com/project/dseelinger/featurebits/branch/master) 
 
 # FeatureBits
 
