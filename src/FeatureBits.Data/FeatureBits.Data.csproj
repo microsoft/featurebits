@@ -1,6 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Title>FeatureBits Data</Title>
+    <Description>FeatureBits is a feature toggling system meant to support multiple platforms.</Description>
+    <PackageVersion></PackageVersion>
+    <Copyright>2018</Copyright>
+    <Authors>microsoft</Authors>
+    <PackageProjectUrl>https://github.com/Microsoft/featurebits</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/Microsoft/featurebits/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageTags>features;flags;toggling</PackageTags>
     <Version>0.1.0</Version>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
