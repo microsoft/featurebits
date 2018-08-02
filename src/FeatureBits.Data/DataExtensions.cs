@@ -1,5 +1,4 @@
-﻿using System;
-using FeatureBits.Data.AzureTableStorage;
+﻿using FeatureBits.Data.AzureTableStorage;
 using FeatureBits.Data.EF;
 
 namespace FeatureBits.Data

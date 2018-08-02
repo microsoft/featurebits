@@ -22,11 +22,12 @@ namespace Dotnet.FBit
         {
             List<string> argsAsList = new List<string>(args);
             argsAsList.AddRange(FindUserSecrets());
-            return Parser.Default.ParseArguments<GenerateOptions, AddOptions, RemoveOptions>(argsAsList)
+            return Parser.Default.ParseArguments<GenerateOptions, AddOptions, RemoveOptions, ListOptions>(argsAsList)
                 .MapResult(
                     (GenerateOptions opts) => RunGenerateAndReturnExitCode(opts).Result,
                     (AddOptions opts) => RunAddAndReturnExitCode(opts).Result,
                     (RemoveOptions opts) => RunRemoveAndReturnExitCode(opts).Result,
+                    (ListOptions opts) => RunListAndReturnExitCode(opts).Result,
                     errs => 1);
         }
 
@@ -42,6 +43,14 @@ namespace Dotnet.FBit
         {
             var repo = GetCorrectRepository(opts);
             var cmd = new AddCommand(opts, repo);
+            int result = await cmd.RunAsync();
+            return result;
+        }
+
+        private static async Task<int> RunListAndReturnExitCode(ListOptions opts)
+        {
+            var repo = GetCorrectRepository(opts);
+            var cmd = new ListCommand(opts, repo, new ConsoleTableWrapper());
             int result = await cmd.RunAsync();
             return result;
         }
