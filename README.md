@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/hykv6phe9u4kljc5/branch/master?svg=true)](https://ci.appveyor.com/project/dseelinger/featurebits/branch/master) 
+[![Build status](https://ci.appveyor.com/api/projects/status/hykv6phe9u4kljc5?svg=true)](https://ci.appveyor.com/project/dseelinger/featurebits)
 [![NuGet](https://img.shields.io/nuget/v/FeatureBits.Core.svg)](https://www.nuget.org/packages/FeatureBits.Core/) 
 [![NuGet](https://img.shields.io/nuget/dt/FeatureBits.Core.svg)](https://www.nuget.org/packages/FeatureBits.Core/) 
 
