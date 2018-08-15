@@ -3,7 +3,7 @@
 #      general configuration      #
 #---------------------------------#
 # version format
-version: '0.2.0.{build}'      
+version: '0.4.0.{build}'      
 
 # including commits in the following folders only
 only_commits:
@@ -46,9 +46,7 @@ build:
   verbosity: minimal
 
 after_build:
-- cmd: dotnet pack ".\src\FeatureBits.Core\FeatureBits.Core.csproj" /p:Configuration=Release --no-build
-- cmd: dotnet pack ".\src\FeatureBits.Data\FeatureBits.Data.csproj" /p:Configuration=Release --no-build
-- cmd: dotnet pack ".\src\FeatureBits.Console\FeatureBits.Console.csproj" /p:Configuration=Release --no-build
+- ps: .\build\Package-NuGet.ps1 -PackageVersion $env:APPVEYOR_REPO_TAG_NAME
 
 #---------------------------------#
 #       tests configuration       #
@@ -66,12 +64,23 @@ artifacts:
 #     deployment configuration    #
 #---------------------------------#
 deploy:
-  provider: NuGet  
-  api_key:
-    secure: wojT8rmz0nIA91iw6Xa3cjtG/Virxzqbv7eeM32eBzl0LeUbDzL8Quv++l9p27rg
-  skip_symbols: true  
-  artifact: /.*\.nupkg/
-  on:
-    branch: master
+    # Deploy to NuGet feed
+  - provider: NuGet  
+    api_key:
+        secure: wojT8rmz0nIA91iw6Xa3cjtG/Virxzqbv7eeM32eBzl0LeUbDzL8Quv++l9p27rg
+    skip_symbols: true  
+    artifact: /.*\.nupkg/
+    on:
+        appveyor_repo_tag: true
 
-
+    # Deploy to GitHub Releases
+  - provider: GitHub
+    auth_token:
+        secure: YDvkMufHiWPaqVQPmnoYBtf0hfsCbUOtmBpNSutRuD9WdMlirWE7CZv9FniIwED6
+    release: $(APPVEYOR_REPO_TAG_NAME)
+    description: $(APPVEYOR_REPO_TAG_NAME)
+    artifact: /.*\.nupkg/
+    draft: false
+    prerelease: false
+    on:      
+      appveyor_repo_tag: true
