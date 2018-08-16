@@ -23,7 +23,7 @@ Note: A complete sample application of the steps below can be found at [feature-
 ```csharp
 
   <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-fbit" Version="0.4.0-prerelease-1" />
+    <DotNetCliToolReference Include="dotnet-fbit" Version="0.4.1-prerelease-1" />
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="*" />
   </ItemGroup>
 
