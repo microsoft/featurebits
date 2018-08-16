@@ -71,6 +71,13 @@ public void ConfigureServices(IServiceCollection services)
 {
     string featureBitsConnectionString = Configuration.GetConnectionString("FeatureBitsDbContext");
     services.AddDbContext<FeatureBitsEfDbContext>(options => options.UseSqlServer(featureBitsConnectionString));
+    services.AddTransient<IFeatureBitsRepo, FeatureBitsEfRepo>((serviceProvider) =>
+    {
+        DbContextOptionsBuilder<FeatureBitsEfDbContext> options = new DbContextOptionsBuilder<FeatureBitsEfDbContext>();
+        options.UseSqlServer(featureBitsConnectionString);
+        var context = new FeatureBitsEfDbContext(options.Options);
+        return new FeatureBitsEfRepo(context);
+    });
     services.AddTransient<IFeatureBitEvaluator, FeatureBitEvaluator>();
 
     services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
