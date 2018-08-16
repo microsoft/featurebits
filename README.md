@@ -10,6 +10,8 @@ FeatureBits is now available in NuGet!
 
 ```install-package featurebits.core```
 
+For more information about how feature toggling works, please see [Feature Toggles (aka Feature Flags)](https://www.martinfowler.com/articles/feature-toggles.html)
+
 ## How to use
 
 Note: A complete sample application of the steps below can be found at [feature-bits-sample](https://github.com/dseelinger/feature-bits-sample).

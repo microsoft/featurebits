@@ -65,7 +65,7 @@ namespace FeatureBits.Data.Test
         public async Task ItCanAddIFeatureBitDefinitions()
         {
             // Arrange
-            var item1 = new FeatureBitEfDefinition {Name = "item1", CreatedByUser = "foo", LastModifiedByUser = "foo"};
+            var item1 = new FeatureBitEfDefinition {Name = "item1", CreatedByUser = "foo", LastModifiedByUser = "foo", OnOff = false};
 
             // Act
             IFeatureBitDefinition result = await _it.AddAsync(item1);
@@ -75,7 +75,7 @@ namespace FeatureBits.Data.Test
             result.Id.Should().NotBe(0);
             using (var context = new FeatureBitsEfDbContext(_options))
             {
-                context.FeatureBitDefinitions.Should().Contain(f => f.Name == "item1");
+                context.FeatureBitDefinitions.Should().Contain(f => f.Name == "item1" && f.OnOff == false);
             }
         }
 

@@ -49,6 +49,7 @@ namespace Dotnet.FBit.Command
         {
             var now = SystemContext.Now();
             var username = SystemContext.GetEnvironmentVariable("USERNAME");
+            var onOffFlag = ParseOnOff();
             return new CommandFeatureBitDefintion
             {
                 Name = _opts.Name,
@@ -56,11 +57,19 @@ namespace Dotnet.FBit.Command
                 LastModifiedDateTime = now,
                 CreatedByUser = username,
                 LastModifiedByUser = username,
-                OnOff = _opts.OnOff,
+                OnOff = onOffFlag,
                 ExcludedEnvironments = _opts.ExcludedEnvironments,
                 MinimumAllowedPermissionLevel = _opts.MinimumPermissionLevel,
                 ExactAllowedPermissionLevel = _opts.ExactPermissionLevel
             };
+        }
+
+        private bool ParseOnOff()
+        {
+            bool success = bool.TryParse(_opts.OnOff, out var onOffFlag);
+            if (!success)
+                onOffFlag = false;
+            return onOffFlag;
         }
 
         private async Task<int> HandleFeatureBitAlreadyExists(DataException e)
