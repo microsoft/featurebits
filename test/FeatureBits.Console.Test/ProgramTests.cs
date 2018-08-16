@@ -5,7 +5,7 @@ using System.Text;
 using Dotnet.FBit;
 using Xunit;
 
-namespace Dotnet.Fbit.Tests
+namespace FeatureBits.Console.Test
 {
     public class ProgramTests
     {

@@ -49,7 +49,7 @@ namespace FeatureBits.Console.Test
         }
 
         [Fact]
-        public void It_should_run_and_create_a_FeatureBit()
+        public void It_should_run_and_create_a_FeatureBit_when_the_onOff_bit_is_false()
         {
             // Arrange
             var sb = new StringBuilder();
@@ -67,6 +67,33 @@ namespace FeatureBits.Console.Test
             // Assert
             result.Should().Be(0);
             sb.ToString().Should().Be("Feature bit added.");
+        }
+
+        [Fact]
+        public void It_should_handle_OnOff_false()
+        {
+            // Arrange
+            CommandFeatureBitDefintion def = null;
+            var sb = new StringBuilder();
+            SystemContext.ConsoleWriteLine = s => sb.Append(s);
+            var bit = new CommandFeatureBitDefintion {Name = "foo", OnOff = false};
+            var opts = new AddOptions{Name = "foo", OnOff = "false"};
+            var repo = Substitute.For<IFeatureBitsRepo>();
+            repo.AddAsync(Arg.Any<CommandFeatureBitDefintion>()).Returns(Task.FromResult((IFeatureBitDefinition)bit)).AndDoes(x =>
+            {
+                def = x.Arg<CommandFeatureBitDefintion>();
+            });
+            
+            var it = new AddCommand(opts, repo);
+
+            // Act
+            var result = it.RunAsync().Result;
+
+            // Assert
+            result.Should().Be(0);
+            sb.ToString().Should().Be("Feature bit added.");
+            def.Should().NotBeNull();
+            def.OnOff.Should().BeFalse();
         }
 
         [Fact]
@@ -102,7 +129,7 @@ namespace FeatureBits.Console.Test
             var opts = new AddOptions
             {
                 Name = "foo",
-                OnOff = true,
+                OnOff = "1",
                 ExcludedEnvironments = "QA,Production",
                 MinimumPermissionLevel = 20
             };
