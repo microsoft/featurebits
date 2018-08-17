@@ -10,6 +10,8 @@ FeatureBits is now available in NuGet!
 
 ```install-package featurebits.core```
 
+For more information about how feature toggling works, please see [Feature Toggles (aka Feature Flags)](https://www.martinfowler.com/articles/feature-toggles.html)
+
 ## How to use
 
 Note: A complete sample application of the steps below can be found at [feature-bits-sample](https://github.com/dseelinger/feature-bits-sample).
@@ -21,7 +23,7 @@ Note: A complete sample application of the steps below can be found at [feature-
 ```csharp
 
   <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-fbit" Version="0.4.0-prerelease-1" />
+    <DotNetCliToolReference Include="dotnet-fbit" Version="0.4.1-prerelease-1" />
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="*" />
   </ItemGroup>
 
@@ -71,6 +73,13 @@ public void ConfigureServices(IServiceCollection services)
 {
     string featureBitsConnectionString = Configuration.GetConnectionString("FeatureBitsDbContext");
     services.AddDbContext<FeatureBitsEfDbContext>(options => options.UseSqlServer(featureBitsConnectionString));
+    services.AddTransient<IFeatureBitsRepo, FeatureBitsEfRepo>((serviceProvider) =>
+    {
+        DbContextOptionsBuilder<FeatureBitsEfDbContext> options = new DbContextOptionsBuilder<FeatureBitsEfDbContext>();
+        options.UseSqlServer(featureBitsConnectionString);
+        var context = new FeatureBitsEfDbContext(options.Options);
+        return new FeatureBitsEfRepo(context);
+    });
     services.AddTransient<IFeatureBitEvaluator, FeatureBitEvaluator>();
 
     services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
