@@ -3,6 +3,7 @@
 
 using System.Text;
 using Dotnet.FBit;
+using FeatureBits.Core;
 using Xunit;
 
 namespace FeatureBits.Console.Test

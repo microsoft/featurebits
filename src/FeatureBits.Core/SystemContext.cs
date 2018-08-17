@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Dotnet.FBit
+namespace FeatureBits.Core
 {
     public static class SystemContext
     {

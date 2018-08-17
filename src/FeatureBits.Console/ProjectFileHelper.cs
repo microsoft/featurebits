@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.IO.Abstractions;
+using FeatureBits.Core;
 
 namespace Dotnet.FBit
 {
