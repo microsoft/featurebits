@@ -7,9 +7,9 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Dotnet.FBit;
 using Dotnet.FBit.Command;
 using Dotnet.FBit.CommandOptions;
+using FeatureBits.Core;
 using FeatureBits.Data;
 using FluentAssertions;
 using NSubstitute;
@@ -61,7 +61,7 @@ namespace FeatureBits.Console.Test
             result[2].Id.Should().Be(3);
         }
 
-        
+
         [Fact]
         public void It_can_GetOutpuFileInfo()
         {
@@ -79,7 +79,7 @@ namespace FeatureBits.Console.Test
 
             // Assert
             result.Should().NotBeNull();
-            
+
         }
 
         [Fact]
@@ -151,7 +151,7 @@ namespace FeatureBits.Console.Test
                 var outputFile = Substitute.For<FileInfoBase>();
 
                 filesystem.FileInfo.FromFileName(Arg.Any<string>()).Returns(outputFile);
-                directory.GetFiles("*.csproj", SearchOption.TopDirectoryOnly).Returns(info => new[] {csprojFile});
+                directory.GetFiles("*.csproj", SearchOption.TopDirectoryOnly).Returns(info => new[] { csprojFile });
                 csprojFile.OpenRead().Returns(info => StringToStream("Sorry no namespace here"));
                 csprojFile.Name.Returns("bar.csproj");
                 filesystem.Path.GetFileNameWithoutExtension("bar.csproj").Returns("bar");
@@ -160,7 +160,7 @@ namespace FeatureBits.Console.Test
                 outputFile.FullName.Returns("Features.cs");
                 // ReSharper disable once AccessToDisposedClosure
                 outputFile.CreateText().Returns(info => new StreamWriter(ms));
-            
+
 
                 // Arrange IT
                 var it = new GenerateCommand(opts, repo, filesystem);
@@ -194,7 +194,7 @@ namespace FeatureBits.Console.Test
 
                 repo.GetAllAsync().Returns(_featureBitDefinitions);
                 filesystem.FileInfo.FromFileName(Arg.Any<string>()).Returns(outputFile);
-                directory.GetFiles("*.csproj", SearchOption.TopDirectoryOnly).Returns(info => new[] {csprojFile});
+                directory.GetFiles("*.csproj", SearchOption.TopDirectoryOnly).Returns(info => new[] { csprojFile });
                 csprojFile.OpenRead().Returns(info => StringToStream("Sorry no namespace here"));
                 csprojFile.Name.Returns("bar.csproj");
                 filesystem.Path.GetFileNameWithoutExtension("bar.csproj").Returns("bar");
@@ -203,7 +203,7 @@ namespace FeatureBits.Console.Test
                 outputFile.FullName.Returns("Features.cs");
                 // ReSharper disable once AccessToDisposedClosure
                 outputFile.CreateText().Returns(info => new StreamWriter(ms));
-            
+
 
                 // Arrange IT
                 var it = new GenerateCommand(opts, repo, filesystem);

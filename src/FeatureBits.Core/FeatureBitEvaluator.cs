@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
 using FeatureBits.Data;
 
 namespace FeatureBits.Core
@@ -15,16 +14,13 @@ namespace FeatureBits.Core
     /// </summary>
     public class FeatureBitEvaluator : IFeatureBitEvaluator
     {
-        private readonly IFeatureBitsRepo _repo;
-
         /// <summary>
         /// Public constructor
         /// </summary>
-        /// <param name="reader">Object used to read the Feature Bits</param>
+        /// <param name="repo">Object used to read the Feature Bits</param>
         public FeatureBitEvaluator(IFeatureBitsRepo repo)
         {
-            _repo = repo;
-            Definitions = _repo.GetAllAsync().GetAwaiter().GetResult().ToList();
+            Definitions = repo.GetAllAsync().GetAwaiter().GetResult().ToList();
         }
 
         /// <summary>
@@ -46,7 +42,7 @@ namespace FeatureBits.Core
         /// <param name="currentPermissionLevel">The permission level of the current user</param>
         /// <typeparam name="T">An enumeration or an integer</typeparam>
         /// <returns>True if the feature is enabled.</returns>
-        public bool IsEnabled<T>(T feature, int currentPermissionLevel) where T: struct, IConvertible
+        public bool IsEnabled<T>(T feature, int currentPermissionLevel) where T : struct, IConvertible
         {
             Type tType = typeof(T);
             if (!(tType.IsEnum || tType == typeof(int)))
@@ -54,13 +50,15 @@ namespace FeatureBits.Core
                 throw new ArgumentException("T must be an enumerated type");
             }
 
-            IFeatureBitDefinition bitDef = Definitions.FirstOrDefault(x => x.Id == feature.ToInt32(new FeatureBitFormatProvider()));
+            IFeatureBitDefinition bitDef =
+                Definitions.FirstOrDefault(x => x.Id == feature.ToInt32(new FeatureBitFormatProvider()));
             if (bitDef != null)
             {
                 return EvaluateBitValue(bitDef, currentPermissionLevel);
             }
-            
-            string featureString = tType.IsEnum ? Enum.GetName(tType, feature) : feature.ToString(CultureInfo.InvariantCulture);
+
+            string featureString =
+                tType.IsEnum ? Enum.GetName(tType, feature) : feature.ToString(CultureInfo.InvariantCulture);
             throw new KeyNotFoundException($"Unable to find Feature {featureString}");
         }
 
@@ -69,8 +67,12 @@ namespace FeatureBits.Core
         /// </summary>
         /// <param name="features">list of Features to be checked</param>
         /// <typeparam name="T">An enumeration or an integer</typeparam>
-        /// <returns>Returns a list of <see cref="KeyValuePair{TKey, bool}"/> mapping Feature to State (disabled or enabled)</returns>
-        public IList<KeyValuePair<T, bool>> GetEvaluatedFeatureBits<T>(IEnumerable<T> features) where T : struct, IConvertible => GetEvaluatedFeatureBits(features, 0);
+        /// <returns>Returns a list of <see>
+        ///         <cref>KeyValuePair{TKey, bool}</cref>
+        ///     </see>
+        ///     mapping Feature to State (disabled or enabled)</returns>
+        public IList<KeyValuePair<T, bool>> GetEvaluatedFeatureBits<T>(IEnumerable<T> features)
+            where T : struct, IConvertible => GetEvaluatedFeatureBits(features, 0);
 
         /// <summary>
         /// Get a list of evaluated feature bits (enabled or disabled)
@@ -78,8 +80,12 @@ namespace FeatureBits.Core
         /// <param name="features">list of Features to be checked</param>
         /// <param name="currentPermissionLevel">The permission level of the current user</param>
         /// <typeparam name="T">An enumeration or an integer</typeparam>
-        /// <returns>Returns a list of <see cref="KeyValuePair{TKey, bool}"/> mapping Feature to State (disabled or enabled)</returns>
-        public IList<KeyValuePair<T, bool>> GetEvaluatedFeatureBits<T>(IEnumerable<T> features, int currentPermissionLevel) where T : struct, IConvertible
+        /// <returns>Returns a list of <see>
+        ///         <cref>KeyValuePair{TKey, bool}</cref>
+        ///     </see>
+        ///     mapping Feature to State (disabled or enabled)</returns>
+        public IList<KeyValuePair<T, bool>> GetEvaluatedFeatureBits<T>(IEnumerable<T> features,
+            int currentPermissionLevel) where T : struct, IConvertible
         {
             var featureFlags = new List<KeyValuePair<T, bool>>();
 
@@ -101,7 +107,9 @@ namespace FeatureBits.Core
             {
                 result = EvaluateEnvironmentBasedFeatureState(bitDef);
             }
-            else if (currentUsersPermissionLevel > 0 && bitDef.ExactAllowedPermissionLevel == currentUsersPermissionLevel) {
+            else if (currentUsersPermissionLevel > 0 &&
+                     bitDef.ExactAllowedPermissionLevel == currentUsersPermissionLevel)
+            {
                 result = true;
             }
             else if (bitDef.MinimumAllowedPermissionLevel > 0)
@@ -116,13 +124,15 @@ namespace FeatureBits.Core
             return result;
         }
 
-        private static bool CheckMinimumPermission(IFeatureBitDefinition bitDef, int currentUsersPermissionLevel) => currentUsersPermissionLevel >= bitDef.MinimumAllowedPermissionLevel;
+        private static bool CheckMinimumPermission(IFeatureBitDefinition bitDef, int currentUsersPermissionLevel) =>
+            currentUsersPermissionLevel >= bitDef.MinimumAllowedPermissionLevel;
 
         private static bool EvaluateEnvironmentBasedFeatureState(IFeatureBitDefinition bitDef)
         {
             bool featureState;
-            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT").ToUpperInvariant();
-            featureState = !bitDef.ExcludedEnvironments.ToUpperInvariant().Contains(env);
+            var env = SystemContext.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.ToUpperInvariant();
+            var environmentAry = bitDef.ExcludedEnvironments.ToUpperInvariant().Split(',');
+            featureState = !environmentAry.Contains(env);
             return featureState;
         }
 

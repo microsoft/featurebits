@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using System.Threading.Tasks;
+using FeatureBits.Core;
 using Xunit;
 
 namespace FeatureBits.Console.Test
@@ -25,13 +26,11 @@ namespace FeatureBits.Console.Test
             SystemContext.ConsoleWriteLine = s => sb.AppendLine(s);
             var bit1 = new CommandFeatureBitDefintion { Id = 1, Name = "foo1" };
             var bit2 = new CommandFeatureBitDefintion { Id = 1, Name = "foo2" };
-            var opts = new ListOptions {  };
+            var opts = new ListOptions();
             var repo = Substitute.For<IFeatureBitsRepo>();
             var consoleTable = Substitute.For<IConsoleTable>();
-            var fbits = new List<IFeatureBitDefinition>();
+            var fbits = new List<IFeatureBitDefinition> { bit1, bit2 };
 
-            fbits.Add(bit1);
-            fbits.Add(bit2);
 
             repo.GetAllAsync().Returns(Task.FromResult((IEnumerable<IFeatureBitDefinition>)fbits));
 
@@ -43,7 +42,7 @@ namespace FeatureBits.Console.Test
             // Assert
             result.Should().Be(0);
 
-            consoleTable.Received().Print(Arg.Is<DataTable>(dt => 
+            consoleTable.Received().Print(Arg.Is<DataTable>(dt =>
                 dt.Rows.Count == 2 &&
                 dt.Columns.Count == 2 &&
                 dt.Columns[0].Caption == "Id" &&
@@ -61,10 +60,8 @@ namespace FeatureBits.Console.Test
             var opts = new ListOptions { Long = true };
             var repo = Substitute.For<IFeatureBitsRepo>();
             var consoleTable = Substitute.For<IConsoleTable>();
-            var fbits = new List<IFeatureBitDefinition>();
+            var fbits = new List<IFeatureBitDefinition> { bit1, bit2 };
 
-            fbits.Add(bit1);
-            fbits.Add(bit2);
 
             repo.GetAllAsync().Returns(Task.FromResult((IEnumerable<IFeatureBitDefinition>)fbits));
 

@@ -31,6 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FeatureBits.Core\FeatureBits.Core.csproj" />
     <ProjectReference Include="..\FeatureBits.Data\FeatureBits.Data.csproj" />
   </ItemGroup>
 </Project>

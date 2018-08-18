@@ -4,6 +4,7 @@
 using System;
 using System.Threading.Tasks;
 using Dotnet.FBit.CommandOptions;
+using FeatureBits.Core;
 using FeatureBits.Data;
 
 namespace Dotnet.FBit.Command

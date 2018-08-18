@@ -7,9 +7,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Text;
 using System.Threading.Tasks;
-using Dotnet.FBit;
 using Dotnet.FBit.Command;
 using Dotnet.FBit.CommandOptions;
+using FeatureBits.Core;
 using FeatureBits.Data;
 using FluentAssertions;
 using NSubstitute;
@@ -54,11 +54,11 @@ namespace FeatureBits.Console.Test
             // Arrange
             var sb = new StringBuilder();
             SystemContext.ConsoleWriteLine = s => sb.Append(s);
-            var bit = new CommandFeatureBitDefintion {Name = "foo"};
-            var opts = new AddOptions{Name = "foo"};
+            var bit = new CommandFeatureBitDefintion { Name = "foo" };
+            var opts = new AddOptions { Name = "foo" };
             var repo = Substitute.For<IFeatureBitsRepo>();
             repo.AddAsync(bit).Returns(Task.FromResult((IFeatureBitDefinition)bit));
-            
+
             var it = new AddCommand(opts, repo);
 
             // Act
@@ -76,14 +76,14 @@ namespace FeatureBits.Console.Test
             CommandFeatureBitDefintion def = null;
             var sb = new StringBuilder();
             SystemContext.ConsoleWriteLine = s => sb.Append(s);
-            var bit = new CommandFeatureBitDefintion {Name = "foo", OnOff = false};
-            var opts = new AddOptions{Name = "foo", OnOff = "false"};
+            var bit = new CommandFeatureBitDefintion { Name = "foo", OnOff = false };
+            var opts = new AddOptions { Name = "foo", OnOff = "false" };
             var repo = Substitute.For<IFeatureBitsRepo>();
             repo.AddAsync(Arg.Any<CommandFeatureBitDefintion>()).Returns(Task.FromResult((IFeatureBitDefinition)bit)).AndDoes(x =>
             {
                 def = x.Arg<CommandFeatureBitDefintion>();
             });
-            
+
             var it = new AddCommand(opts, repo);
 
             // Act
@@ -102,10 +102,10 @@ namespace FeatureBits.Console.Test
             // Arrange
             var sb = new StringBuilder();
             SystemContext.ConsoleErrorWriteLine = s => sb.Append(s);
-            var opts = new AddOptions{Name = "foo"};
+            var opts = new AddOptions { Name = "foo" };
             var repo = Substitute.For<IFeatureBitsRepo>();
             repo.AddAsync(Arg.Any<IFeatureBitDefinition>()).Returns<Task<IFeatureBitDefinition>>(x => throw new Exception("Yow!"));
-            
+
             var it = new AddCommand(opts, repo);
 
             // Act
@@ -134,7 +134,7 @@ namespace FeatureBits.Console.Test
                 MinimumPermissionLevel = 20
             };
             var repo = Substitute.For<IFeatureBitsRepo>();
-            
+
             var it = new AddCommand(opts, repo);
 
             // Act
@@ -156,7 +156,7 @@ namespace FeatureBits.Console.Test
             // Arrange
             var sb = new StringBuilder();
             SystemContext.ConsoleErrorWriteLine = s => sb.Append(s);
-            var opts = new AddOptions{Name = "foo"};
+            var opts = new AddOptions { Name = "foo" };
             var repo = Substitute.For<IFeatureBitsRepo>();
             repo.AddAsync(Arg.Any<IFeatureBitDefinition>()).Returns<Task<IFeatureBitDefinition>>(x => throw new DataException("Cannot add. Feature bit with name 'foo' already exists."));
 
@@ -176,7 +176,7 @@ namespace FeatureBits.Console.Test
             // Arrange
             var sb = new StringBuilder();
             SystemContext.ConsoleErrorWriteLine = s => sb.Append(s);
-            var opts = new AddOptions{Name = "foo"};
+            var opts = new AddOptions { Name = "foo" };
             var repo = Substitute.For<IFeatureBitsRepo>();
             repo.AddAsync(Arg.Any<IFeatureBitDefinition>()).Returns<Task<IFeatureBitDefinition>>(x => throw new DataException("Some random DataException."));
 
@@ -196,13 +196,13 @@ namespace FeatureBits.Console.Test
             // Arrange
             var sb = new StringBuilder();
             SystemContext.ConsoleWriteLine = s => sb.Append(s);
-            var opts = new AddOptions{Name = "foo", Force = true};
+            var opts = new AddOptions { Name = "foo", Force = true };
             var repo = Substitute.For<IFeatureBitsRepo>();
             repo.AddAsync(Arg.Any<IFeatureBitDefinition>()).Returns<Task<IFeatureBitDefinition>>(x => throw new DataException("Cannot add. Feature bit with name 'foo' already exists."));
 
             int counter = 0;
             repo.When(x => x.UpdateAsync(Arg.Any<IFeatureBitDefinition>())).Do((x => counter++));
-            
+
             var it = new AddCommand(opts, repo);
 
             // Act

@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Abstractions;
 using System.Text;
 using Dotnet.FBit;
+using FeatureBits.Core;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
@@ -22,7 +23,7 @@ namespace FeatureBits.Console.Test
             SystemContext.ConsoleErrorWriteLine = s => sb.Append(s);
             var directory = Substitute.For<DirectoryInfoBase>();
             directory.GetFiles("*.csproj", SearchOption.TopDirectoryOnly).Returns(info => new FileInfoBase[] { });
-            
+
             // Act
             Action act = () => ProjectFileHelper.GetDefaultNamespace(directory);
 

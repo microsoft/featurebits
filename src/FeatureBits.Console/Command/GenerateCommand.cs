@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dotnet.FBit.CommandOptions;
+using FeatureBits.Core;
 using FeatureBits.Data;
 
 namespace Dotnet.FBit.Command
@@ -80,7 +81,7 @@ namespace Dotnet.FBit.Command
             return returnValue;
         }
 
-        private void WriteFileContent(IEnumerable<(string Name, int Id)> featureBitData, string fileNamespace, 
+        private void WriteFileContent(IEnumerable<(string Name, int Id)> featureBitData, string fileNamespace,
             FileInfoBase outputFile)
         {
             const string headerInfoFormat = @"
@@ -95,9 +96,9 @@ namespace {0}
 }";
 
             FileContent.AppendLine(string.Format(headerInfoFormat, fileNamespace));
-            foreach (var featureBit in featureBitData)
+            foreach (var (name, id) in featureBitData)
             {
-                FileContent.AppendLine($"        {featureBit.Name} = {featureBit.Id},");
+                FileContent.AppendLine($"        {name} = {id},");
             }
 
             FileContent.AppendLine(tailInfo);

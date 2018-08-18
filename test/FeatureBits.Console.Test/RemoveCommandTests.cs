@@ -4,9 +4,9 @@
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using Dotnet.FBit;
 using Dotnet.FBit.Command;
 using Dotnet.FBit.CommandOptions;
+using FeatureBits.Core;
 using FeatureBits.Data;
 using FluentAssertions;
 using NSubstitute;
@@ -52,9 +52,9 @@ namespace FeatureBits.Console.Test
             // Arrange
             var sb = new StringBuilder();
             SystemContext.ConsoleWriteLine = s => sb.Append(s);
-            var opts = new RemoveOptions{Name = "foo"};
+            var opts = new RemoveOptions { Name = "foo" };
             var repo = Substitute.For<IFeatureBitsRepo>();
-            repo.GetByNameAsync("foo").Returns(Task.FromResult((IFeatureBitDefinition)new CommandFeatureBitDefintion { Name = "foo", Id = 5}));
+            repo.GetByNameAsync("foo").Returns(Task.FromResult((IFeatureBitDefinition)new CommandFeatureBitDefintion { Name = "foo", Id = 5 }));
             repo.RemoveAsync(Arg.Any<IFeatureBitDefinition>());
             var it = new RemoveCommand(opts, repo);
 
@@ -74,9 +74,9 @@ namespace FeatureBits.Console.Test
             // Arrange
             var sb = new StringBuilder();
             SystemContext.ConsoleErrorWriteLine = s => sb.Append(s);
-            var opts = new RemoveOptions{Name = "foo"};
+            var opts = new RemoveOptions { Name = "foo" };
             var repo = Substitute.For<IFeatureBitsRepo>();
-            repo.GetByNameAsync("foo").Returns(Task.FromResult( (IFeatureBitDefinition) null ));
+            repo.GetByNameAsync("foo").Returns(Task.FromResult((IFeatureBitDefinition)null));
             var it = new RemoveCommand(opts, repo);
 
             // Act

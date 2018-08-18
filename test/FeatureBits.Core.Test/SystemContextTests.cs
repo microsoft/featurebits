@@ -3,10 +3,9 @@
 
 using System;
 using System.Text;
-using Dotnet.FBit;
 using Xunit;
 
-namespace Dotnet.Fbit.Tests
+namespace FeatureBits.Core.Test
 {
     public class SystemContextTests
     {
@@ -22,7 +21,7 @@ namespace Dotnet.Fbit.Tests
 
             // Assert
             Assert.Equal("foo" + Environment.NewLine, builder.ToString());
-            
+
             // Afterwards
             SystemContext.ConsoleWriteLine = null;
         }
@@ -39,7 +38,7 @@ namespace Dotnet.Fbit.Tests
 
             // Assert
             Assert.Equal("foo" + Environment.NewLine, builder.ToString());
-            
+
             // Afterwards
             SystemContext.ConsoleErrorWriteLine = null;
         }
