@@ -14,7 +14,12 @@ namespace FeatureBits.Data.WebApi.Test
         }
 
         public static IWebHost BuildWebHost(string[] args) =>
+#if NET452
+            new WebHostBuilder()
+#else
             WebHost.CreateDefaultBuilder(args)
+#endif
+
                 .UseStartup<Startup>()
                 .Build();
     }

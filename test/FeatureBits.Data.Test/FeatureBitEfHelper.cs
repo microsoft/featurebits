@@ -14,7 +14,9 @@ namespace FeatureBits.Data.Test
             string guidDbNameForUniqueness = Guid.NewGuid().ToString();
             DbContextOptions<FeatureBitsEfDbContext> options = new DbContextOptionsBuilder<FeatureBitsEfDbContext>()
                 .UseInMemoryDatabase(guidDbNameForUniqueness)
+#if !NET452
                 .EnableSensitiveDataLogging(false)
+#endif
                 .Options;
             var dbContext = new FeatureBitsEfDbContext(options);
             return new Tuple<FeatureBitsEfDbContext, DbContextOptions<FeatureBitsEfDbContext>>(dbContext, options);

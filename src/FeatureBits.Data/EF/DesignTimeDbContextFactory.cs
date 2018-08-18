@@ -1,8 +1,12 @@
 ﻿using FeatureBits.Data.EF;
 using Microsoft.EntityFrameworkCore;
+#if !NET452
 using Microsoft.EntityFrameworkCore.Design;
 
 public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<FeatureBitsEfDbContext>
+#else
+public class DesignTimeDbContextFactory
+#endif
 {
     /// <summary>
     /// This class is used to support generation of EF migrations.
