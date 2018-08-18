@@ -70,8 +70,21 @@ namespace FeatureBits.Data.EF
 
         public async Task UpdateAsync(IFeatureBitDefinition definition)
         {
-            DbContext.Update(definition);
-            await DbContext.SaveChangesAsync();
+            try
+            {
+                DbContext.Update(definition);
+                await DbContext.SaveChangesAsync();
+            } catch (DbUpdateConcurrencyException ex)
+            {
+                if (ex.Entries.Count == 1 && ex.Entries[0].IsKeySet == false)
+                {
+                    DbContext.Add(definition);
+                    await DbContext.SaveChangesAsync();
+                } else
+                {
+                    throw ex;
+                }
+            }
         }
 
         public async Task RemoveAsync(IFeatureBitDefinition definitionToRemove)

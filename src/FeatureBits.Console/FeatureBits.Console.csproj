@@ -8,13 +8,13 @@
     <Authors>microsoft</Authors>
     <PackageProjectUrl>https://github.com/Microsoft/featurebits</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Microsoft/featurebits/blob/master/LICENSE.txt</PackageLicenseUrl>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>    
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageTags>features;flags;toggling</PackageTags>
     <Version>0.1.0</Version>
     <VersionSuffix></VersionSuffix>
     <AssemblyName>dotnet-fbit</AssemblyName>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp2.0;netcoreapp2.1</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;netcoreapp2.1;net452</TargetFrameworks>
     <RuntimeIdentifiers>win7-x64;win7-x86;osx.10.10-x64;osx.10.11-x64;ubuntu.14.04-x64;ubuntu.16.04-x64;ubuntu.16.10-x64;centos.7-x64;rhel.7.2-x64;debian.8-x64;fedora.24-x64;opensuse.42.1-x64</RuntimeIdentifiers>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <RootNamespace>Dotnet.FBit</RootNamespace>
@@ -23,13 +23,26 @@
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.3.0" />
     <PackageReference Include="ConsoleTableExt" Version="2.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.0.2" />
     <PackageReference Include="System.Data.SqlClient" Version="4.4.3" />
     <PackageReference Include="System.IO.Abstractions" Version="2.1.0.178" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' Or  '$(TargetFramework)' == 'netcoreapp2.0' Or '$(TargetFramework)' == 'netcoreapp2.1' ">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.0.2" />
+  </ItemGroup>
+  
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+  
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="1.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.2" />
+  </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\FeatureBits.Core\FeatureBits.Core.csproj" />
     <ProjectReference Include="..\FeatureBits.Data\FeatureBits.Data.csproj" />

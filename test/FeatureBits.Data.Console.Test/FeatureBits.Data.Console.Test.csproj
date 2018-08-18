@@ -2,13 +2,18 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFrameworks>netcoreapp2.0;net452</TargetFrameworks>
     <UserSecretsId>05e294aa-f55d-4362-bcb7-c36835d2d3df</UserSecretsId>
   </PropertyGroup>
   
-  <ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="[1.1.2,2.0)" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="[1.1.2,2.0)" />
   </ItemGroup>
 
   <ItemGroup>
