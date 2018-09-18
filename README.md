@@ -43,7 +43,7 @@ Next:
   "fbit:-s":  "[your SQL Connection string goes here]",
   "ConnectionStrings": {
     "FeatureBitsDbContext": "[your SQL Connection string goes here]"
-  },
+  }
 
 }
 
