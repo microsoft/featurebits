@@ -17,7 +17,7 @@ For more information about how feature toggling works, please see [Feature Toggl
 Note: A complete sample application of the steps below can be found at [feature-bits-sample](https://github.com/dseelinger/feature-bits-sample).
 
 1) Create a .NET Core 2.X Web Application (Web API) application.
-1) In the Package Manager Console,  ```install-package featurebits.core```
+1) In the Package Manager Console,  ```Install-Package featurebits.core -IncludePrerelease```
 1) Edit your .csproj, add the following ```<ItemGroup>``` section:
 
 ```csharp
