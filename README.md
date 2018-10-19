@@ -196,6 +196,10 @@ See CONTRIBUTING.md and review the [Microsoft Open Source Code of Conduct](https
 
 Feature Toggling is important to support Continuous Integration/Continuous Deployment. Features that may be experimental or incomplete can be hidden behind a FeatureBit for some, most, or all users. FeatureBits currently supports both .NET Core and TypeScript/Angular.
 
+## Adding the thing
+
+This is a simple way to add stuff.
+
 ## Reporting Security Issues
 
 Security issues and bugs should be reported privately, via email, to the Microsoft Security
