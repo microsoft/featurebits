@@ -14,7 +14,7 @@ namespace Dotnet.FBit.CommandOptions
         /// <summary>
         /// Name of the feature bit to add
         /// </summary>
-        [Option('n', "namespace", Required = true, HelpText = "Name of the feature bit")]
+        [Option('n', "name", Required = true, HelpText = "Name of the feature bit")]
         public string Name { get; set; }
 
         /// <summary>
