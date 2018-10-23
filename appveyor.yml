@@ -3,7 +3,7 @@
 #      general configuration      #
 #---------------------------------#
 # version format
-version: '0.4.1.{build}'      
+version: '0.4.3.{build}'      
 
 # including commits in the following folders only
 only_commits:
