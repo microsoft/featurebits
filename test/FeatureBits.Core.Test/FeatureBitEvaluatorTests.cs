@@ -149,6 +149,28 @@ namespace FeatureBits.Core.Test
         }
 
         [Theory]
+        [InlineData(30, 20, 20, false)]
+        [InlineData(10, 10, 20, true)]
+        public void It_prefers_an_exact_Role_over_a_minimum_Role_FeatureBit(int userPermission, int exactAllowedPermission, int minimumAllowedPermission, bool expectedResult)
+        {
+            // Arrange
+            int bitId = 0;
+            var it = SetupFeatureBitEvaluator(new FeatureBitEfDefinition
+            {
+                Id = bitId,
+                OnOff = false,
+                ExactAllowedPermissionLevel = exactAllowedPermission,
+                MinimumAllowedPermissionLevel = minimumAllowedPermission
+            });
+
+            // Act
+            var result = it.IsEnabled(bitId, userPermission);
+
+            // Assert
+            result.Should().Be(expectedResult);
+        }
+
+        [Theory]
         [InlineData(20)]
         [InlineData(10)]
         [InlineData(1)]
