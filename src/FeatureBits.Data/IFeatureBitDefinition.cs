@@ -34,6 +34,7 @@ namespace FeatureBits.Data
 
         /// <summary>
         /// The exact allowed permission level for this feature to be enabled.
+        /// This takes precedent over MinimumAllowedPermissionLevel
         /// </summary>
         int? ExactAllowedPermissionLevel { get; set; }
 
