@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FeatureBits.Data
 {
@@ -63,6 +64,20 @@ namespace FeatureBits.Data
         /// The user that last modified the feature bit.
         /// </summary>
         string LastModifiedByUser { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of FeatureBit Ids for which this feature is enabled only if they are ALL enabled.  
+        /// </summary>
+        /// <remarks>NOTE: if 1 or all of the Dependant FeatureBits are disabled then this FeatureBit must be disabled</remarks>
+        string DependantIds { get; }
+
+        /// <summary>
+        /// Collection of Dependant Ids for which this FeatureBit will subscribe and resolve as enabled
+        /// </summary>
+        /// <remarks>
+        /// This property will ensure our storage in the backend system is comma-separated correctly
+        /// </remarks>
+        IEnumerable<int> DependantCollection { get; set; }
 
 
         /// <summary>

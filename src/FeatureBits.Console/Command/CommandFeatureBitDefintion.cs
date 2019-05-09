@@ -1,8 +1,8 @@
-﻿using System;
+﻿using FeatureBits.Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
-using FeatureBits.Data;
+using System.Linq;
 
 namespace Dotnet.FBit.Command
 {
@@ -69,6 +69,35 @@ namespace Dotnet.FBit.Command
         /// </summary>
         [Required, MaxLength(100)]
         public string LastModifiedByUser { get; set; }
+
+        /// <summary>
+        /// <see cref="IFeatureBitDefinition.DependantIds"/>
+        /// </summary>
+        [MaxLength(250)]
+        public string DependantIds { get; protected set; }
+
+        /// <summary>
+        /// <see cref="IFeatureBitDefinition.DependantCollection"/>
+        /// </summary>
+        public IEnumerable<int> DependantCollection
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(DependantIds))
+                {
+                    return DependantIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(Id => Convert.ToInt32(Id));
+                }
+                return new List<int>();
+            }
+            set
+            {
+                DependantIds = "";
+                if (value != null && value?.Any() == true)
+                {
+                    DependantIds = String.Join(",", value);
+                }
+            }
+        }
 
         /// <summary>
         /// <see cref="IFeatureBitDefinition.Update"/>

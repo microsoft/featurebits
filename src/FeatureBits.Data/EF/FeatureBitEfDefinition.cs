@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using System.Linq;
 
 namespace FeatureBits.Data.EF
 {
@@ -70,6 +72,36 @@ namespace FeatureBits.Data.EF
         public string LastModifiedByUser { get; set; }
 
         /// <summary>
+        /// <see cref="IFeatureBitDefinition.DependantIds"/>
+        /// </summary>
+        [MaxLength(255)]
+        public string DependantIds { get; protected set; }
+
+        /// <summary>
+        /// <see cref="IFeatureBitDefinition.DependantCollection"/>
+        /// </summary>
+        [NotMapped]
+        public IEnumerable<int> DependantCollection
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(DependantIds))
+                {
+                    return DependantIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(Id => Convert.ToInt32(Id));
+                }
+                return new List<int>();
+            }
+            set
+            {
+                DependantIds = "";
+                if (value != null && value?.Any() == true)
+                {
+                    DependantIds = String.Join(",", value);
+                }
+            }
+        }
+
+        /// <summary>
         /// <see cref="IFeatureBitDefinition.Update"/>
         /// </summary>
         public void Update(IFeatureBitDefinition newEntity)
@@ -79,7 +111,9 @@ namespace FeatureBits.Data.EF
             ExcludedEnvironments = newEntity.ExcludedEnvironments;
             LastModifiedDateTime = newEntity.LastModifiedDateTime;
             MinimumAllowedPermissionLevel = newEntity.MinimumAllowedPermissionLevel;
+            ExactAllowedPermissionLevel = newEntity.ExactAllowedPermissionLevel;
             OnOff = newEntity.OnOff;
+            DependantIds = newEntity.DependantIds;
         }
     }
 }

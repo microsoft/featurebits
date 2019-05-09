@@ -2,8 +2,10 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.WindowsAzure.Storage.Table;
+using System.Linq;
 
 namespace FeatureBits.Data.AzureTableStorage
 {
@@ -75,6 +77,36 @@ namespace FeatureBits.Data.AzureTableStorage
         public string LastModifiedByUser { get; set; }
 
         /// <summary>
+        /// <see cref="IFeatureBitDefinition.DependantIds"/>
+        /// </summary>
+        [MaxLength(255)]
+        public string DependantIds { get; protected set; }
+
+        /// <summary>
+        /// <see cref="IFeatureBitDefinition.DependantCollection"/>
+        /// </summary>
+        [IgnoreProperty]
+        public IEnumerable<int> DependantCollection
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(DependantIds))
+                {
+                    return DependantIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(Id => Convert.ToInt32(Id));
+                }
+                return new List<int>();
+            }
+            set
+            {
+                DependantIds = "";
+                if (value != null && value?.Any() == true)
+                {
+                    DependantIds = String.Join(",", value);
+                }
+            }
+        }
+
+        /// <summary>
         /// <see cref="IFeatureBitDefinition.Update"/>
         /// </summary>
         public void Update(IFeatureBitDefinition newEntity)
@@ -86,6 +118,7 @@ namespace FeatureBits.Data.AzureTableStorage
             MinimumAllowedPermissionLevel = newEntity.MinimumAllowedPermissionLevel;
             ExactAllowedPermissionLevel = newEntity.ExactAllowedPermissionLevel;
             OnOff = newEntity.OnOff;
+            DependantIds = newEntity.DependantIds;
         }
     }
 }

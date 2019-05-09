@@ -77,7 +77,7 @@ namespace FeatureBits.Data.AzureTableStorage
         {
             TableContinuationToken token = null;
             TableQuery<DynamicTableEntity> projectionQuery = new TableQuery<DynamicTableEntity>().Select(new string[] { "Id" });
-            EntityResolver<int> resolver = (pk, rk, ts, props, etag) => props.ContainsKey("Id") ? props["Id"].Int32Value.GetValueOrDefault() : -1;
+            int resolver(string pk, string rk, DateTimeOffset ts, IDictionary<string, EntityProperty> props, string etag) => props.ContainsKey("Id") ? props["Id"].Int32Value.GetValueOrDefault() : -1;
 
             var maxInt = -1;
             do

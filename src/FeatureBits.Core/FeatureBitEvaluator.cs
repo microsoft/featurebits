@@ -100,7 +100,9 @@ namespace FeatureBits.Core
             return featureFlags;
         }
 
-        private static bool EvaluateBitValue(IFeatureBitDefinition bitDef, int currentUsersPermissionLevel)
+        private readonly int MaxEvaluations = 3;
+        private int EvalutationCount = 0;
+        private bool EvaluateBitValue(IFeatureBitDefinition bitDef, int currentUsersPermissionLevel)
         {
             bool result;
             if (bitDef.ExcludedEnvironments?.Length > 0)
@@ -118,6 +120,14 @@ namespace FeatureBits.Core
             else
             {
                 result = bitDef.OnOff;
+            }
+
+            if (bitDef.DependantCollection?.Any() == true && EvalutationCount < MaxEvaluations)
+            {
+                EvalutationCount++;
+                var dependantFeatureBits = GetEvaluatedFeatureBits<int>(bitDef.DependantCollection, currentUsersPermissionLevel);
+                result = !dependantFeatureBits.Any(kv => kv.Value == false);
+                EvalutationCount = 0;
             }
 
             return result;
