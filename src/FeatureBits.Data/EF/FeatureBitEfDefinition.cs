@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See License.txt in the project root for license information.
+
+using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
-using System.Linq;
 
 namespace FeatureBits.Data.EF
 {
@@ -75,31 +74,7 @@ namespace FeatureBits.Data.EF
         /// <see cref="IFeatureBitDefinition.DependantIds"/>
         /// </summary>
         [MaxLength(255)]
-        public string DependantIds { get; protected set; }
-
-        /// <summary>
-        /// <see cref="IFeatureBitDefinition.DependantCollection"/>
-        /// </summary>
-        [NotMapped]
-        public IEnumerable<int> DependantCollection
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(DependantIds))
-                {
-                    return DependantIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(Id => Convert.ToInt32(Id));
-                }
-                return new List<int>();
-            }
-            set
-            {
-                DependantIds = "";
-                if (value != null && value?.Any() == true)
-                {
-                    DependantIds = String.Join(",", value);
-                }
-            }
-        }
+        public string DependantIds { get; set; }
 
         /// <summary>
         /// <see cref="IFeatureBitDefinition.Update"/>

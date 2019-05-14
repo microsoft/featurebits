@@ -46,5 +46,11 @@ namespace Dotnet.FBit.CommandOptions
         /// </summary>
         [Option('f', "force", HelpText = "If the feature bit already exist, overwrite it.")]
         public bool Force { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of FeatureBits which must be enabled to turn on this feature.
+        /// </summary>
+        [Option("dependants", HelpText = "Comma-separated list of FeatureBits which must be enabled to turn on this feature.")]
+        public string Dependants { get; set; }
     }
 }

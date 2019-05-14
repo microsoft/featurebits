@@ -2,6 +2,8 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System;
+using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using Dotnet.FBit.CommandOptions;
 using FeatureBits.Core;
@@ -35,11 +37,48 @@ namespace Dotnet.FBit.Command
             }
             else
             {
-                await _repo.RemoveAsync(def);
+                await HandleFeatureBitHasDependency(def);
                 SystemContext.ConsoleWriteLine("Feature bit removed.");
             }
 
             return returnValue;
+        }
+
+        private async Task<int> HandleFeatureBitHasDependency(IFeatureBitDefinition definition)
+        {
+            int returnValue;
+            var features = await _repo.GetAllAsync();
+            var hasDependency = false;
+            foreach (var feature in features)
+            {
+                var dependency = feature.DependantIds.GetDependantIds();
+                hasDependency = (dependency.Any(id => id == definition.Id));
+            }
+
+            if (hasDependency)
+            {
+                returnValue = !_opts.Force ? FailWithoutForce() : await ForceRemove(definition);
+            }
+            else
+            {
+                returnValue = await ForceRemove(definition);
+            }
+
+            return returnValue;
+        }
+
+        private int FailWithoutForce()
+        {
+            SystemContext.ConsoleErrorWriteLine(
+                $"Feature bit '{_opts.Name}' has a dependency. Use --force to remove feature bit dependencies.");
+            return 1;
+        }
+
+        private async Task<int> ForceRemove(IFeatureBitDefinition definition)
+        {
+            await _repo.RemoveAsync(definition);
+            SystemContext.ConsoleWriteLine("Feature bit removed.");
+            return 0;
         }
     }
 }

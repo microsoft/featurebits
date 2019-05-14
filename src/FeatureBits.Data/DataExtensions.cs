@@ -5,7 +5,8 @@ namespace FeatureBits.Data
 {
     public static class DataExtensions
     {
-        public static FeatureBitTableDefinition ToTableDefinition (this IFeatureBitDefinition definition, string tableName) {
+        public static FeatureBitTableDefinition ToTableDefinition(this IFeatureBitDefinition definition, string tableName)
+        {
             return new FeatureBitTableDefinition
             {
                 Name = definition.Name,
@@ -20,7 +21,8 @@ namespace FeatureBits.Data
                 Id = definition.Id,
                 LastModifiedByUser = definition.LastModifiedByUser,
                 LastModifiedDateTime = definition.LastModifiedDateTime,
-                MinimumAllowedPermissionLevel = definition.MinimumAllowedPermissionLevel
+                MinimumAllowedPermissionLevel = definition.MinimumAllowedPermissionLevel,
+                DependantIds = definition.DependantIds
             };
         }
 
@@ -38,7 +40,8 @@ namespace FeatureBits.Data
                 Id = definition.Id,
                 LastModifiedByUser = definition.LastModifiedByUser,
                 LastModifiedDateTime = definition.LastModifiedDateTime,
-                MinimumAllowedPermissionLevel = definition.MinimumAllowedPermissionLevel
+                MinimumAllowedPermissionLevel = definition.MinimumAllowedPermissionLevel,
+                DependantIds = definition.DependantIds
             };
         }
     }

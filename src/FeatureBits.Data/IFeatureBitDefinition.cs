@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace FeatureBits.Data
 {
@@ -70,15 +69,6 @@ namespace FeatureBits.Data
         /// </summary>
         /// <remarks>NOTE: if 1 or all of the Dependant FeatureBits are disabled then this FeatureBit must be disabled</remarks>
         string DependantIds { get; }
-
-        /// <summary>
-        /// Collection of Dependant Ids for which this FeatureBit will subscribe and resolve as enabled
-        /// </summary>
-        /// <remarks>
-        /// This property will ensure our storage in the backend system is comma-separated correctly
-        /// </remarks>
-        IEnumerable<int> DependantCollection { get; set; }
-
 
         /// <summary>
         /// Update the feature bit entity

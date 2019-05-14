@@ -16,5 +16,11 @@ namespace Dotnet.FBit.CommandOptions
         /// </summary>
         [Option('n', Required = true, HelpText = "Name of the feature bit")]
         public string Name { get; set; }
+
+        /// <summary>
+        /// Specifies whether the feature bit should be removed in any dependency.
+        /// </summary>
+        [Option('f', "force", HelpText = "If the feature bit has a dependency, remove it.")]
+        public bool Force { get; set; }
     }
 }
