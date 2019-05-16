@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,8 +38,7 @@ namespace Dotnet.FBit.Command
             }
             else
             {
-                await HandleFeatureBitHasDependency(def);
-                SystemContext.ConsoleWriteLine("Feature bit removed.");
+                returnValue = await HandleFeatureBitHasDependency(def);
             }
 
             return returnValue;
@@ -48,16 +48,22 @@ namespace Dotnet.FBit.Command
         {
             int returnValue;
             var features = await _repo.GetAllAsync();
-            var hasDependency = false;
-            foreach (var feature in features)
+            bool filterDependencies(IFeatureBitDefinition w)
             {
-                var dependency = feature.DependantIds.GetDependantIds();
-                hasDependency = (dependency.Any(id => id == definition.Id));
+                var result = false;
+                if (!string.IsNullOrEmpty(w.DependentIds))
+                {
+                    var dependency = w.DependentIds.SplitToInts();
+                    result = (dependency.Any(id => id == definition.Id));
+                }
+                return result;
             }
+            var dependencyFeatures = features.Where(filterDependencies);
 
+            var hasDependency = dependencyFeatures.Any();
             if (hasDependency)
             {
-                returnValue = !_opts.Force ? FailWithoutForce() : await ForceRemove(definition);
+                returnValue = !_opts.Force ? FailWithoutForce() : await ForceRemoveWithDependents(dependencyFeatures, definition);
             }
             else
             {
@@ -74,11 +80,41 @@ namespace Dotnet.FBit.Command
             return 1;
         }
 
+        private async Task<int> ForceRemoveWithDependents(IEnumerable<IFeatureBitDefinition> features, IFeatureBitDefinition definition)
+        {
+            features.ToList().ForEach(async feature =>
+            {
+                var ints = feature.DependentIds.SplitToInts().Where(w => w != definition.Id);
+                var modifiedBit = BuildBit(feature, ints);
+                await _repo.UpdateAsync(modifiedBit);
+            });
+            return await ForceRemove(definition);
+        }
+
         private async Task<int> ForceRemove(IFeatureBitDefinition definition)
         {
             await _repo.RemoveAsync(definition);
             SystemContext.ConsoleWriteLine("Feature bit removed.");
             return 0;
+        }
+
+        public IFeatureBitDefinition BuildBit(IFeatureBitDefinition featureBitDefinition, IEnumerable<int> ids)
+        {
+            var now = SystemContext.Now();
+            var username = SystemContext.GetEnvironmentVariable("USERNAME");
+            return new CommandFeatureBitDefintion
+            {
+                Name = featureBitDefinition.Name,
+                CreatedDateTime = featureBitDefinition.CreatedDateTime,
+                LastModifiedDateTime = now,
+                CreatedByUser = featureBitDefinition.CreatedByUser,
+                LastModifiedByUser = username,
+                OnOff = featureBitDefinition.OnOff,
+                ExcludedEnvironments = featureBitDefinition.ExcludedEnvironments,
+                MinimumAllowedPermissionLevel = featureBitDefinition.MinimumAllowedPermissionLevel,
+                ExactAllowedPermissionLevel = featureBitDefinition.ExactAllowedPermissionLevel,
+                DependentIds = string.Join(",", ids.Select(s => s.ToString()))
+            };
         }
     }
 }

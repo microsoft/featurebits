@@ -48,9 +48,9 @@ namespace Dotnet.FBit.CommandOptions
         public bool Force { get; set; }
 
         /// <summary>
-        /// Comma-separated list of FeatureBits which must be enabled to turn on this feature.
+        /// Comma-separated list of FeatureBits which must be enabled to enable this feature.
         /// </summary>
-        [Option("dependants", HelpText = "Comma-separated list of FeatureBits which must be enabled to turn on this feature.")]
-        public string Dependants { get; set; }
+        [Option("dependents", HelpText = "Comma-separated list of FeatureBits which must be enabled to enable this feature.")]
+        public string Dependents { get; set; }
     }
 }

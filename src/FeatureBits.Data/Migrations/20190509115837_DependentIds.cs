@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 namespace FeatureBitsData.Migrations
 {
-    public partial class DependantIds : Migration
+    public partial class DependentIds : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "DependantIds",
+                name: "DependentIds",
                 table: "FeatureBitDefinitions",
                 nullable: true,
                 maxLength: 255);
@@ -18,7 +18,7 @@ namespace FeatureBitsData.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "DependantIds",
+                name: "DependentIds",
                 table: "FeatureBitDefinitions");
         }
     }

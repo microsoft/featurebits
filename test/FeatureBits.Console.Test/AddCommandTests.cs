@@ -1,18 +1,20 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.Text;
-using System.Threading.Tasks;
 using Dotnet.FBit.Command;
 using Dotnet.FBit.CommandOptions;
 using FeatureBits.Core;
 using FeatureBits.Data;
+using FeatureBits.Data.EF;
 using FluentAssertions;
 using NSubstitute;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace FeatureBits.Console.Test
@@ -117,7 +119,7 @@ namespace FeatureBits.Console.Test
         }
 
         [Fact]
-        public void It_can_BuildBit_that_is_valid()
+        public async Task It_can_BuildBit_that_is_valid()
         {
             // Arrange
             DateTime expectedDateTime = new DateTime(1966, 11, 9);
@@ -138,7 +140,7 @@ namespace FeatureBits.Console.Test
             var it = new AddCommand(opts, repo);
 
             // Act
-            var result = it.BuildBit();
+            var result = await it.BuildBit();
 
             // Assert
             result.CreatedDateTime.Should().Be(expectedDateTime);
@@ -212,6 +214,62 @@ namespace FeatureBits.Console.Test
             sb.ToString().Should().Be("Feature bit updated.");
             result.Should().Be(0);
             counter.Should().Be(1);
+        }
+
+        [Theory]
+        [InlineData("foo", "test5", 0, "Feature bit added.")]
+        [InlineData("foo", "test5,test7", 1, "Feature bit 'foo' has an invalid dependency [test5,test7].")]
+        [InlineData("foo", "test5,7", 1, "Feature bit 'foo' has an invalid dependency [test5,7].")]
+        [InlineData("foo", "test7", 1, "Feature bit 'foo' has a recursive loop [test7].", true)]
+        public async Task It_should_run_FeatureBit_add_and_validate_dependencies(string featureBit, string dependentCsv, int expectedResult, string expectedMessage, bool recursive = false)
+        {
+            var options = FeatureBitEfHelper.GetFakeDbOptions(true);
+            var context = FeatureBitEfHelper.GetFakeDbContext(options);
+
+            var initialSet = new List<FeatureBitEfDefinition>
+            {
+                new FeatureBitEfDefinition { Id = 1, Name = "test1"},
+                new FeatureBitEfDefinition { Id = 2, Name = "test2"},
+                new FeatureBitEfDefinition { Id = 3, Name = "test3", DependentIds = "2,1" },
+                new FeatureBitEfDefinition { Id = 4, Name = "test4"},
+                new FeatureBitEfDefinition { Id = 5, Name = "test5", DependentIds = "3" },
+            };
+            if (recursive)
+            {
+                initialSet.AddRange(
+                    new FeatureBitEfDefinition[] {
+                        new FeatureBitEfDefinition { Id = 6, Name = "test6", DependentIds = "7" },
+                        new FeatureBitEfDefinition { Id = 7, Name = "test7", DependentIds = "6"}
+                    }
+                );
+            }
+            context.FeatureBitDefinitions.AddRange(initialSet);
+            var dbresults = await context.SaveChangesAsync();
+            System.Diagnostics.Trace.TraceInformation($"Records {dbresults} persisted");
+
+            var repo = new FeatureBitsEfRepo(context);
+
+
+            // Arrange
+            var sb = new StringBuilder();
+            SystemContext.ConsoleWriteLine = s => sb.Append(s);
+            SystemContext.ConsoleErrorWriteLine = s => sb.Append(s);
+            var opts = new AddOptions { Name = featureBit, Dependents = dependentCsv };
+            var it = new AddCommand(opts, repo);
+
+            var results = await it.RunAsync();
+            results.Should().Be(expectedResult);
+
+            var entities = await repo.GetAllAsync();
+            sb.ToString().Should().Be(expectedMessage);
+            if (expectedResult == 0)
+            {
+                entities?.Count().Should().BeGreaterThan(initialSet.Count());
+            }
+            else
+            {
+                entities?.Count().Should().Be(initialSet.Count());
+            }
         }
     }
 }

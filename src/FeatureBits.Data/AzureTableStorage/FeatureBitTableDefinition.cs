@@ -75,10 +75,10 @@ namespace FeatureBits.Data.AzureTableStorage
         public string LastModifiedByUser { get; set; }
 
         /// <summary>
-        /// <see cref="IFeatureBitDefinition.DependantIds"/>
+        /// <see cref="IFeatureBitDefinition.DependentIds"/>
         /// </summary>
         [MaxLength(255)]
-        public string DependantIds { get; set; }
+        public string DependentIds { get; set; }
 
         /// <summary>
         /// <see cref="IFeatureBitDefinition.Update"/>
@@ -92,7 +92,7 @@ namespace FeatureBits.Data.AzureTableStorage
             MinimumAllowedPermissionLevel = newEntity.MinimumAllowedPermissionLevel;
             ExactAllowedPermissionLevel = newEntity.ExactAllowedPermissionLevel;
             OnOff = newEntity.OnOff;
-            DependantIds = newEntity.DependantIds;
+            DependentIds = newEntity.DependentIds;
         }
     }
 }

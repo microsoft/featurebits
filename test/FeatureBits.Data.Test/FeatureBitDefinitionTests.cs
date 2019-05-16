@@ -65,7 +65,7 @@ namespace FeatureBits.Data.Test
             it.AllowedUsers = new string('*', 2049);
             it.CreatedByUser = new string('*', 101);
             it.LastModifiedByUser = new string('*', 101);
-            it.DependantCollection = CreateIntCollection(256);
+            it.DependentIds = CreateDependentIdsText(260);
 
             // Act
             var validationResults = new List<ValidationResult>();
@@ -77,10 +77,10 @@ namespace FeatureBits.Data.Test
             validationResults.Should().Contain(r => r.ErrorMessage == "The field AllowedUsers must be a string or array type with a maximum length of '2048'.");
             validationResults.Should().Contain(r => r.ErrorMessage == "The field CreatedByUser must be a string or array type with a maximum length of '100'.");
             validationResults.Should().Contain(r => r.ErrorMessage == "The field LastModifiedByUser must be a string or array type with a maximum length of '100'.");
-            validationResults.Should().Contain(r => r.ErrorMessage == "The field DependantIds must be a string or array type with a maximum length of '255'.");
+            validationResults.Should().Contain(r => r.ErrorMessage == "The field DependentIds must be a string or array type with a maximum length of '255'.");
         }
 
-        private static IEnumerable<int> CreateIntCollection(int maxTxtLength = 250)
+        private static string CreateDependentIdsText(int maxTxtLength = 250)
         {
             var txtIdx = 0;
             var collectionOfIds = "";
@@ -89,7 +89,7 @@ namespace FeatureBits.Data.Test
                 txtIdx++;
                 collectionOfIds += $"{((txtIdx > 1) ? "," : "")}{txtIdx}";
             }
-            return collectionOfIds.Split(new char[] { ',' }).Select(id => Convert.ToInt32(id));
+            return collectionOfIds;
         }
     }
 }

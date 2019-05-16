@@ -39,6 +39,11 @@ namespace Dotnet.FBit.Command
             {
                 returnValue = await HandleFeatureBitAlreadyExists(e);
             }
+            catch (FeatureBitException e)
+            {
+                returnValue = 1;
+                SystemContext.ConsoleErrorWriteLine(e.Message);
+            }
             catch (Exception e)
             {
                 returnValue = 1;
@@ -63,7 +68,7 @@ namespace Dotnet.FBit.Command
                 ExcludedEnvironments = _opts.ExcludedEnvironments,
                 MinimumAllowedPermissionLevel = _opts.MinimumPermissionLevel,
                 ExactAllowedPermissionLevel = _opts.ExactPermissionLevel,
-                DependantIds = await ValidateHierarchyAndEnsureIds()
+                DependentIds = await ValidateHierarchyAndEnsureIds()
             };
         }
 
@@ -109,38 +114,38 @@ namespace Dotnet.FBit.Command
         const int MaxEvaluations = 3;
         private async Task<string> ValidateHierarchyAndEnsureIds()
         {
-            if (!string.IsNullOrEmpty(_opts.Dependants))
+            if (!string.IsNullOrEmpty(_opts.Dependents))
             {
                 var features = await _repo.GetAllAsync();
-                var bits = _opts.Dependants.GetDependantNames();
+                var bits = _opts.Dependents.SplitToStrings();
                 if (bits.Any(fbit => !features.Any(feature => fbit == feature.Name)))
                 {
-                    throw new Exception($"Feature bit '{_opts.Name}' has 1 or more invalid dependancies {_opts.Dependants}.");
+                    throw new FeatureBitException($"Feature bit '{_opts.Name}' has an invalid dependency [{_opts.Dependents}].");
                 }
 
-                var dependantIds = features.Where(feature => bits.Any(bit => bit == feature.Name)).Select(s => s.Id);
-                if (CheckRecursiveDependants(features, dependantIds))
+                var dependentIds = features.Where(feature => bits.Any(bit => bit == feature.Name)).Select(s => s.Id);
+                if (CheckRecursiveDependents(features, dependentIds))
                 {
                     return string.Join(",", features.Where(s => bits.Any(name => name == s.Name)).Select(s => s.Id));
                 }
                 else
                 {
-                    throw new Exception($"Feature bit '{_opts.Name}' has a recursive loop {_opts.Dependants}.");
+                    throw new FeatureBitException($"Feature bit '{_opts.Name}' has a recursive loop [{_opts.Dependents}].");
                 }
             }
             return "";
         }
 
-        private bool CheckRecursiveDependants(IEnumerable<IFeatureBitDefinition> features, IEnumerable<int> ids)
+        private bool CheckRecursiveDependents(IEnumerable<IFeatureBitDefinition> features, IEnumerable<int> ids)
         {
-            var filtered = features.Where(fbit => ids.Any(id => id == fbit.Id) && !string.IsNullOrEmpty(fbit.DependantIds));
+            var filtered = features.Where(fbit => ids.Any(id => id == fbit.Id) && !string.IsNullOrEmpty(fbit.DependentIds));
             if (filtered.Any())
             {
                 foreach (var feature in filtered)
                 {
-
-                    var items = CheckRecursiveDependants(features, 0, feature);
-                    if (items.Any(lineage => !lineage.Flipped)) // if a path reached max threshold [possible recursion]
+                    HasRecursion = false;
+                    var items = CheckRecursiveDependents(features, 0, feature);
+                    if (HasRecursion) // if a path reached max threshold [possible recursion]
                     {
                         return false;
                     }
@@ -149,38 +154,34 @@ namespace Dotnet.FBit.Command
             return true;
         }
 
-        private IEnumerable<RecursionItem> CheckRecursiveDependants(IEnumerable<IFeatureBitDefinition> features, int checkLevel, IFeatureBitDefinition definition)
-        {
-            var recursionResult = new List<RecursionItem>();
+        private static bool HasRecursion { get; set; } = false;
 
-            var dependantIds = definition.DependantIds.GetDependantIds();
-            if (dependantIds.Any() && checkLevel <= MaxEvaluations)
+        private IEnumerable<DependencyModel> CheckRecursiveDependents(IEnumerable<IFeatureBitDefinition> features, int checkLevel, IFeatureBitDefinition definition)
+        {
+            var recursionResult = new List<DependencyModel>();
+
+            if (checkLevel > MaxEvaluations)
             {
-                foreach (var dependantId in dependantIds)
+                HasRecursion = true;
+            }
+
+            var dependentIds = definition.DependentIds.SplitToInts();
+            if (dependentIds.Any() && checkLevel <= MaxEvaluations)
+            {
+                foreach (var dependentId in dependentIds)
                 {
-                    var childDefinition = features.FirstOrDefault(i => i.Id == dependantId);
-                    var item = new RecursionItem
-                    {
-                        ParentId = definition.Id,
-                        ChildId = dependantId,
-                        Flipped = checkLevel < MaxEvaluations
-                    };
-                    recursionResult.Add(item);
-                    var tempResults = CheckRecursiveDependants(features, checkLevel++, childDefinition);
-                    if (tempResults.Count() > 0)
+                    var childDefinition = features.FirstOrDefault(i => i.Id == dependentId);
+                    recursionResult.Add(new DependencyModel { ParentId = definition.Id, ChildId = dependentId });
+                    checkLevel += 1;
+                    var tempResults = CheckRecursiveDependents(features, checkLevel, childDefinition);
+                    if (tempResults.Any())
                     {
                         recursionResult.AddRange(tempResults);
                     }
                 }
             }
-            return recursionResult;
-        }
 
-        internal class RecursionItem
-        {
-            internal int ParentId { get; set; }
-            internal int ChildId { get; set; }
-            internal bool Flipped { get; set; }
+            return recursionResult;
         }
     }
 }

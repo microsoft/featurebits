@@ -71,10 +71,10 @@ namespace Dotnet.FBit.Command
         public string LastModifiedByUser { get; set; }
 
         /// <summary>
-        /// <see cref="IFeatureBitDefinition.DependantIds"/>
+        /// <see cref="IFeatureBitDefinition.DependentIds"/>
         /// </summary>
         [MaxLength(250)]
-        public string DependantIds { get; internal set; }
+        public string DependentIds { get; internal set; }
 
         /// <summary>
         /// <see cref="IFeatureBitDefinition.Update"/>
@@ -86,8 +86,9 @@ namespace Dotnet.FBit.Command
             ExcludedEnvironments = newEntity.ExcludedEnvironments;
             LastModifiedDateTime = newEntity.LastModifiedDateTime;
             MinimumAllowedPermissionLevel = newEntity.MinimumAllowedPermissionLevel;
+            ExactAllowedPermissionLevel = newEntity.ExactAllowedPermissionLevel;
             OnOff = newEntity.OnOff;
-            DependantIds = newEntity.DependantIds;
+            DependentIds = newEntity.DependentIds;
         }
     }
 }

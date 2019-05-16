@@ -136,7 +136,7 @@ namespace FeatureBits.Data.Test
             };
 
             // Act
-            await _it.UpdateAsync(defToUpsert);
+            await _it.AddAsync(defToUpsert);
 
             // Assert
             using (var context = new FeatureBitsEfDbContext(_options))

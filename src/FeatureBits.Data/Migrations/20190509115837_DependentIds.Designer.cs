@@ -11,8 +11,8 @@ using System;
 namespace FeatureBitsData.Migrations
 {
     [DbContext(typeof(FeatureBitsEfDbContext))]
-    [Migration("20190509115837_DependantIds")]
-    partial class DependantIds
+    [Migration("20190509115837_DependentIds")]
+    partial class DependentIds
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -48,7 +48,7 @@ namespace FeatureBitsData.Migrations
 
                     b.Property<int>("MinimumAllowedPermissionLevel");
 
-                    b.Property<string>("DependantIds")
+                    b.Property<string>("DependentIds")
                         .HasMaxLength(255);
 
                     b.Property<string>("Name")
