@@ -68,7 +68,7 @@ namespace FeatureBits.Data
         /// Comma-separated list of FeatureBit Ids for which this feature is enabled only if they are ALL enabled.  
         /// </summary>
         /// <remarks>NOTE: if 1 or all of the Dependent FeatureBits are disabled then this FeatureBit must be disabled</remarks>
-        string DependentIds { get; }
+        string Dependencies { get; }
 
         /// <summary>
         /// Update the feature bit entity

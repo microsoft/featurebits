@@ -22,7 +22,7 @@ namespace FeatureBits.Data
                 LastModifiedByUser = definition.LastModifiedByUser,
                 LastModifiedDateTime = definition.LastModifiedDateTime,
                 MinimumAllowedPermissionLevel = definition.MinimumAllowedPermissionLevel,
-                DependentIds = definition.DependentIds
+                Dependencies = definition.Dependencies
             };
         }
 
@@ -41,7 +41,7 @@ namespace FeatureBits.Data
                 LastModifiedByUser = definition.LastModifiedByUser,
                 LastModifiedDateTime = definition.LastModifiedDateTime,
                 MinimumAllowedPermissionLevel = definition.MinimumAllowedPermissionLevel,
-                DependentIds = definition.DependentIds
+                Dependencies = definition.Dependencies
             };
         }
     }

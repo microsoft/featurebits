@@ -9,14 +9,14 @@ namespace FeatureBits.Core
         /// <summary>
         /// Comma-separated list split into collection of Ints
         /// </summary>
-        /// <param name="dependentIds"></param>
+        /// <param name="Dependencies"></param>
         /// <returns>Collection of ints</returns>
         /// <exception cref="ArgumentException"></exception>
-        public static IEnumerable<int> SplitToInts(this string dependentIds)
+        public static IEnumerable<int> SplitToInts(this string Dependencies)
         {
-            if (!string.IsNullOrEmpty(dependentIds))
+            if (!string.IsNullOrEmpty(Dependencies))
             {
-                return dependentIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(Id => Convert.ToInt32(Id));
+                return Dependencies.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(Id => Convert.ToInt32(Id));
             }
             return new List<int>();
         }
@@ -24,14 +24,14 @@ namespace FeatureBits.Core
         /// <summary>
         /// Comma-separated list split into collection of FeatureBit names
         /// </summary>
-        /// <param name="dependentIds"></param>
+        /// <param name="Dependencies"></param>
         /// <returns>Collection of strings</returns>
         /// <exception cref="ArgumentException"></exception>
-        public static IEnumerable<string> SplitToStrings(this string dependentIds)
+        public static IEnumerable<string> SplitToStrings(this string Dependencies)
         {
-            if (!string.IsNullOrEmpty(dependentIds))
+            if (!string.IsNullOrEmpty(Dependencies))
             {
-                return dependentIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)?.Select(s => s.Trim());
+                return Dependencies.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)?.Select(s => s.Trim());
             }
             return new List<string>();
         }

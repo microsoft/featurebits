@@ -6,7 +6,17 @@ namespace Dotnet.FBit.Command
 {
     public sealed class DependencyModel
     {
-        public int ParentId { get; set; }
-        public int ChildId { get; set; }
+        public DependencyModel()
+        {
+        }
+
+        public string OwningId { get; set; }
+        public string ParentId { get; set; }
+        public string ChildId { get; set; }
+        public override string ToString()
+        {
+            return $"Fbit:{OwningId} => {ParentId}|{ChildId}";
+        }
+
     }
 }

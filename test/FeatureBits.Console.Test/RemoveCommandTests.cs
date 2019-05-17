@@ -103,13 +103,13 @@ namespace FeatureBits.Console.Test
 
             var initialSet = new List<FeatureBitEfDefinition>
             {
-                new FeatureBitEfDefinition { Id = 1, Name = "test1"},
-                new FeatureBitEfDefinition { Id = 2, Name = "test2"},
-                new FeatureBitEfDefinition { Id = 3, Name = "test3", DependentIds = "2,1" },
-                new FeatureBitEfDefinition { Id = 4, Name = "test4"},
-                new FeatureBitEfDefinition { Id = 5, Name = "test5", DependentIds = "3" },
-                new FeatureBitEfDefinition { Id = 6, Name = "test6", DependentIds = "3" },
-                new FeatureBitEfDefinition { Id = 7, Name = "test7", DependentIds = "6"},
+                new FeatureBitEfDefinition { Name = "test1"},
+                new FeatureBitEfDefinition { Name = "test2"},
+                new FeatureBitEfDefinition { Name = "test3", Dependencies = "test2,test1" },
+                new FeatureBitEfDefinition { Name = "test4"},
+                new FeatureBitEfDefinition { Name = "test5", Dependencies = "test3" },
+                new FeatureBitEfDefinition { Name = "test6", Dependencies = "test3" },
+                new FeatureBitEfDefinition { Name = "test7", Dependencies = "test6"},
             };
             context.FeatureBitDefinitions.AddRange(initialSet);
             var dbresults = await context.SaveChangesAsync();
@@ -135,14 +135,14 @@ namespace FeatureBits.Console.Test
                 entities?.Count().Should().BeLessThan(initialSet.Count());
                 if (force)
                 {
-                    var definitionId = initialSet.FirstOrDefault(fd => fd.Name == featureBitName)?.Id;
+                    var definitionName = initialSet.FirstOrDefault(fd => fd.Name == featureBitName)?.Name;
                     var entityDependencyCount = entities.Count((w) =>
                     {
                         var result = false;
-                        if (!string.IsNullOrEmpty(w.DependentIds))
+                        if (!string.IsNullOrEmpty(w.Dependencies))
                         {
-                            var dependency = w.DependentIds.SplitToInts();
-                            result = (dependency.Any(id => id == definitionId));
+                            var dependency = w.Dependencies.SplitToStrings();
+                            result = (dependency.Any(name => name.Equals(definitionName)));
                         }
                         return result;
                     });

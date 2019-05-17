@@ -122,10 +122,11 @@ namespace FeatureBits.Core
                 result = bitDef.OnOff;
             }
 
-            if (!string.IsNullOrEmpty(bitDef.DependentIds) && EvalutationCount < MaxEvaluations)
+            if (!string.IsNullOrEmpty(bitDef.Dependencies) && EvalutationCount < MaxEvaluations)
             {
                 EvalutationCount++;
-                var bits = bitDef.DependentIds.SplitToInts();
+                var dependencies = Definitions.Where(feature => bitDef.Dependencies.SplitToStrings().Any(name => name.Equals(feature.Name)));
+                var bits = dependencies?.Select(s => s.Id);
                 var dependentFeatureBits = GetEvaluatedFeatureBits<int>(bits, currentUsersPermissionLevel);
                 result = !dependentFeatureBits.Any(kv => kv.Value == false);
                 EvalutationCount = 0;

@@ -41,7 +41,7 @@ namespace FeatureBits.Data.EF
 
             await MakeSureAFeatureBitWithThatNameDoesNotExist(newEntity);
 
-            newEntity.Id = await GetNextId();
+            //newEntity.Id = await GetNextId();
             var entity = await DbContext.FeatureBitDefinitions.AddAsync(newEntity);
             await DbContext.SaveChangesAsync();
 

@@ -51,10 +51,10 @@ namespace Dotnet.FBit.Command
             bool filterDependencies(IFeatureBitDefinition w)
             {
                 var result = false;
-                if (!string.IsNullOrEmpty(w.DependentIds))
+                if (!string.IsNullOrEmpty(w.Dependencies))
                 {
-                    var dependency = w.DependentIds.SplitToInts();
-                    result = (dependency.Any(id => id == definition.Id));
+                    var dependencyNames = w.Dependencies.SplitToStrings();
+                    result = (dependencyNames.Any(name => name == definition.Name));
                 }
                 return result;
             }
@@ -84,8 +84,8 @@ namespace Dotnet.FBit.Command
         {
             features.ToList().ForEach(async feature =>
             {
-                var ints = feature.DependentIds.SplitToInts().Where(w => w != definition.Id);
-                var modifiedBit = BuildBit(feature, ints);
+                var bits = feature.Dependencies.SplitToStrings().Where(name => name != definition.Name);
+                var modifiedBit = BuildBit(feature, bits);
                 await _repo.UpdateAsync(modifiedBit);
             });
             return await ForceRemove(definition);
@@ -98,7 +98,7 @@ namespace Dotnet.FBit.Command
             return 0;
         }
 
-        public IFeatureBitDefinition BuildBit(IFeatureBitDefinition featureBitDefinition, IEnumerable<int> ids)
+        public IFeatureBitDefinition BuildBit(IFeatureBitDefinition featureBitDefinition, IEnumerable<string> names)
         {
             var now = SystemContext.Now();
             var username = SystemContext.GetEnvironmentVariable("USERNAME");
@@ -113,7 +113,7 @@ namespace Dotnet.FBit.Command
                 ExcludedEnvironments = featureBitDefinition.ExcludedEnvironments,
                 MinimumAllowedPermissionLevel = featureBitDefinition.MinimumAllowedPermissionLevel,
                 ExactAllowedPermissionLevel = featureBitDefinition.ExactAllowedPermissionLevel,
-                DependentIds = string.Join(",", ids.Select(s => s.ToString()))
+                Dependencies = string.Join(",", names.Select(s => s.Trim()))
             };
         }
     }

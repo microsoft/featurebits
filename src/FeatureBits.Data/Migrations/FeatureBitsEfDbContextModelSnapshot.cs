@@ -47,7 +47,7 @@ namespace FeatureBits.Data.Migrations
 
                     b.Property<int>("MinimumAllowedPermissionLevel");
 
-                    b.Property<string>("DependentIds")
+                    b.Property<string>("Dependencies")
                         .HasMaxLength(255);
 
                     b.Property<string>("Name")

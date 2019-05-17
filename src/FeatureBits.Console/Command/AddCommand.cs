@@ -68,7 +68,7 @@ namespace Dotnet.FBit.Command
                 ExcludedEnvironments = _opts.ExcludedEnvironments,
                 MinimumAllowedPermissionLevel = _opts.MinimumPermissionLevel,
                 ExactAllowedPermissionLevel = _opts.ExactPermissionLevel,
-                DependentIds = await ValidateHierarchyAndEnsureIds()
+                Dependencies = await ValidateHierarchyAndEnsureIds()
             };
         }
 
@@ -123,8 +123,8 @@ namespace Dotnet.FBit.Command
                     throw new FeatureBitException($"Feature bit '{_opts.Name}' has an invalid dependency [{_opts.Dependents}].");
                 }
 
-                var dependentIds = features.Where(feature => bits.Any(bit => bit == feature.Name)).Select(s => s.Id);
-                if (CheckRecursiveDependents(features, dependentIds))
+                var Dependencies = features.Where(feature => bits.Any(bit => bit == feature.Name)).Select(s => s.Id);
+                if (CheckRecursiveDependents(features, Dependencies))
                 {
                     return string.Join(",", features.Where(s => bits.Any(name => name == s.Name)).Select(s => s.Id));
                 }
@@ -138,49 +138,49 @@ namespace Dotnet.FBit.Command
 
         private bool CheckRecursiveDependents(IEnumerable<IFeatureBitDefinition> features, IEnumerable<int> ids)
         {
-            var filtered = features.Where(fbit => ids.Any(id => id == fbit.Id) && !string.IsNullOrEmpty(fbit.DependentIds));
+            var filtered = features.Where(fbit => ids.Any(id => id == fbit.Id) && !string.IsNullOrEmpty(fbit.Dependencies));
             if (filtered.Any())
             {
                 foreach (var feature in filtered)
                 {
-                    HasRecursion = false;
-                    var items = CheckRecursiveDependents(features, 0, feature);
-                    if (HasRecursion) // if a path reached max threshold [possible recursion]
+                    var dependentNames = feature.Dependencies.SplitToStrings();
+                    if (dependentNames.Any())
                     {
-                        return false;
+                        // First Level Dependencies
+                        var models = new List<DependencyModel>();
+                        foreach (var dependentName in dependentNames)
+                        {
+                            models.AddRange(CheckRecursiveDependents(features, dependentName, dependentName, 0));
+                        }
+
+                        if (models.Distinct(new DependencyComparer()).Count() != models.Count())
+                        {
+                            return false;
+                        }
                     }
                 }
             }
             return true;
         }
 
-        private static bool HasRecursion { get; set; } = false;
-
-        private IEnumerable<DependencyModel> CheckRecursiveDependents(IEnumerable<IFeatureBitDefinition> features, int checkLevel, IFeatureBitDefinition definition)
+        private IEnumerable<DependencyModel> CheckRecursiveDependents(IEnumerable<IFeatureBitDefinition> features, string owningBitName, string dependentBitName, int checkLevel)
         {
             var recursionResult = new List<DependencyModel>();
-
-            if (checkLevel > MaxEvaluations)
+            var childDefinition = features.FirstOrDefault(i => i.Name == dependentBitName);
+            var dependentNames = childDefinition.Dependencies.SplitToStrings();
+            if (dependentNames?.Any() == true && checkLevel <= MaxEvaluations)
             {
-                HasRecursion = true;
-            }
-
-            var dependentIds = definition.DependentIds.SplitToInts();
-            if (dependentIds.Any() && checkLevel <= MaxEvaluations)
-            {
-                foreach (var dependentId in dependentIds)
+                foreach (var bitName in dependentNames)
                 {
-                    var childDefinition = features.FirstOrDefault(i => i.Id == dependentId);
-                    recursionResult.Add(new DependencyModel { ParentId = definition.Id, ChildId = dependentId });
+                    recursionResult.Add(new DependencyModel { OwningId = owningBitName, ParentId = dependentBitName, ChildId = bitName });
                     checkLevel += 1;
-                    var tempResults = CheckRecursiveDependents(features, checkLevel, childDefinition);
+                    var tempResults = CheckRecursiveDependents(features, owningBitName, bitName, checkLevel);
                     if (tempResults.Any())
                     {
                         recursionResult.AddRange(tempResults);
                     }
                 }
             }
-
             return recursionResult;
         }
     }
