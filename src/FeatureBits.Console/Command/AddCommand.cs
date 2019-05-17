@@ -126,7 +126,7 @@ namespace Dotnet.FBit.Command
                 var Dependencies = features.Where(feature => bits.Any(bit => bit == feature.Name)).Select(s => s.Id);
                 if (CheckRecursiveDependents(features, Dependencies))
                 {
-                    return string.Join(",", features.Where(s => bits.Any(name => name == s.Name)).Select(s => s.Id));
+                    return string.Join(",", features.Where(s => bits.Any(name => name == s.Name)).Select(s => s.Name));
                 }
                 else
                 {

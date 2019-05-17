@@ -10,7 +10,7 @@
     <PackageLicenseUrl>https://github.com/Microsoft/featurebits/blob/master/LICENSE.txt</PackageLicenseUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageTags>features;flags;toggling</PackageTags>
-    <Version>0.1.0</Version>
+    <Version>0.4.4-prerelease-2</Version>
     <VersionSuffix></VersionSuffix>
     <AssemblyName>dotnet-fbit</AssemblyName>
     <OutputType>Exe</OutputType>
