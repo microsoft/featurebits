@@ -71,6 +71,7 @@ namespace Dotnet.FBit
 
             if (!useTable)
             {
+                System.Diagnostics.Trace.TraceInformation($"Database mode {dbConnStr}");
                 DbContextOptionsBuilder<FeatureBitsEfDbContext> options =
                     new DbContextOptionsBuilder<FeatureBitsEfDbContext>();
                 options.UseSqlServer(dbConnStr);
@@ -79,6 +80,7 @@ namespace Dotnet.FBit
             }
             else
             {
+                System.Diagnostics.Trace.TraceInformation($"Azure Table mode {dbConnStr}");
                 repo = new FeatureBitsTableStorageRepo(dbConnStr, opts.AzureTableName);
             }
 

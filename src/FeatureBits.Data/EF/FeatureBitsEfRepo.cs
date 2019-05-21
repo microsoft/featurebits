@@ -1,15 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.Linq;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace FeatureBits.Data.EF
 {
@@ -41,7 +39,6 @@ namespace FeatureBits.Data.EF
 
             await MakeSureAFeatureBitWithThatNameDoesNotExist(newEntity);
 
-            //newEntity.Id = await GetNextId();
             var entity = await DbContext.FeatureBitDefinitions.AddAsync(newEntity);
             await DbContext.SaveChangesAsync();
 
@@ -53,7 +50,7 @@ namespace FeatureBits.Data.EF
             var existenceCheck = await GetByNameAsync(definition.Name);
             if (existenceCheck != null)
             {
-                throw new DataException($"Cannot add. Feature bit with name '{definition.Name}' already exists.");
+                throw new FeatureBitDataException($"Cannot add. Feature bit with name '{definition.Name}' already exists.");
             }
         }
 
@@ -77,7 +74,7 @@ namespace FeatureBits.Data.EF
                 var existing = await GetByNameAsync(definition.Name);
                 if (existing == null)
                 {
-                    throw new DataException($"Could not update.  Feature bit with name '{definition.Name}' does not exist");
+                    throw new FeatureBitDataException($"Could not update.  Feature bit with name '{definition.Name}' does not exist");
                 }
                 existing.Update(definition);
                 DbContext.Update(existing);
@@ -105,16 +102,6 @@ namespace FeatureBits.Data.EF
                 DbContext.Remove(toRemove);
                 await DbContext.SaveChangesAsync();
             }
-        }
-
-        private async Task<int> GetNextId()
-        {
-            var lastEntity = await DbContext.FeatureBitDefinitions.OrderByDescending(fn => fn.Id).FirstOrDefaultAsync();
-            var maxInt = -1;
-            var currentMax = lastEntity?.Id ?? 0;
-            maxInt = Math.Max(currentMax, maxInt);
-
-            return maxInt + 1;
         }
     }
 }

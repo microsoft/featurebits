@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Table;
+using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Table;
 
 namespace FeatureBits.Data.AzureTableStorage
 {
@@ -37,7 +36,7 @@ namespace FeatureBits.Data.AzureTableStorage
         {
             if (await GetExistingFeatureBit(definition) != null)
             {
-                throw new DataException($"Cannot add. Feature bit with name '{definition.Name}' already exists.");
+                throw new FeatureBitDataException($"Cannot add. Feature bit with name '{definition.Name}' already exists.");
             }
             definition.Id = await GetNextId();
             var insertOp = TableOperation.Insert(definition.ToTableDefinition(_table.Name));
@@ -50,7 +49,7 @@ namespace FeatureBits.Data.AzureTableStorage
             var existing = await GetExistingFeatureBit(definition);
             if (existing == null)
             {
-                throw new DataException($"Could not update.  Feature bit with name '{definition.Name}' does not exist");
+                throw new FeatureBitDataException($"Could not update.  Feature bit with name '{definition.Name}' does not exist");
             }
             existing.Update(definition);
             var replaceOp = TableOperation.Replace(existing);

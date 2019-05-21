@@ -32,6 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{F285C699-F698-483C-B8E1-FF38C3DBE0E0}"
 	ProjectSection(SolutionItems) = preProject
+		build\Local-NuGet.ps1 = build\Local-NuGet.ps1
 		build\Package-NuGet.ps1 = build\Package-NuGet.ps1
 	EndProjectSection
 EndProject

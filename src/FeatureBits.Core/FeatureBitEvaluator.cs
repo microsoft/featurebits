@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
+using FeatureBits.Data;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using FeatureBits.Data;
 
 namespace FeatureBits.Core
 {
@@ -57,8 +57,8 @@ namespace FeatureBits.Core
                 return EvaluateBitValue(bitDef, currentPermissionLevel);
             }
 
-            string featureString =
-                tType.IsEnum ? Enum.GetName(tType, feature) : feature.ToString(CultureInfo.InvariantCulture);
+            string featureString = tType.IsEnum ? Enum.GetName(tType, feature) : feature.ToString(CultureInfo.InvariantCulture);
+
             throw new KeyNotFoundException($"Unable to find Feature {featureString}");
         }
 

@@ -101,7 +101,7 @@ namespace FeatureBits.Data.Test
             // Act
 
             // Assert
-            await Assert.ThrowsAsync<DataException>(async () => await _it.AddAsync(item1));
+            await Assert.ThrowsAsync<FeatureBitDataException>(async () => await _it.AddAsync(item1));
         }
 
         [Fact]

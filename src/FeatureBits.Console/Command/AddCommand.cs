@@ -35,11 +35,11 @@ namespace Dotnet.FBit.Command
                 await _repo.AddAsync(newBit);
                 SystemContext.ConsoleWriteLine("Feature bit added.");
             }
-            catch (DataException e)
+            catch (FeatureBitDataException e)
             {
                 returnValue = await HandleFeatureBitAlreadyExists(e);
             }
-            catch (FeatureBitException e)
+            catch (FeatureBitCommandException e)
             {
                 returnValue = 1;
                 SystemContext.ConsoleErrorWriteLine(e.Message);
@@ -80,7 +80,7 @@ namespace Dotnet.FBit.Command
             return onOffFlag;
         }
 
-        private async Task<int> HandleFeatureBitAlreadyExists(DataException e)
+        private async Task<int> HandleFeatureBitAlreadyExists(FeatureBitDataException e)
         {
             int returnValue;
             if (e.Message == ($"Cannot add. Feature bit with name '{_opts.Name}' already exists."))
@@ -120,7 +120,7 @@ namespace Dotnet.FBit.Command
                 var bits = _opts.Dependents.SplitToStrings();
                 if (bits.Any(fbit => !features.Any(feature => fbit == feature.Name)))
                 {
-                    throw new FeatureBitException($"Feature bit '{_opts.Name}' has an invalid dependency [{_opts.Dependents}].");
+                    throw new FeatureBitCommandException($"Feature bit '{_opts.Name}' has an invalid dependency [{_opts.Dependents}].");
                 }
 
                 var Dependencies = features.Where(feature => bits.Any(bit => bit == feature.Name)).Select(s => s.Id);
@@ -130,7 +130,7 @@ namespace Dotnet.FBit.Command
                 }
                 else
                 {
-                    throw new FeatureBitException($"Feature bit '{_opts.Name}' has a recursive loop [{_opts.Dependents}].");
+                    throw new FeatureBitCommandException($"Feature bit '{_opts.Name}' has a recursive loop [{_opts.Dependents}].");
                 }
             }
             return "";
