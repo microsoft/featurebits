@@ -67,7 +67,7 @@ deploy:
     # Deploy to NuGet feed
   - provider: NuGet  
     api_key:
-        secure: wojT8rmz0nIA91iw6Xa3cjtG/Virxzqbv7eeM32eBzl0LeUbDzL8Quv++l9p27rg
+        secure: 3YvnoR5leHQIJH50VvD5pLlFpSIV/JtSHDqs4+w2u1Q8CYwWCvCkBdMqtFgDJ3yG
     skip_symbols: true  
     artifact: /.*\.nupkg/
     on:
