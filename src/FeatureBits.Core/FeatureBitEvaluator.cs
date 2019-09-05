@@ -150,7 +150,7 @@ namespace FeatureBits.Core
             }
             else
             {
-                return environmentList.ToUpperInvariant().Split(',');
+                return environmentList.ToUpperInvariant().Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
             }
         }
 

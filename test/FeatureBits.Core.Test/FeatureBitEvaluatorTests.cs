@@ -50,8 +50,10 @@ namespace FeatureBits.Core.Test
         }
 
         [Fact]
-        public void It_can_evaluate_an_Environment_FeatureBit_to_false()
+        public void It_can_evaluate_an_ExcludedEnvironment_FeatureBit_to_false()
         {
+            System.Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "LocalDevelopment");
+        
             // Arrange
             // Excluded Environment trumps "OnOff"
             var it = SetupFeatureBitEvaluator(new FeatureBitEfDefinition
@@ -66,10 +68,104 @@ namespace FeatureBits.Core.Test
 
             // Assert
             result.Should().Be(false);
+
+            System.Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", null);
         }
 
         [Fact]
-        public void It_can_evaluate_an_Environment_FeatureBit_to_true_if_it_is_not_a_complete_match()
+        public void It_can_evaluate_an_IncludedEnvironment_FeatureBit_to_false()
+        {
+            System.Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "LocalDevelopment");
+
+            // Arrange
+            // Excluded Environment trumps "OnOff"
+            var it = SetupFeatureBitEvaluator(new FeatureBitEfDefinition
+            {
+                Id = 0,
+                OnOff = true,
+                IncludedEnvironments = "Development,QA"
+            });
+
+            // Act
+            var result = it.IsEnabled(0);
+
+            // Assert
+            result.Should().Be(false);
+
+            System.Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", null);
+        }
+
+        public void It_can_evaluate_an_IncludedEnvironment_FeatureBit_to_true()
+        {
+            System.Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "LocalDevelopment");
+
+            // Arrange
+            // Excluded Environment trumps "OnOff"
+            var it = SetupFeatureBitEvaluator(new FeatureBitEfDefinition
+            {
+                Id = 0,
+                OnOff = true,
+                IncludedEnvironments = "Development,LocalDevelopment,QA"
+            });
+
+            // Act
+            var result = it.IsEnabled(0);
+
+            // Assert
+            result.Should().Be(true);
+
+            System.Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", null);
+        }
+
+        [Fact]
+        public void It_can_evaluate_an_IncludedEnvironment_FeatureBit_to_false_if_it_is_not_a_complete_match()
+        {
+            System.Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "LocalDevelopment");
+
+            // Arrange
+            // Excluded Environment trumps "OnOff"
+            var it = SetupFeatureBitEvaluator(new FeatureBitEfDefinition
+            {
+                Id = 0,
+                OnOff = true,
+                IncludedEnvironments = "Development,Production"
+            });
+
+            // Act
+            var result = it.IsEnabled(0);
+
+            // Assert
+            result.Should().Be(false);
+
+            System.Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", null);
+        }
+
+        [Fact]
+        public void It_can_evaluate_an_IncludedEnvironment_FeatureBit_to_false_even_if_it_is_an_ExcludedEnvironment()
+        {
+            System.Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "LocalDevelopment");
+
+            // Arrange
+            // Excluded Environment trumps "OnOff"
+            var it = SetupFeatureBitEvaluator(new FeatureBitEfDefinition
+            {
+                Id = 0,
+                OnOff = true,
+                ExcludedEnvironments = "LocalDevelopment",
+                IncludedEnvironments = "Development,Production"
+            });
+
+            // Act
+            var result = it.IsEnabled(0);
+
+            // Assert
+            result.Should().Be(false);
+
+            System.Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", null);
+        }
+
+        [Fact]
+        public void It_can_evaluate_an_ExcludedEnvironment_FeatureBit_to_true_if_it_is_not_a_complete_match()
         {
             // Arrange
             // Excluded Environment trumps "OnOff"
