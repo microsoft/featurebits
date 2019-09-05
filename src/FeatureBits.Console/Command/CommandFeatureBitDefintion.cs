@@ -41,6 +41,12 @@ namespace Dotnet.FBit.Command
         public int? ExactAllowedPermissionLevel { get; set; }
 
         /// <summary>
+        /// <see cref="IFeatureBitDefinition.IncludedEnvironments"/>
+        /// </summary>
+        [MaxLength(300)]
+        public string IncludedEnvironments { get; set; }
+
+        /// <summary>
         /// <see cref="IFeatureBitDefinition.AllowedUsers"/>
         /// </summary>
         [MaxLength(2048)]
@@ -81,6 +87,7 @@ namespace Dotnet.FBit.Command
             LastModifiedDateTime = newEntity.LastModifiedDateTime;
             MinimumAllowedPermissionLevel = newEntity.MinimumAllowedPermissionLevel;
             OnOff = newEntity.OnOff;
+            IncludedEnvironments = newEntity.IncludedEnvironments;
         }
     }
 }

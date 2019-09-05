@@ -20,6 +20,7 @@ namespace FeatureBits.Data.Test
             {
                 ExcludedEnvironments = "foo",
                 LastModifiedByUser = "bar",
+                IncludedEnvironments = "zissou",
                 CreatedDateTime = DateTime.Now.AddDays(-1),
                 Name = "bat",
                 CreatedByUser = "fizz",
@@ -62,6 +63,7 @@ namespace FeatureBits.Data.Test
             it.Name = new string('*', 101);
             it.ExcludedEnvironments = new string('*', 301);
             it.AllowedUsers = new string('*', 2049);
+            it.IncludedEnvironments = new string('*', 301);
             it.CreatedByUser = new string('*', 101);
             it.LastModifiedByUser = new string('*', 101);
 
@@ -72,6 +74,7 @@ namespace FeatureBits.Data.Test
             Validator.TryValidateObject(it, new ValidationContext(it), validationResults, true);
             validationResults.Should().Contain(r => r.ErrorMessage == "The field Name must be a string or array type with a maximum length of '100'.");
             validationResults.Should().Contain(r => r.ErrorMessage == "The field ExcludedEnvironments must be a string or array type with a maximum length of '300'.");
+            validationResults.Should().Contain(r => r.ErrorMessage == "The field IncludedEnvironments must be a string or array type with a maximum length of '300'.");
             validationResults.Should().Contain(r => r.ErrorMessage == "The field AllowedUsers must be a string or array type with a maximum length of '2048'.");
             validationResults.Should().Contain(r => r.ErrorMessage == "The field CreatedByUser must be a string or array type with a maximum length of '100'.");
             validationResults.Should().Contain(r => r.ErrorMessage == "The field LastModifiedByUser must be a string or array type with a maximum length of '100'.");

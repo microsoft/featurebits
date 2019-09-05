@@ -22,6 +22,8 @@ CREATE TABLE [dbo].[FeatureBitDefinitions](
 
 	[ExactAllowedPermissionLevel] [int] NULL,
 
+	[IncludedEnvironments] [nvarchar](300) NULL,
+
  CONSTRAINT [PK_FeatureBitDefinitions] PRIMARY KEY CLUSTERED 
 
 (

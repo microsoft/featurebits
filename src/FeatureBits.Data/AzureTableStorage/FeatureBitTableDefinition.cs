@@ -45,6 +45,12 @@ namespace FeatureBits.Data.AzureTableStorage
         public int? ExactAllowedPermissionLevel { get; set; }
 
         /// <summary>
+        /// <see cref="IFeatureBitDefinition.IncludedEnvironments"/>
+        /// </summary>
+        [MaxLength(300)]
+        public string IncludedEnvironments { get; set; }
+
+        /// <summary>
         /// <see cref="IFeatureBitDefinition.AllowedUsers"/>
         /// </summary>
         [MaxLength(2048)]
@@ -86,6 +92,7 @@ namespace FeatureBits.Data.AzureTableStorage
             MinimumAllowedPermissionLevel = newEntity.MinimumAllowedPermissionLevel;
             ExactAllowedPermissionLevel = newEntity.ExactAllowedPermissionLevel;
             OnOff = newEntity.OnOff;
+            IncludedEnvironments = newEntity.IncludedEnvironments;
         }
     }
 }

@@ -61,7 +61,8 @@ namespace Dotnet.FBit.Command
                 OnOff = onOffFlag,
                 ExcludedEnvironments = _opts.ExcludedEnvironments,
                 MinimumAllowedPermissionLevel = _opts.MinimumPermissionLevel,
-                ExactAllowedPermissionLevel = _opts.ExactPermissionLevel
+                ExactAllowedPermissionLevel = _opts.ExactPermissionLevel,
+                IncludedEnvironments = _opts.IncludedEnvironments
             };
         }
 

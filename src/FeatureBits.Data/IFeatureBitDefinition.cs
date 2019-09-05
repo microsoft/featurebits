@@ -23,9 +23,16 @@ namespace FeatureBits.Data
         /// <summary>
         /// Comma-separated list of environments in which the feature should be turned OFF.
         /// Feature-bit check must pass in the current environment. If no environment is passed in, the feature would be turned ON since no environment would 
-        /// be excluded.
+        /// be excluded.  IncludedEnvironments (when supplied) supercedes ExcludedEnvironments.
         /// </summary>
         string ExcludedEnvironments { get; set; }
+
+        /// <summary>
+        /// Comma-separated list of environments in which the feature should be turned ON.
+        /// Feature-bit check must pass in the current environment. If no environment is passed in, the feature would be turned OFF since only specified  
+        /// environments would be included.
+        /// </summary>
+        string IncludedEnvironments { get; set; }
 
         /// <summary>
         /// The minimum allowed permission level for this feature to be enabled. Permissions are cumulative. A lower permission means lower access.

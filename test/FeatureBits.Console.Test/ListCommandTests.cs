@@ -55,8 +55,8 @@ namespace FeatureBits.Console.Test
             // Arrange
             var sb = new StringBuilder();
             SystemContext.ConsoleWriteLine = s => sb.AppendLine(s);
-            var bit1 = new CommandFeatureBitDefintion { Id = 1, Name = "foo1", OnOff = true, ExcludedEnvironments = "prod1", MinimumAllowedPermissionLevel = 10, ExactAllowedPermissionLevel = 30, AllowedUsers = "me1" };
-            var bit2 = new CommandFeatureBitDefintion { Id = 2, Name = "foo2", OnOff = false, ExcludedEnvironments = "prod2", MinimumAllowedPermissionLevel = 20, ExactAllowedPermissionLevel = 40, AllowedUsers = "me2" };
+            var bit1 = new CommandFeatureBitDefintion { Id = 1, Name = "foo1", OnOff = true, ExcludedEnvironments = "prod1", MinimumAllowedPermissionLevel = 10, ExactAllowedPermissionLevel = 30, AllowedUsers = "me1", IncludedEnvironments = "Dev1,Dev3" };
+            var bit2 = new CommandFeatureBitDefintion { Id = 2, Name = "foo2", OnOff = false, ExcludedEnvironments = "prod2", MinimumAllowedPermissionLevel = 20, ExactAllowedPermissionLevel = 40, AllowedUsers = "me2", IncludedEnvironments = "Dev1,Dev3" };
             var opts = new ListOptions { Long = true };
             var repo = Substitute.For<IFeatureBitsRepo>();
             var consoleTable = Substitute.For<IConsoleTable>();
@@ -75,14 +75,15 @@ namespace FeatureBits.Console.Test
 
             consoleTable.Received().Print(Arg.Is<DataTable>(dt =>
                 dt.Rows.Count == 2 &&
-                dt.Columns.Count == 7 &&
+                dt.Columns.Count == 8 &&
                 dt.Columns[0].Caption == "Id" &&
                 dt.Columns[1].Caption == "Name" &&
                 dt.Columns[2].Caption == "OnOff" &&
                 dt.Columns[3].Caption == "ExcludedEnvironments" &&
                 dt.Columns[4].Caption == "MinimumAllowedPermissionLevel" &&
                 dt.Columns[5].Caption == "ExactAllowedPermissionLevel" &&
-                dt.Columns[6].Caption == "AllowedUsers"));
+                dt.Columns[6].Caption == "AllowedUsers" &&
+                dt.Columns[7].Caption == "IncludedEnvironments"));
         }
     }
 }

@@ -64,6 +64,7 @@ namespace Dotnet.FBit.Command
                 dataTable.Columns.Add("MinimumAllowedPermissionLevel", typeof(int));
                 dataTable.Columns.Add("ExactAllowedPermissionLevel", typeof(int));
                 dataTable.Columns.Add("AllowedUsers", typeof(string));
+                dataTable.Columns.Add("IncludedEnvironments", typeof(string));
             }
 
             foreach (var featureBitDefinition in featureBitDefinitions)
@@ -89,6 +90,7 @@ namespace Dotnet.FBit.Command
                 cells.Add(featureBitDefinition.MinimumAllowedPermissionLevel);
                 cells.Add(featureBitDefinition.ExactAllowedPermissionLevel?? -1);
                 cells.Add(featureBitDefinition.AllowedUsers);
+                cells.Add(featureBitDefinition.IncludedEnvironments);
             }
 
             return cells.ToArray();
