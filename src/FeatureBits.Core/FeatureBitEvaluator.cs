@@ -133,9 +133,11 @@ namespace FeatureBits.Core
             var excludedEnvironmentAry = GetEnvironmentList(bitDef.ExcludedEnvironments);
             var includedEnvironmentAry = GetEnvironmentList(bitDef.IncludedEnvironments);
 
-            if (includedEnvironmentAry.Any()) {
+            if (includedEnvironmentAry.Any())
+            {
                 featureState = includedEnvironmentAry.Contains(env);
-            } else {
+            } else
+            {
                 featureState = !excludedEnvironmentAry.Contains(env);
             }
 
