@@ -103,7 +103,7 @@ namespace FeatureBits.Core
         private static bool EvaluateBitValue(IFeatureBitDefinition bitDef, int currentUsersPermissionLevel)
         {
             bool result;
-            if (bitDef.ExcludedEnvironments?.Length > 0)
+            if (bitDef.ExcludedEnvironments?.Length > 0 || bitDef.IncludedEnvironments?.Length > 0)
             {
                 result = EvaluateEnvironmentBasedFeatureState(bitDef);
             }
@@ -130,9 +130,30 @@ namespace FeatureBits.Core
         {
             bool featureState;
             var env = SystemContext.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.ToUpperInvariant();
-            var environmentAry = bitDef.ExcludedEnvironments.ToUpperInvariant().Split(',');
-            featureState = !environmentAry.Contains(env);
+            var excludedEnvironmentAry = GetEnvironmentList(bitDef.ExcludedEnvironments);
+            var includedEnvironmentAry = GetEnvironmentList(bitDef.IncludedEnvironments);
+
+            if (includedEnvironmentAry.Any())
+            {
+                featureState = includedEnvironmentAry.Contains(env);
+            } else
+            {
+                featureState = !excludedEnvironmentAry.Contains(env);
+            }
+
             return featureState;
+        }
+
+        private static string[] GetEnvironmentList(string environmentList)
+        {
+            if (string.IsNullOrWhiteSpace(environmentList))
+            {
+                return new string[0];
+            }
+            else
+            {
+                return environmentList.ToUpperInvariant().Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            }
         }
 
     }

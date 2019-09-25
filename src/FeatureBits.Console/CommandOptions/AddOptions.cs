@@ -42,6 +42,12 @@ namespace Dotnet.FBit.CommandOptions
         public int ExactPermissionLevel { get; set; }
 
         /// <summary>
+        /// Comma-separated list of environments on which to turn on this feature.
+        /// </summary>
+        [Option("included-environments", HelpText = "Comma-separated list of environments on which to turn on this feature.")]
+        public string IncludedEnvironments { get; set; }
+
+        /// <summary>
         /// Specifies whether the feature bit should be blanket on or off.
         /// </summary>
         [Option('f', "force", HelpText = "If the feature bit already exist, overwrite it.")]

@@ -171,9 +171,11 @@ public ActionResult<string> Get(int id)
 ## FeatureBit Definitions
 
 1) On/Off (column OnOff) - if (and only if) no other columns are populated, then the OnOff column determines whether the feature is on or off.
-2) ExcludedEnvironments - Comma separated list of environements for which the feature should be turned off. Attempts to read the `ASPNETCORE_ENVIRONMENT` environment variable to determine whether the bit should be on or off.
-3) MinimumAllowedPermissionLevel - If the user's permission level (as uniquely determine by your application) is greater than or equal to a certain integer value, then the feature bit is "on".
-4) ExactAllowedPermissionLevel - Same as the last one, but the user's permission level must exactly match (equals).
+2) ExcludedEnvironments - Comma separated list of environments for which the feature should be turned off. Attempts to read the `ASPNETCORE_ENVIRONMENT` environment variable to determine whether the bit should be on or off.  IncludedEnvironments (when supplied) supercedes ExcludedEnvironments.
+3) IncludedEnvironments - Comma separated list of environments for which the feature should be turned on. Attempts to read the `ASPNETCORE_ENVIRONMENT` environment variable to determine whether the bit should be on or off.
+4) MinimumAllowedPermissionLevel - If the user's permission level (as uniquely determine by your application) is greater than or equal to a certain integer value, then the feature bit is "on".
+5) ExactAllowedPermissionLevel - Same as the last one, but the user's permission level must exactly match (equals).
+
 
 You can also take a look at the file `FeatureBitEvaluatorTests.cs` to see how the different kinds of feature bit definitions are used.
 
