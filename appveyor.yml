@@ -3,7 +3,7 @@
 #      general configuration      #
 #---------------------------------#
 # version format
-version: '0.4.3.{build}'      
+version: '0.5.0.{build}'      
 
 # including commits in the following folders only
 only_commits:
@@ -25,7 +25,7 @@ dotnet_csproj:
 #    environment configuration    #
 #---------------------------------#
 # Build worker image (VM template)
-image: Visual Studio 2017
+image: Visual Studio 2019
 
 #---------------------------------#
 #       build configuration       #

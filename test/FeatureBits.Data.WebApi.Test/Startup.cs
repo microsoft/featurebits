@@ -8,11 +8,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+#if NETCOREAPP3_0
+using Microsoft.Extensions.Hosting;
+#endif
+
 namespace FeatureBits.Data.WebApi.Test
 {
     public class Startup
     {
+#if NETCOREAPP3_0
+        public Startup(IWebHostEnvironment env)
+#else
         public Startup(IHostingEnvironment env)
+#endif
         {
             var builder = new ConfigurationBuilder();
 
@@ -36,14 +44,22 @@ namespace FeatureBits.Data.WebApi.Test
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
+#if NETCOREAPP3_0
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+#else
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+#endif
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
+#if NETCOREAPP3_0
+            app.UseRouting();
+#else
             app.UseMvc();
+#endif
         }
     }
 }

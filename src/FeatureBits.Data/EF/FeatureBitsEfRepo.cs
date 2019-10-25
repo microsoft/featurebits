@@ -38,7 +38,7 @@ namespace FeatureBits.Data.EF
             FeatureBitEfDefinition newEntity = definition.ToEfDefinition();
             ValidateDefinition(newEntity);
 
-            await MakeSureAFeatureBitWithThatNameDoesNotExist(newEntity);
+            await MakeSureAFeatureBitWithThatNameDoesNotExistAsync(newEntity);
 
             var entity = await DbContext.FeatureBitDefinitions.AddAsync(newEntity);
             await DbContext.SaveChangesAsync();
@@ -46,7 +46,7 @@ namespace FeatureBits.Data.EF
             return entity.Entity;
         }
 
-        private async Task MakeSureAFeatureBitWithThatNameDoesNotExist(FeatureBitEfDefinition definition)
+        private async Task MakeSureAFeatureBitWithThatNameDoesNotExistAsync(FeatureBitEfDefinition definition)
         {
             var existenceCheck = await DbContext.FeatureBitDefinitions.FirstOrDefaultAsync(fb => fb.Name == definition.Name);
             if (existenceCheck != null)

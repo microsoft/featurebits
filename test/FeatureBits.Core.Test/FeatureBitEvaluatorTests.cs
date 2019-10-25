@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
@@ -95,6 +95,7 @@ namespace FeatureBits.Core.Test
             System.Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", null);
         }
 
+        [Fact]
         public void It_can_evaluate_an_IncludedEnvironment_FeatureBit_to_true()
         {
             System.Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "LocalDevelopment");
